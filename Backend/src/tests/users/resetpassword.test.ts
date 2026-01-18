@@ -20,7 +20,7 @@ describe("POST /api/user/password", () => {
 
     expect(res.status).toBe(401)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Username is not registered.")
+    expect(res.body.issues[0].message).toBe("Username is not registered")
   })
 
   it("fails when passwork is the same", async () => {
@@ -40,7 +40,7 @@ describe("POST /api/user/password", () => {
 
     expect(res.status).toBe(409)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Username already has the same password.")
+    expect(res.body.issues[0].message).toBe("Username already has the same password")
   })
 
   it("resets the user password", async () => {

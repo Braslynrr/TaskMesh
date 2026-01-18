@@ -8,7 +8,6 @@ const UserSchema = new mongoose.Schema({
 
 export const UserModel = mongoose.model("User", UserSchema)
 
-// Acceso a datos (repositorio)
 export const userRepository = {
   findByUsername(username: string) {
     return UserModel.findOne({ username })

@@ -3,8 +3,3 @@ export type User = {
   Username: string
   role: "user" | "admin"
 }
-
-export type CreateUserInput = {
-  Username: string
-  password: string
-}

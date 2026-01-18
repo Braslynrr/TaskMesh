@@ -11,8 +11,10 @@ export function authMiddleware(req, _res, next) {
   const token = header.split(" ")[1]
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!)
-    req.user = payload   // attach user info
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {_id: string,username: string}
+
+    req.user =  { _id: payload._id, username: payload.username}
+
     next()
   } catch {
     throw new UnauthorizedError("Invalid or expired token")

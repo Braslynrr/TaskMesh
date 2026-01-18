@@ -47,7 +47,7 @@ describe("POST /api/user/login", () => {
 
     expect(res.status).toBe(401)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Username or password credentials are not valid.")
+    expect(res.body.issues[0].message).toBe("Username or password credentials are not valid")
   })
 
   it("should fail if payload is invalid (password)", async () => {
@@ -69,7 +69,7 @@ describe("POST /api/user/login", () => {
 
     expect(res.status).toBe(401)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Username or password credentials are not valid.")
+    expect(res.body.issues[0].message).toBe("Username or password credentials are not valid")
   })
 
 })
