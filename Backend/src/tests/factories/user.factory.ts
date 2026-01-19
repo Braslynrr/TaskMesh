@@ -1,8 +1,8 @@
-import { UserModel } from "../../modules/Users/user.repository"
+import { userRepository } from "../../modules/Users/user.repository"
 import jwt from "jsonwebtoken"
 
 export async function createUser(username:string="test") {
-  return UserModel.create({
+  return userRepository.create({
     username: username,
     password: "hashed-password",
   })

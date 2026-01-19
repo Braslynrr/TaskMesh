@@ -1,5 +1,4 @@
-import mongoose from "mongoose"
-import { Types } from "mongoose"
+import mongoose, { Types } from "mongoose"
 
 const TaskboardSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -55,6 +54,13 @@ export const taskboardRepository = {
     _id: new Types.ObjectId(data._id),
     ownerId: new Types.ObjectId(data.ownerId),
   })
-}
+  },
+
+  getTaskboards(id:string){
+    return taskboardModel.find({
+      $or: [
+      { ownerId: id },
+      { members: id }]})
+  }
 
 }

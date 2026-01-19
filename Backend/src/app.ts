@@ -4,6 +4,7 @@ import express from "express"
 
 import userRoutes from "./modules/Users/user.routes"
 import taskboardRoutes from "./modules/Taskboard/taskboard.routes"
+import listRoutes from "./modules/List/list.routes"
 import { errorHandler } from "./core/middlewares/error-handler"
 
 
@@ -20,6 +21,7 @@ app.get("/", (_req, res) => {
 // Mount modules
 app.use("/api/user", userRoutes)
 app.use("/api/taskboard", taskboardRoutes)
+app.use("/api/list", listRoutes)
 
 app.use(errorHandler)
 

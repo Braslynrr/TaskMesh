@@ -46,9 +46,9 @@ describe("DELETE /api/taskboard/", () => {
             _id: taskboard._id,
         })
 
-        expect(res.status).toBe(401)
+        expect(res.status).toBe(403)
         expect(res.body).not.toBeNull()
-        expect(res.body.issues[0].message).toBe("Access denied. You don’t have permission to perform this action.")
+        expect(res.body.issues[0].message).toBe("Only owner can perform this action")
     })
 
 })
