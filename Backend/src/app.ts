@@ -6,6 +6,7 @@ import userRoutes from "./modules/Users/user.routes"
 import taskboardRoutes from "./modules/Taskboard/taskboard.routes"
 import listRoutes from "./modules/List/list.routes"
 import cardRoutes from "./modules/Card/card.routes"
+import commentRoutes from "./modules/Comment/comment.routes"
 import { errorHandler } from "./core/middlewares/error-handler"
 
 
@@ -24,6 +25,7 @@ app.use("/api/user", userRoutes)
 app.use("/api/taskboard", taskboardRoutes)
 app.use("/api/list", listRoutes)
 app.use("/api/card", cardRoutes)
+app.use("/api/comment", commentRoutes)
 
 app.use(errorHandler)
 

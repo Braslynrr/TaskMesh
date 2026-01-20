@@ -3,13 +3,14 @@ import { assertUserIsMember } from "../Taskboard/taskboard.policy";
 import { taskboardRepository } from "../Taskboard/taskboard.repository";
 import { ListRepository } from "./list.repository";
 import { createListDTO, movePositionListDTO, searchListDTO } from "./list.schema";
+import { serializeList } from "./list.serializer";
 
 
 export const listService = {
 
     async createList(data: createListDTO, userId: string){
 
-        const nextNumberList = (await ListRepository.getLists(data.taskboardId)).length
+        const nextNumberList = await ListRepository.countList(data.taskboardId)
         data.position = nextNumberList + 1
 
         const taskboard = await taskboardRepository.findbyId(data.taskboardId)
@@ -21,7 +22,7 @@ export const listService = {
         assertUserIsMember({taskboard, userId})
 
         const list = await ListRepository.create(data)
-        return { _id:list._id.toString(), title: list.title, taskboardId: list.taskboardId, position:list.position}
+        return serializeList(list)
     },
 
     async getList(taskboardId:string, userId: string){
@@ -34,7 +35,7 @@ export const listService = {
         assertUserIsMember({taskboard, userId})
 
         const lists = await ListRepository.getLists(taskboardId)
-        return lists.map(list => { return { _id:list._id.toString(), title: list.title, taskboardId: list.taskboardId, position:list.position} })
+        return lists.map(list => serializeList(list))
     },
 
     async delete(data:searchListDTO, userId: string){
@@ -91,7 +92,7 @@ export const listService = {
 
     async getListByIds(data: searchListDTO){
         const list = await ListRepository.getListByIds(data)
-        return { _id:list._id.toString(), title: list.title, taskboardId: list.taskboardId, position:list.position} 
+        return serializeList(list) 
     }
 
 }

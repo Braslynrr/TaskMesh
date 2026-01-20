@@ -1,8 +1,8 @@
 import { User } from "../Users/user.types"
 
 export type Taskboard = {
+    _id:string
     name:string,
-    lists: [],
-    ownerid: string
+    ownerId: string
     members: string[]
 }

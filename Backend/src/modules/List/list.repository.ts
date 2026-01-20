@@ -43,6 +43,11 @@ export const ListRepository = {
       .lean();
   },
 
+  countList(taskboardId: string){
+    return ListModel
+      .find({ taskboardId }).countDocuments()
+  },
+
   delete(data: { _id: string; taskboardId: string }) {
     return ListModel.deleteOne({
       _id: data._id,

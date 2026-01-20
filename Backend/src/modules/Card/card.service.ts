@@ -9,23 +9,25 @@ import { assignUsersToCardDTO, createCardDTO, moveFromListDTO, updateCardDTO } f
 import { serializeCard } from "./card.serializer";
 
 
-async function completePolicyCheck(userId:string ,cardId:string, policyFunction:Function){
+export async function completePolicyCheck(userId:string ,cardId:string, policyFunction:Function, functionParams:{} = undefined){
 
     const card = await cardRepository.getCardByID(cardId)
 
-        if(!card){
-            throw new NotFoundError("card does not exist")
-        }
+    if(!card){
+        throw new NotFoundError("card does not exist")
+    }
 
-        const list = await ListRepository.getListById(card.listId.toString())
-        
-        if(!list){
-           throw new NotFoundError("Card assigned list does not exist or was removed")
-        }
+    const x = card.assignedTo.map(id => id.toString())
 
-        const taskboard = await taskboardRepository.findbyId(list.taskboardId.toString())
+    const list = await ListRepository.getListById(card.listId.toString())
+    
+    if(!list){
+        throw new NotFoundError("Card assigned list does not exist or was removed")
+    }
 
-        policyFunction({card, list, taskboard, userId})
+    const taskboard = await taskboardRepository.findbyId(list.taskboardId.toString())
+
+    policyFunction({card, list, taskboard, userId, ...functionParams})
 
     return {card, list, taskboard}
 } 

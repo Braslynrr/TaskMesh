@@ -3,11 +3,12 @@ import { assertUserIsOwner } from "./taskboard.policy";
 import { taskboardRepository } from "./taskboard.repository";
 import { createTaskboardDTO, addMemberDTO} from "./taskboard.schema";
 import { mongoIdDTO } from "../../utils/zodObjectId";
+import { serializeTaskboard } from "./taskboard.serializer";
 
 export const taskboardService = {
     async createTaskboard(data:createTaskboardDTO) {
         const taskboard = await taskboardRepository.create(data)
-        return {id:taskboard._id, members:taskboard.members, name: taskboard.name, ownerId:taskboard.ownerId}
+        return serializeTaskboard(taskboard)
     },
     async addMembers(data:addMemberDTO, userId:string){
 
@@ -21,7 +22,8 @@ export const taskboardService = {
         assertUserIsOwner({taskboard, userId})
 
         const result = await taskboardRepository.addMembers(data)
-         return {id:result._id, members:result.members, name: result.name, ownerId:result.ownerId}
+        
+        return serializeTaskboard(result)
     },
     async delete(data:mongoIdDTO, userId:string){
 
@@ -40,6 +42,6 @@ export const taskboardService = {
 
     async getTaskboards(id:string){
         const taskboards = taskboardRepository.getTaskboards(id)
-        return (await taskboards).map(taskboard => { return {_id:taskboard._id, name:taskboard.name, ownerId:taskboard.ownerId ,members: taskboard.members.map(member => member.toString())}})
+        return (await taskboards).map(taskboard => serializeTaskboard(taskboard))
     }
 }

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 import { userRepository } from "./user.repository"
 import { CreateUserDTO, LoginUserDTO } from "./user.schema"
 import { ConflictError, UnauthorizedError } from "../../core/errors/errors"
+import { serializeUser } from "./user.serializer"
 
 export const userService = {
   async register(data: CreateUserDTO) {
@@ -49,32 +50,24 @@ export const userService = {
   },
 
   async login(data: LoginUserDTO){
-    const user = await userRepository.findByUsername(data.username)
-    if (!user) {
+    const loginInfo = await userRepository.findByUsername(data.username)
+    if (!loginInfo) {
       throw new UnauthorizedError("Username or password credentials are not valid")
     }
 
-    const isValid = await bcrypt.compare(data.password, user.password)
+    const isValid = await bcrypt.compare(data.password, loginInfo.password)
 
     if (!isValid) {
       throw new UnauthorizedError("Username or password credentials are not valid")
     }
 
+    const user = serializeUser(loginInfo)
+    
     const token = jwt.sign(
-    {
-      _id: user._id.toString(),
-      username: user.username
-    },
+    user,
     process.env.JWT_SECRET!,
-    {expiresIn: '1h'}
-  )
+    {expiresIn: '1h'})
 
-    return {
-    token,
-    user: {
-      id: user._id,
-      username: user.username,
-      rol: user.role
-    }}
+    return { token, user }
   }
 }
