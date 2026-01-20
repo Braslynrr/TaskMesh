@@ -32,7 +32,7 @@ describe("DELETE /api/taskboard/", () => {
 
         expect(res.status).toBe(404)
         expect(res.body).not.toBeNull()
-        expect(res.body.issues[0].message).toBe("Taskboard was not found")
+        expect(res.body.issues[0].message).toBe("taskboard was not found")
     })
 
      it("fails when user is not taskboard owner", async () => {
@@ -48,7 +48,7 @@ describe("DELETE /api/taskboard/", () => {
 
         expect(res.status).toBe(403)
         expect(res.body).not.toBeNull()
-        expect(res.body.issues[0].message).toBe("Only owner can perform this action")
+        expect(res.body.issues[0].message).toBe("only owner can perform this action")
     })
 
 })

@@ -15,10 +15,10 @@ export const listService = {
         const taskboard = await taskboardRepository.findbyId(data.taskboardId)
 
         if(!taskboard){
-            throw new NotFoundError("Assigned Taskboard does not exist")
+            throw new NotFoundError("assigned taskboard does not exist")
         }
         
-        assertUserIsMember(taskboard, userId)
+        assertUserIsMember({taskboard, userId})
 
         const list = await ListRepository.create(data)
         return { _id:list._id.toString(), title: list.title, taskboardId: list.taskboardId, position:list.position}
@@ -31,7 +31,7 @@ export const listService = {
             return []
         }
 
-        assertUserIsMember(taskboard, userId)
+        assertUserIsMember({taskboard, userId})
 
         const lists = await ListRepository.getLists(taskboardId)
         return lists.map(list => { return { _id:list._id.toString(), title: list.title, taskboardId: list.taskboardId, position:list.position} })
@@ -41,10 +41,10 @@ export const listService = {
         const taskboard = await taskboardRepository.findbyId(data.taskboardId)
 
         if(!taskboard){
-            throw new NotFoundError("Taskboard does not exist")
+            throw new NotFoundError("taskboard does not exist")
         }
 
-        assertUserIsMember(taskboard, userId)
+        assertUserIsMember({taskboard, userId})
 
 
         const result = await ListRepository.delete(data)
@@ -56,14 +56,14 @@ export const listService = {
         const taskboard = await taskboardRepository.findbyId(data.taskboardId)
 
         if(!taskboard){
-            throw new NotFoundError("Taskboard does not exist")
+            throw new NotFoundError("taskboard does not exist")
         }
 
-        assertUserIsMember(taskboard, userId)
+        assertUserIsMember({taskboard, userId})
 
         const list = await ListRepository.getListByIds({_id:data._id, taskboardId:data.taskboardId});
 
-        if (!list) throw new NotFoundError("The moved list does not exist");
+        if (!list) throw new NotFoundError("the moved list does not exist");
 
         const originalLists = await ListRepository.getLists(list.taskboardId.toString());
 

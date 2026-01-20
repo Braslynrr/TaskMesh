@@ -1,6 +1,6 @@
 import request from "supertest"
 import { createTaskboard } from "../factories/taskboard.factory"
-import { createListToTaskboard } from "../factories/list.factory"
+import { createListForTaskboard } from "../factories/list.factory"
 import app from "../../app"
 import { createAuthUser } from "../factories/user.factory"
 
@@ -9,7 +9,7 @@ describe("GET /api/list/", () => {
         const {token, taskboard} = await createTaskboard()
         await Promise.all(
             Array.from({ length: 4 }, (_, i) => 
-                createListToTaskboard(taskboard._id.toString(), `t${i + 1}`, i + 1)))
+                createListForTaskboard(taskboard._id.toString(), `t${i + 1}`, i + 1)))
 
        const res = await request(app)
        .get("/api/list")
@@ -49,7 +49,7 @@ describe("GET /api/list/", () => {
         })
 
         expect(res.status).toBe(403)
-        expect(res.body.issues[0].message).toBe("User is not a member of this taskboard")
+        expect(res.body.issues[0].message).toBe("user is not a member of this taskboard")
     })
 
 })

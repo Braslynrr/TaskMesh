@@ -1,6 +1,6 @@
 import request from "supertest"
 import { createTaskboard } from "../factories/taskboard.factory"
-import { createListToTaskboard } from "../factories/list.factory"
+import { createListForTaskboard } from "../factories/list.factory"
 import app from "../../app"
 import { createAuthUser } from "../factories/user.factory"
 
@@ -10,7 +10,7 @@ describe("Post /api/list/move", () => {
         const {token, taskboard} = await createTaskboard()
         const lists = await Promise.all(
                     Array.from({ length: 4 }, (_, i) => 
-                        createListToTaskboard(taskboard._id.toString(), `t${i + 1}`, i + 1)))
+                        createListForTaskboard(taskboard._id.toString(), `t${i + 1}`, i + 1)))
 
 
 
@@ -41,7 +41,7 @@ describe("Post /api/list/move", () => {
         const {token, taskboard} = await createTaskboard()
         const lists = await Promise.all(
                     Array.from({ length: 4 }, (_, i) => 
-                        createListToTaskboard(taskboard._id.toString(), `t${i + 1}`, i + 1)))
+                        createListForTaskboard(taskboard._id.toString(), `t${i + 1}`, i + 1)))
 
        const res = await request(app)
        .post("/api/list/move")
@@ -78,7 +78,7 @@ describe("Post /api/list/move", () => {
         })
 
         expect(res.status).toBe(404)
-        expect(res.body.issues[0].message).toBe("The moved list does not exist")
+        expect(res.body.issues[0].message).toBe("the moved list does not exist")
     })
 
     
@@ -95,7 +95,7 @@ describe("Post /api/list/move", () => {
         })
 
         expect(res.status).toBe(404)
-        expect(res.body.issues[0].message).toBe("Taskboard does not exist")
+        expect(res.body.issues[0].message).toBe("taskboard does not exist")
     })
 
     it("fails when user is not in taskboard", async () => {
@@ -112,6 +112,6 @@ describe("Post /api/list/move", () => {
         })
 
         expect(res.status).toBe(403)
-        expect(res.body.issues[0].message).toBe("User is not a member of this taskboard")
+        expect(res.body.issues[0].message).toBe("user is not a member of this taskboard")
     })
 })

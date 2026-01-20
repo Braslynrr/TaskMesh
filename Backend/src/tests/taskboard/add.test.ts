@@ -59,7 +59,7 @@ describe("POST /api/taskboard/add", () => {
 
     expect(res.status).toBe(404)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Taskboard was not found")
+    expect(res.body.issues[0].message).toBe("taskboard was not found")
 
   })
 
@@ -104,6 +104,6 @@ describe("POST /api/taskboard/add", () => {
 
         expect(res.status).toBe(403)
         expect(res.body).not.toBeNull()
-        expect(res.body.issues[0].message).toBe("Only owner can perform this action")
+        expect(res.body.issues[0].message).toBe("only owner can perform this action")
       })
 })

@@ -60,4 +60,9 @@ export const ListRepository = {
       }))
     );
   },
+  
+  getListById(_id:string){
+    return ListModel.findById(_id)
+  }
+
 };

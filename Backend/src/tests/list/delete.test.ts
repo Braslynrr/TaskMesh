@@ -1,6 +1,6 @@
 import request from "supertest"
 import app from "../../app"
-import { createListToTaskboard } from "../factories/list.factory"
+import { createListForTaskboard } from "../factories/list.factory"
 import { createTaskboard } from "../factories/taskboard.factory"
 import { createAuthUser } from "../factories/user.factory"
 
@@ -9,7 +9,7 @@ describe("DELETE /api/list/", () => {
 
     it("should delete a list", async () => {
         const {token, taskboard} = await createTaskboard()
-        const list = await createListToTaskboard(taskboard._id.toString())
+        const list = await createListForTaskboard(taskboard._id.toString())
 
         const res = await request(app)
         .delete("/api/list")
@@ -26,7 +26,7 @@ describe("DELETE /api/list/", () => {
 
     it("fails when taskboard ID doesn't exist", async () => {
         const {token, taskboard} = await createTaskboard()
-        const list = await createListToTaskboard(taskboard._id.toString())
+        const list = await createListForTaskboard(taskboard._id.toString())
 
         const res = await request(app)
         .delete("/api/list")
@@ -37,12 +37,12 @@ describe("DELETE /api/list/", () => {
         })
 
         expect(res.status).toBe(404)
-        expect(res.body.issues[0].message).toBe("Taskboard does not exist")
+        expect(res.body.issues[0].message).toBe("taskboard does not exist")
     })
 
     it("fails when user is not in taskboard", async () => {
         const {taskboard} = await createTaskboard()
-        const list = await createListToTaskboard(taskboard._id.toString())
+        const list = await createListForTaskboard(taskboard._id.toString())
         const {token} = await createAuthUser("test1")
     
         const res = await request(app)
@@ -54,7 +54,7 @@ describe("DELETE /api/list/", () => {
         })
     
         expect(res.status).toBe(403)
-        expect(res.body.issues[0].message).toBe("User is not a member of this taskboard")
+        expect(res.body.issues[0].message).toBe("user is not a member of this taskboard")
     
     })
 })

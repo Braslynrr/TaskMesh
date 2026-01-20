@@ -41,7 +41,7 @@ describe("POST /api/list/create", () => {
       })
 
     expect(res.status).toBe(404)
-    expect(res.body.issues[0].message).toBe("Assigned Taskboard does not exist")
+    expect(res.body.issues[0].message).toBe("assigned taskboard does not exist")
 
   })
 
@@ -59,7 +59,7 @@ describe("POST /api/list/create", () => {
       })
 
     expect(res.status).toBe(403)
-    expect(res.body.issues[0].message).toBe("User is not a member of this taskboard")
+    expect(res.body.issues[0].message).toBe("user is not a member of this taskboard")
 
   })
 

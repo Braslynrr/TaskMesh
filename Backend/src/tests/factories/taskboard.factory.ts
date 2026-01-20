@@ -8,7 +8,7 @@ export async function createTaskboard(name:string="test", username:string="test"
 
     const taskboard = await taskboardRepository.create({name: name, ownerId: user._id })
 
-    return {token, taskboard:{ _id:taskboard._id ,name: taskboard.name, ownerId: taskboard.ownerId, members: taskboard.members }}
+    return {token, user ,taskboard:{ _id:taskboard._id ,name: taskboard.name, ownerId: taskboard.ownerId, members: taskboard.members }}
 }
 
 

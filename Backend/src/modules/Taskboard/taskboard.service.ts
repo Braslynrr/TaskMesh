@@ -15,10 +15,10 @@ export const taskboardService = {
 
         if(!taskboard)
         {
-            throw new NotFoundError("Taskboard was not found")
+            throw new NotFoundError("taskboard was not found")
         }
 
-        assertUserIsOwner(taskboard, userId)
+        assertUserIsOwner({taskboard, userId})
 
         const result = await taskboardRepository.addMembers(data)
          return {id:result._id, members:result.members, name: result.name, ownerId:result.ownerId}
@@ -29,10 +29,10 @@ export const taskboardService = {
 
         if(!taskboard)
         {
-            throw new NotFoundError("Taskboard was not found")
+            throw new NotFoundError("taskboard was not found")
         }
 
-        assertUserIsOwner(taskboard, userId)
+        assertUserIsOwner({taskboard, userId})
 
         const result = await taskboardRepository.delete({ownerId:userId, ...data})
         return result
