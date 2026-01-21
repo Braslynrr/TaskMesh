@@ -1,7 +1,8 @@
 import "express-async-errors"
+import cookieParser from "cookie-parser"
 
 import express from "express"
-
+import cors from "cors"
 import userRoutes from "./modules/Users/user.routes"
 import taskboardRoutes from "./modules/Taskboard/taskboard.routes"
 import listRoutes from "./modules/List/list.routes"
@@ -12,7 +13,15 @@ import { errorHandler } from "./core/middlewares/error-handler"
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+)
+
 // Global middleware
+app.use(cookieParser())
 app.use(express.json())
 
 // Health check / root
@@ -28,6 +37,7 @@ app.use("/api/card", cardRoutes)
 app.use("/api/comment", commentRoutes)
 
 app.use(errorHandler)
+
 
 
 export default app

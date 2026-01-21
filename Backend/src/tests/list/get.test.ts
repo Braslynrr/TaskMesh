@@ -13,7 +13,7 @@ describe("GET /api/list/", () => {
 
        const res = await request(app)
        .get("/api/list")
-       .set("Authorization", `Bearer ${token}`)
+       .set("Cookie", `auth_token=${token}`)
        .send({
             taskboardId: taskboard._id.toString()
         })
@@ -28,7 +28,7 @@ describe("GET /api/list/", () => {
 
         const res = await request(app)
         .get("/api/list")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             taskboardId: taskboard._id.toString()
         })
@@ -43,7 +43,7 @@ describe("GET /api/list/", () => {
 
         const res = await request(app)
         .get("/api/list")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             taskboardId: taskboard._id.toString()
         })

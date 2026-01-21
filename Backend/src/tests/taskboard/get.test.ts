@@ -14,7 +14,7 @@ describe("GET /api/taskboard/", () => {
 
     const res = await request(app)
       .get("/api/taskboard/")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send()
 
     expect(res.status).toBe(200)
@@ -34,7 +34,7 @@ describe("GET /api/taskboard/", () => {
 
     const res = await request(app)
       .get("/api/taskboard/")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send()
 
     expect(res.status).toBe(200)
@@ -52,7 +52,7 @@ describe("GET /api/taskboard/", () => {
 
     const res = await request(app)
       .get("/api/taskboard/")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send()
 
     expect(res.status).toBe(200)

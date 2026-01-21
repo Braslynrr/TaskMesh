@@ -30,7 +30,7 @@ describe("GET /api/comment", () => {
         
         const res = await request(app)
         .get("/api/comment")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
 
         expect(res.status).toBe(403)
@@ -52,7 +52,7 @@ describe("GET /api/comment", () => {
         
         const res = await request(app)
         .get("/api/comment")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(200)
@@ -78,7 +78,7 @@ describe("GET /api/comment", () => {
         
         const res = await request(app)
         .get("/api/comment")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(200)

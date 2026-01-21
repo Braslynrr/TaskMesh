@@ -25,7 +25,7 @@ describe("POST /api/card/move", () => {
         
         const res = await request(app)
         .post("/api/card/move")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: cardList[0]._id.toString(),
@@ -49,7 +49,7 @@ describe("POST /api/card/move", () => {
         
         const res = await request(app)
         .post("/api/card/move")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: cardList[0]._id.toString(),
@@ -77,7 +77,7 @@ describe("POST /api/card/move", () => {
         
         const res = await request(app)
         .post("/api/card/move")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: cardList[0]._id.toString(),
@@ -103,7 +103,7 @@ describe("POST /api/card/move", () => {
         
         const res = await request(app)
         .post("/api/card/move")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: cardList[0]._id.toString(),

@@ -9,7 +9,7 @@ describe("POST /api/taskboard/create", () => {
 
     const res = await request(app)
       .post("/api/taskboard/create")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         name: "test"
       })
@@ -27,7 +27,7 @@ describe("POST /api/taskboard/create", () => {
 
     const res = await request(app)
       .post("/api/taskboard/create")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         name: "test",
         ownerId: "testing_id"
@@ -45,7 +45,7 @@ describe("POST /api/taskboard/create", () => {
 
     const res = await request(app)
       .post("/api/taskboard/create")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         name: "tes"
       })

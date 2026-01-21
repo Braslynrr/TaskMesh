@@ -26,7 +26,7 @@ describe("PATCH /api/card", () => {
 
         const res = await request(app)
         .patch("/api/card")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(403)
@@ -50,7 +50,7 @@ describe("PATCH /api/card", () => {
 
         const res = await request(app)
         .patch("/api/card")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(200)

@@ -12,7 +12,7 @@ describe("POST /api/list/create", () => {
         for(let i=1; i<4; i++){
             const res = await request(app)
             .post("/api/list/create")
-            .set("Authorization", `Bearer ${token}`)
+            .set("Cookie", `auth_token=${token}`)
             .send(
                 {
                     title: `test${i}`,
@@ -34,7 +34,7 @@ describe("POST /api/list/create", () => {
 
     const res = await request(app)
       .post("/api/list/create")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         title: "test",
         taskboardId: "096b0abc98937822669a7c40",
@@ -52,7 +52,7 @@ describe("POST /api/list/create", () => {
 
     const res = await request(app)
       .post("/api/list/create")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         title: "test",
         taskboardId: taskboard._id.toString()

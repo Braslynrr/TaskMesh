@@ -13,7 +13,7 @@ describe("POST /api/taskboard/add", () => {
 
     const res = await request(app)
       .post("/api/taskboard/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         _id: taskboard._id,
         members: idList
@@ -30,7 +30,7 @@ describe("POST /api/taskboard/add", () => {
 
     const res = await request(app)
       .post("/api/taskboard/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         _id: taskboard._id,
         members: []
@@ -51,7 +51,7 @@ describe("POST /api/taskboard/add", () => {
 
     const res = await request(app)
       .post("/api/taskboard/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         _id: "096b0abc98937822669a7c40",
         members: idList
@@ -73,7 +73,7 @@ describe("POST /api/taskboard/add", () => {
 
     const res = await request(app)
       .post("/api/taskboard/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", `auth_token=${token}`)
       .send({
         _id: "test",
         members: idList
@@ -95,7 +95,7 @@ describe("POST /api/taskboard/add", () => {
 
         const res = await request(app)
         .post("/api/taskboard/add")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             _id: taskboard._id,
             members: idList,

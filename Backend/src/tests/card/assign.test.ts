@@ -26,7 +26,7 @@ describe("POST /api/card/assign", () => {
         for(let i in cardList){
             const res = await request(app)
             .post("/api/card/assign")
-            .set("Authorization", `Bearer ${token}`)
+            .set("Cookie", `auth_token=${token}`)
             .send(
             {
                 _id: cardList[i]._id.toString(),
@@ -52,7 +52,7 @@ describe("POST /api/card/assign", () => {
  
         const res = await request(app)
         .post("/api/card/assign")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
         {
             _id: card._id.toString(),
@@ -83,7 +83,7 @@ describe("POST /api/card/assign", () => {
             const userid = userList[i]._id.toString()
             const res = await request(app)
             .post("/api/card/assign")
-            .set("Authorization", `Bearer ${token}`)
+            .set("Cookie", `auth_token=${token}`)
             .send(
             {
                 _id: cardList[i]._id.toString(),

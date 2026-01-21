@@ -2,13 +2,12 @@ import jwt from "jsonwebtoken"
 import { UnauthorizedError } from "../errors/errors"
 
 export function authMiddleware(req, _res, next) {
-  const header = req.headers.authorization
+  
+  const token = req.cookies?.auth_token
 
-  if (!header || !header.startsWith("Bearer ")) {
+  if (!token) {
     throw new UnauthorizedError("Missing token")
   }
-
-  const token = header.split(" ")[1]
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as {_id: string,username: string}

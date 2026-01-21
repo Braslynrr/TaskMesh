@@ -8,7 +8,6 @@ export function errorHandler(err, req, res, next) {
     return res.status(400).json({
       error: "Validation failed",
       issues: err.issues.map(issue => ({
-        path: issue.path.join("."),
         message: issue.message
       }))
     })
@@ -19,7 +18,6 @@ export function errorHandler(err, req, res, next) {
     return res.status(err.status).json({
       error:  err.constructor.name, 
       issues: [{
-        path: err.stack.toString(),
         message : err.message
       }]
     })
@@ -29,6 +27,9 @@ export function errorHandler(err, req, res, next) {
   console.error(err)
 
   return res.status(500).json({
-    error: "Internal server error"
-  })
+      error:  "Internal server error", 
+      issues: [{
+        message : err.toString()
+      }]
+    })
 }

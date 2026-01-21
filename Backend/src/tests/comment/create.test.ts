@@ -25,7 +25,7 @@ describe("POST /api/comment", () => {
         
         const res = await request(app)
         .post("/api/comment")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(403)
@@ -41,8 +41,6 @@ describe("POST /api/comment", () => {
         const user2Id = user2.user._id.toString()
         const card = await createCard(list._id.toString(), userId, "test", "test", [user2Id])
          
-        const x = card.assignedTo.map(id => id.toString())
-
         const body = 
             {
                 cardId: card._id.toString(),
@@ -51,7 +49,7 @@ describe("POST /api/comment", () => {
         
         const res = await request(app)
         .post("/api/comment")
-        .set("Authorization", `Bearer ${user2.token}`)
+        .set("Cookie", `auth_token=${user2.token}`)
         .send(body)
             
         expect(res.status).toBe(201)
@@ -73,7 +71,7 @@ describe("POST /api/comment", () => {
         
         const res = await request(app)
         .post("/api/comment")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(201)

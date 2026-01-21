@@ -25,7 +25,7 @@ describe("DELETE /api/comment", () => {
         
         const res = await request(app)
         .delete("/api/comment")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(403)
@@ -49,7 +49,7 @@ describe("DELETE /api/comment", () => {
         
         const res = await request(app)
         .delete("/api/comment")
-        .set("Authorization", `Bearer ${user2.token}`)
+        .set("Cookie", `auth_token=${user2.token}`)
         .send(body)
             
         expect(res.status).toBe(200)
@@ -75,7 +75,7 @@ describe("DELETE /api/comment", () => {
         
         const res = await request(app)
         .delete("/api/comment")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(200)

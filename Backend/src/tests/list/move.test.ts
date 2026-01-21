@@ -16,7 +16,7 @@ describe("Post /api/list/move", () => {
 
        const res = await request(app)
        .post("/api/list/move")
-       .set("Authorization", `Bearer ${token}`)
+       .set("Cookie", `auth_token=${token}`)
        .send({
             _id: lists[3]._id,
             taskboardId: taskboard._id.toString(),
@@ -45,7 +45,7 @@ describe("Post /api/list/move", () => {
 
        const res = await request(app)
        .post("/api/list/move")
-       .set("Authorization", `Bearer ${token}`)
+       .set("Cookie", `auth_token=${token}`)
        .send({
             _id: lists[3]._id,
             taskboardId: taskboard._id.toString(),
@@ -70,7 +70,7 @@ describe("Post /api/list/move", () => {
 
         const res = await request(app)
         .post("/api/list/move")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
              _id: "096b0abc98937822669a7c41",
              taskboardId: taskboard._id.toString(),
@@ -87,7 +87,7 @@ describe("Post /api/list/move", () => {
 
         const res = await request(app)
         .post("/api/list/move")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
              _id: "096b0abc98937822669a7c40",
              taskboardId: "096b0abc98937822669a7c41",
@@ -104,7 +104,7 @@ describe("Post /api/list/move", () => {
 
         const res = await request(app)
         .post("/api/list/move")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
              _id: "096b0abc98937822669a7c40",
              taskboardId: taskboard._id.toString(),

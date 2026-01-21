@@ -1,5 +1,6 @@
 import request from "supertest"
 import express from "express"
+import cookieParser from "cookie-parser"
 import { authMiddleware } from "../../core/middlewares/auth.middleware"
 import { createAuthUser } from "../factories/user.factory"
 import { errorHandler } from "../../core/middlewares/error-handler"
@@ -7,6 +8,7 @@ import { errorHandler } from "../../core/middlewares/error-handler"
 
 function createTestApp() {
   const app = express()
+  app.use(cookieParser())
   app.use(express.json())
 
   app.get(
@@ -35,7 +37,7 @@ describe("Auth middleware", () => {
         const app = createTestApp()
         const res = await request(app)
             .get("/protected")
-            .set("Authorization", `Bearer 096b0abc98937822669a7c40`)
+            .set("Cookie", `auth_token=12asd343513asd5478`)
         expect(res.status).toBe(401)
         expect(res.body.issues[0].message).toBe("Invalid or expired token")
     })
@@ -47,7 +49,8 @@ describe("Auth middleware", () => {
 
         const res = await request(app)
             .get("/protected")
-            .set("Authorization", `Bearer ${token}`)
+            .set("Cookie", `auth_token=${token}`)
+            
 
         expect(res.status).toBe(200)
     })

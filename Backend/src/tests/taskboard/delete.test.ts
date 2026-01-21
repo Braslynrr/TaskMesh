@@ -10,7 +10,7 @@ describe("DELETE /api/taskboard/", () => {
 
         const res = await request(app)
         .delete("/api/taskboard/")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             _id: taskboard._id,
         })
@@ -25,7 +25,7 @@ describe("DELETE /api/taskboard/", () => {
 
         const res = await request(app)
         .delete("/api/taskboard/")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             _id: "096b0abc98937822669a7c40",
         })
@@ -41,7 +41,7 @@ describe("DELETE /api/taskboard/", () => {
 
         const res = await request(app)
         .delete("/api/taskboard/")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             _id: taskboard._id,
         })

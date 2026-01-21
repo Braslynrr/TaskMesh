@@ -13,7 +13,7 @@ describe("DELETE /api/list/", () => {
 
         const res = await request(app)
         .delete("/api/list")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             _id: list._id.toString(),
             taskboardId: taskboard._id.toString()
@@ -30,7 +30,7 @@ describe("DELETE /api/list/", () => {
 
         const res = await request(app)
         .delete("/api/list")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             _id: list._id.toString(),
             taskboardId: "096b0abc98937822669a7c40"
@@ -47,7 +47,7 @@ describe("DELETE /api/list/", () => {
     
         const res = await request(app)
         .delete("/api/list")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send({
             _id: list._id.toString(),
             taskboardId: taskboard._id.toString()

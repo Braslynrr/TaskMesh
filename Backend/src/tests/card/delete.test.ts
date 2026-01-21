@@ -15,7 +15,7 @@ describe("DELETE /api/card", () => {
         
         const res = await request(app)
         .delete("/api/card")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: "096b0abc98937822669a7c40",
@@ -39,7 +39,7 @@ describe("DELETE /api/card", () => {
         
         const res = await request(app)
         .delete("/api/card")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: cardList[0]._id.toString(),
@@ -62,7 +62,7 @@ describe("DELETE /api/card", () => {
         
         const res = await request(app)
         .delete("/api/card")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: cardList[0]._id.toString(),

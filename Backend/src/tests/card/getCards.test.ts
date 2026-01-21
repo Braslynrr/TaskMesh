@@ -18,7 +18,7 @@ describe("GET /api/card", () => {
         
         const res = await request(app)
         .get("/api/card")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: "096b0abc98937822669a7c40",
@@ -40,7 +40,7 @@ describe("GET /api/card", () => {
         
         const res = await request(app)
         .get("/api/card")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 _id: list._id.toString(),

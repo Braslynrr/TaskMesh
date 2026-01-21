@@ -23,9 +23,11 @@ describe("POST /api/user/login", () => {
     expect(res.status).toBe(200)
 
     expect(res.body).not.toBeNull()
-    expect(res.body).toHaveProperty("token")
-    expect(res.body).toHaveProperty("user")
-    expect(res.body.user.id).not.toBeNull()
+    expect(res.body).toMatchObject(
+      {
+        username: "test",
+        role: "user"
+      })
   })
 
   it("should fail if payload is invalid (username)", async () => {

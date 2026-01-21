@@ -15,7 +15,7 @@ describe("POST /api/card/create", () => {
         
         const res = await request(app)
         .post("/api/card/create")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 listId: list._id.toString(),
@@ -35,7 +35,7 @@ describe("POST /api/card/create", () => {
         
         const res = await request(app)
         .post("/api/card/create")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(
             {
                 listId: "096b0abc98937822669a7c40",
@@ -62,7 +62,7 @@ describe("POST /api/card/create", () => {
         
         const res = await request(app)
         .post("/api/card/create")
-        .set("Authorization", `Bearer ${token}`)
+        .set("Cookie", `auth_token=${token}`)
         .send(body)
             
         expect(res.status).toBe(201)

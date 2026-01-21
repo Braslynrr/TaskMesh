@@ -16,6 +16,12 @@ export async function resetPassoword(req:Request, res:Response) {
 
 export async function login(req:Request, res:Response) {
   const scheme =  loginUserSchema.parse(req.body)
-  const result = await userService.login(scheme)
-  res.status(200).json(result)
+  const {token, user} = await userService.login(scheme)
+
+  res.cookie("auth_token", token, {
+  httpOnly: true,
+  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production"})
+
+  res.status(200).json(user)
 }
