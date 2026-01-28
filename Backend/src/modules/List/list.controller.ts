@@ -21,7 +21,8 @@ export async function deleteList(req: Request, res: Response) {
 
 export async function getLists(req: Request, res: Response) {
     const userId = req.user._id
-    const body = { _id: req.body.taskboardId}
+    const { id } = req.params
+    const body = { _id: id}
 
     const data = mongoIdSchema.parse(body)
     const lists = await listService.getList(data._id, userId)

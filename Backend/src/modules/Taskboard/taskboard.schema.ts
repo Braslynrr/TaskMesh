@@ -3,7 +3,6 @@ import { objectIdSchema } from "../../utils/zodObjectId"
 
 export const createTaskboardSchemma = z.object({
     name: z.string().min(4),
-    ownerId: objectIdSchema
 })
 
 

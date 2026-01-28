@@ -9,11 +9,8 @@ describe("DELETE /api/taskboard/", () => {
         const {token, taskboard} = await createTaskboard()
 
         const res = await request(app)
-        .delete("/api/taskboard/")
+        .delete(`/api/taskboard/${taskboard._id}`)
         .set("Cookie", `auth_token=${token}`)
-        .send({
-            _id: taskboard._id,
-        })
 
         expect(res.status).toBe(200)
         expect(res.body).not.toBeNull()
@@ -24,11 +21,8 @@ describe("DELETE /api/taskboard/", () => {
         const {token} = await createTaskboard()
 
         const res = await request(app)
-        .delete("/api/taskboard/")
+        .delete(`/api/taskboard/096b0abc98937822669a7c40`)
         .set("Cookie", `auth_token=${token}`)
-        .send({
-            _id: "096b0abc98937822669a7c40",
-        })
 
         expect(res.status).toBe(404)
         expect(res.body).not.toBeNull()
@@ -40,7 +34,7 @@ describe("DELETE /api/taskboard/", () => {
         const {token} = await createAuthUser("test1")
 
         const res = await request(app)
-        .delete("/api/taskboard/")
+        .delete(`/api/taskboard/${taskboard._id}`)
         .set("Cookie", `auth_token=${token}`)
         .send({
             _id: taskboard._id,

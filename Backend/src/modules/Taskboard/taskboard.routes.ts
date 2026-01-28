@@ -7,7 +7,7 @@ const router = Router()
 router.get("/", authMiddleware, getTaskboards)
 router.post("/create", authMiddleware, createTaskboard)
 router.post("/add", authMiddleware, addMembers)
-router.delete("/", authMiddleware, deleteTaskboard)
+router.delete("/:id", authMiddleware, deleteTaskboard)
 
 
 export default router

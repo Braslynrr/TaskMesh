@@ -6,8 +6,8 @@ import { mongoIdDTO } from "../../utils/zodObjectId";
 import { serializeTaskboard } from "./taskboard.serializer";
 
 export const taskboardService = {
-    async createTaskboard(data:createTaskboardDTO) {
-        const taskboard = await taskboardRepository.create(data)
+    async createTaskboard(data:createTaskboardDTO, userId:string) {
+        const taskboard = await taskboardRepository.create({ownerId:userId, ...data})
         return serializeTaskboard(taskboard)
     },
     async addMembers(data:addMemberDTO, userId:string){

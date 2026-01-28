@@ -12,11 +12,8 @@ describe("GET /api/list/", () => {
                 createListForTaskboard(taskboard._id.toString(), `t${i + 1}`, i + 1)))
 
        const res = await request(app)
-       .get("/api/list")
+       .get(`/api/list/${taskboard._id.toString()}`)
        .set("Cookie", `auth_token=${token}`)
-       .send({
-            taskboardId: taskboard._id.toString()
-        })
 
         expect(res.status).toBe(200)
         expect(res.body).toHaveLength(4)
@@ -27,11 +24,8 @@ describe("GET /api/list/", () => {
         const {token, taskboard} = await createTaskboard()
 
         const res = await request(app)
-        .get("/api/list")
+        .get(`/api/list/${taskboard._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send({
-            taskboardId: taskboard._id.toString()
-        })
 
         expect(res.status).toBe(200)
         expect(res.body).toHaveLength(0)
@@ -42,11 +36,9 @@ describe("GET /api/list/", () => {
         const {taskboard} = await createTaskboard()
 
         const res = await request(app)
-        .get("/api/list")
+        .get(`/api/list/${taskboard._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send({
-            taskboardId: taskboard._id.toString()
-        })
+
 
         expect(res.status).toBe(403)
         expect(res.body.issues[0].message).toBe("user is not a member of this taskboard")
