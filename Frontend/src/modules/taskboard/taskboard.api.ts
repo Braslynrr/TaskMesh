@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client"
-import { createListRequest, createTaskboardRequest, DeleteResponse, deleteTaskboardRequest, ListResponse, TaskboardResponse } from "./taskboard.types"
+import { createListRequest, createTaskboardRequest, DeleteResponse, deleteTaskboardRequest, ListResponse, moveListRequest, TaskboardResponse } from "./taskboard.types"
 
 export async function getTaskboards(): Promise<TaskboardResponse[]> {
     const res = await apiClient.get("/taskboard")
@@ -28,3 +28,7 @@ export async function createList(data:createListRequest) : Promise<ListResponse>
     return res.data
 }
 
+export async function moveList(data:moveListRequest): Promise<ListResponse[]> {
+    const res = await apiClient.post(`list/move`, data)
+    return res.data
+}

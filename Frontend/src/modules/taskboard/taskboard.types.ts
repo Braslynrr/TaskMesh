@@ -49,6 +49,11 @@ export type createListRequest = {
     taskboardId:string  
 }
 
+export type moveListRequest = {
+    _id:string
+    taskboardId:string
+    position:number  
+}
 
 export type listProps = {
     list: ListResponse
