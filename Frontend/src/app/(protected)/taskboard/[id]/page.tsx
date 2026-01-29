@@ -61,8 +61,7 @@ export default function TaskboardPage({
 
 
   return (
-    <div className="flex-1 flex gap-1 overflow-x-auto">
-
+    <div className="flex-1 flex gap-1 overflow-x-auto items-start">
 
     <DndContext
      collisionDetection={closestCenter}

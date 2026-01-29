@@ -14,12 +14,8 @@ describe("DELETE /api/card", () => {
         const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
         
         const res = await request(app)
-        .delete("/api/card")
+        .delete(`/api/card/096b0abc98937822669a7c40`)
         .set("Cookie", `auth_token=${token}`)
-        .send(
-            {
-                _id: "096b0abc98937822669a7c40",
-            })
             
         expect(res.status).toBe(404)
         expect(res.body.issues[0].message).toBe("card does not exist")
@@ -38,12 +34,8 @@ describe("DELETE /api/card", () => {
 
         
         const res = await request(app)
-        .delete("/api/card")
+        .delete(`/api/card/${cardList[0]._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(
-            {
-                _id: cardList[0]._id.toString(),
-            })
             
         expect(res.status).toBe(403)
         expect(res.body.issues[0].message).toBe("user cannot perform this action")
@@ -61,12 +53,8 @@ describe("DELETE /api/card", () => {
 
         
         const res = await request(app)
-        .delete("/api/card")
+        .delete(`/api/card/${cardList[0]._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(
-            {
-                _id: cardList[0]._id.toString(),
-            })
             
         expect(res.status).toBe(200)
         expect(res.body).toMatchObject(

@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client"
-import { createListRequest, createTaskboardRequest, DeleteResponse, deleteTaskboardRequest, ListResponse, moveListRequest, TaskboardResponse } from "./taskboard.types"
+import { cardRequest, cardResponse, createListRequest, createTaskboardRequest, DeleteResponse, deleteTaskboardRequest, ListResponse, MongoIdRequest, moveListRequest, TaskboardResponse } from "./taskboard.types"
 
 export async function getTaskboards(): Promise<TaskboardResponse[]> {
     const res = await apiClient.get("/taskboard")
@@ -30,5 +30,15 @@ export async function createList(data:createListRequest) : Promise<ListResponse>
 
 export async function moveList(data:moveListRequest): Promise<ListResponse[]> {
     const res = await apiClient.post(`list/move`, data)
+    return res.data
+}
+
+export async function createCard(data:cardRequest): Promise<cardResponse> {
+    const res = await apiClient.post(`card/create`, data)
+    return res.data
+}
+
+export async function getCards(data:MongoIdRequest): Promise<cardResponse[]> {
+    const res = await apiClient.get(`card/${data._id}`)
     return res.data
 }

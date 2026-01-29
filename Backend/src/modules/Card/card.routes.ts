@@ -7,8 +7,8 @@ const router = Router()
 router.post("/create", authMiddleware, createCard)
 router.post("/move", authMiddleware, moveFromList)
 router.post("/assign", authMiddleware, assingUsersToCard)
-router.get("/", authMiddleware, getCards)
-router.delete("/", authMiddleware, deleteCard)
+router.get("/:id", authMiddleware, getCards)
+router.delete("/:id", authMiddleware, deleteCard)
 router.patch("/", authMiddleware, updateCard )
 
 export default router

@@ -17,7 +17,7 @@ describe("GET /api/card", () => {
 
         
         const res = await request(app)
-        .get("/api/card")
+        .get(`/api/card/096b0abc98937822669a7c40`)
         .set("Cookie", `auth_token=${token}`)
         .send(
             {
@@ -39,12 +39,8 @@ describe("GET /api/card", () => {
 
         
         const res = await request(app)
-        .get("/api/card")
+         .get(`/api/card/${list._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(
-            {
-                _id: list._id.toString(),
-            })
             
         expect(res.status).toBe(200)
         expect(res.body).toHaveLength(4)

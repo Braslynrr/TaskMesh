@@ -33,8 +33,8 @@ export function CreateList({taskboardId, onCreate}:CreateListProps){
     }
 
 
-    return <form onSubmit={handleSubmit} className="flex flex-col bg-white rounded-lg p-5 shadow text-black gap-2">
+    return <form onSubmit={handleSubmit} className="flex flex-col gap-3 bg-gray-100 text-black rounded-2xl p-3">
         <input name="title" className="border border-b-black rounded-2xl text-center" type="text" placeholder="Title"/>
-        <button className=" bg-green-400 rounded-2xl" type="submit" >Create List</button>
+        <button className=" bg-gray-100 text-green-500 hover:text-green-700" type="submit" >Create List</button>
     </form>
 }

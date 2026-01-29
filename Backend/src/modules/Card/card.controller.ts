@@ -8,7 +8,9 @@ import { assignUsersToCardSchema, createCardSchema, moveFromListSchema, updateCa
 
 export async function getCards(req: Request, res: Response) {
     const userId = req.user._id
-    const data = mongoIdSchema.parse(req.body)
+    const { id } = req.params
+    const body = { _id: id}
+    const data = mongoIdSchema.parse(body)
 
     const cards = await cardService.getCards(data,userId)
     res.status(200).json(cards)
@@ -24,7 +26,9 @@ export async function createCard(req: Request, res: Response) {
 
 export async function deleteCard(req: Request, res: Response) {
     const userId = req.user._id
-    const data = mongoIdSchema.parse(req.body)
+    const { id } = req.params
+    const body = { _id: id}
+    const data = mongoIdSchema.parse(body)
 
     const result = await cardService.deleteCard(data, userId)
     res.status(200).json(result)

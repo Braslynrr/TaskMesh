@@ -31,7 +31,7 @@ export default function LoginPage() {
     try {
       const user = await login(parsed.data)
       localStorage.setItem("user", JSON.stringify(user))
-      router.push("/taskboards")
+      router.push("/taskboard")
     }
     catch(err) {
       setError(extractApiErrorMessage(err))

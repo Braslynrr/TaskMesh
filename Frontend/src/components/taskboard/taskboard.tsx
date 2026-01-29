@@ -14,7 +14,7 @@ export function Taskboard({ tb, onDelete }: TaskboardProps) {
     if(!tb._id)
       return
 
-    router.push(`/taskboards/${tb._id}`)
+    router.push(`/taskboard/${tb._id}`)
     
   }
 
