@@ -1,11 +1,15 @@
 import { apiClient } from "@/lib/api-client"
-import { cardRequest, cardResponse, createListRequest, createTaskboardRequest, DeleteResponse, deleteTaskboardRequest, ListResponse, MongoIdRequest, moveListRequest, TaskboardResponse } from "./taskboard.types"
+import { AddMemeberToTaskboardRequest, cardRequest, cardResponse, createListRequest, createTaskboardRequest, DeleteResponse, deleteTaskboardRequest, ListResponse, MongoIdRequest, moveListRequest, TaskboardResponse } from "./taskboard.types"
 
 export async function getTaskboards(): Promise<TaskboardResponse[]> {
     const res = await apiClient.get("/taskboard")
     return res.data
 }
 
+export async function getTaskboard(id:string): Promise<TaskboardResponse> {
+    const res = await apiClient.get(`/taskboard/${id}`)
+    return res.data
+}
 
 export async function createTaskboard(data:createTaskboardRequest): Promise<TaskboardResponse> {
     const res = await apiClient.post("/taskboard/create", data)
@@ -40,5 +44,11 @@ export async function createCard(data:cardRequest): Promise<cardResponse> {
 
 export async function getCards(data:MongoIdRequest): Promise<cardResponse[]> {
     const res = await apiClient.get(`card/${data._id}`)
+    return res.data
+}
+
+
+export async function addMemberToTaskboard(data:AddMemeberToTaskboardRequest): Promise<TaskboardResponse> {
+    const res = await apiClient.post(`taskboard/add`, data)
     return res.data
 }

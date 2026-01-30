@@ -2,12 +2,11 @@
 
 import { CreateList } from "@/components/list/createList"
 import { List } from "@/components/list/list"
-import { getList, moveList } from "@/modules/taskboard/taskboard.api"
-import { ListResponse } from "@/modules/taskboard/taskboard.types"
+import { getList, getTaskboard, moveList } from "@/modules/taskboard/taskboard.api"
+import { ListResponse, TaskboardResponse } from "@/modules/taskboard/taskboard.types"
 import { use, useEffect, useState } from "react"
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core"
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable"
-
 
 export default function TaskboardPage({
   params,
@@ -18,12 +17,15 @@ export default function TaskboardPage({
   const {id} = use(params)
 
   const [lists, setLists] = useState<ListResponse[]>([])
+  const [taskboard, setTaskboard] = useState<TaskboardResponse>()
 
   useEffect(() => {
     async function loadList() {
       try {
         const data = await getList(id)
+        const task = await getTaskboard(id)
         setLists(data)
+        setTaskboard(task)
       } catch (err) {
         console.error(err)
       }

@@ -8,20 +8,21 @@ describe("POST /api/taskboard/add", () => {
   it("should add members to taskboard", async () => {
 
     const memberlist = [ await createUser("test1"), await createUser("test2")]
-    const idList = memberlist.map(m => m._id.toString())
+    const usernmaeList = memberlist.map(m => m.username)
+    const toCompareList =  memberlist.map(u=> ({username: u.username, _id:u._id.toString()}))
     const {token, taskboard} = await createTaskboard()
 
     const res = await request(app)
       .post("/api/taskboard/add")
       .set("Cookie", `auth_token=${token}`)
       .send({
-        _id: taskboard._id,
-        members: idList
+        _id: taskboard._id.toString(),
+        members: usernmaeList
       })
 
     expect(res.status).toBe(200)
     expect(res.body).not.toBeNull()
-    expect(res.body.members).toEqual(idList)
+    expect(res.body.members).toMatchObject(toCompareList)
 
   })
 
@@ -39,6 +40,24 @@ describe("POST /api/taskboard/add", () => {
     expect(res.status).toBe(400)
     expect(res.body).not.toBeNull()
     expect(res.body.issues[0].message).toBe("Too small: expected array to have >=1 items")
+
+  })
+
+
+  it("fails when owner is sent and there's no more members to add", async () => {
+    const {token,user, taskboard} = await createTaskboard()
+
+    const res = await request(app)
+      .post("/api/taskboard/add")
+      .set("Cookie", `auth_token=${token}`)
+      .send({
+        _id: taskboard._id,
+        members: [user.username]
+      })
+
+    expect(res.status).toBe(409)
+    expect(res.body).not.toBeNull()
+    expect(res.body.issues[0].message).toBe("the users are already a members")
 
   })
 

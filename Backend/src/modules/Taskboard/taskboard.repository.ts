@@ -1,6 +1,12 @@
-import mongoose, { Types } from "mongoose"
+import mongoose, { HydratedDocument, Types } from "mongoose"
 
-const TaskboardSchema = new mongoose.Schema({
+export type TaskboardDoc = HydratedDocument<{
+  name: string
+  ownerId: Types.ObjectId
+  members: Types.ObjectId[]
+}>
+
+const TaskboardSchema = new mongoose.Schema<TaskboardDoc>({
   name: { type: String, required: true },
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,

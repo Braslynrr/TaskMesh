@@ -8,7 +8,7 @@ export const createTaskboardSchemma = z.object({
 
 export const addMemberSchemma = z.object({
     _id: objectIdSchema,
-    members: z.array(objectIdSchema).min(1)
+    members: z.array(z.string().min(4)).min(1)
 })
 
 

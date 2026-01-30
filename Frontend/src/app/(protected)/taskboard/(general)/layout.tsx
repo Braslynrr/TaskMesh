@@ -7,9 +7,10 @@ export default function TaskBoardLayout({
 }: {
   children: React.ReactNode
 }) {
+  
   return (
         <BoardLayout>
-              <BoardHeader title="My Boards" />
+              <BoardHeader title="My Boards" taskboard={undefined}/>
               <BoardCanvas>
                  {children}
               </BoardCanvas>

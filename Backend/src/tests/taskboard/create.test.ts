@@ -5,7 +5,7 @@ import { createAuthUser } from "../factories/user.factory"
 describe("POST /api/taskboard/create", () => {
     
   it("should create a taskboard", async () => {
-    const {token} = await createAuthUser()
+    const {token, user} = await createAuthUser()
 
     const res = await request(app)
       .post("/api/taskboard/create")
@@ -16,8 +16,8 @@ describe("POST /api/taskboard/create", () => {
 
     expect(res.status).toBe(201)
     expect(res.body).not.toBeNull()
-    expect(res.body).toHaveProperty("ownerId")
-    expect(res.body._id).not.toBeNull()
+    expect(res.body).toHaveProperty("owner")
+    expect(res.body.owner).toMatchObject(user)
 
   })
 
@@ -35,8 +35,8 @@ describe("POST /api/taskboard/create", () => {
 
     expect(res.status).toBe(201)
     expect(res.body).not.toBeNull()
-    expect(res.body).toHaveProperty("ownerId")
-    expect(res.body.ownerId).toBe(user._id)
+    expect(res.body).toHaveProperty("owner")
+    expect(res.body.owner).toMatchObject(user)
 
   })
 

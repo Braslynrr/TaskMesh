@@ -2,9 +2,10 @@
 export type TaskboardResponse = {
     _id:string
     name:string
-    ownerId: string
-    members: string[]
+    owner: UserResponse
+    members: UserResponse[]
 }
+
 
 export type createTaskboardRequest = {
     name:string
@@ -89,4 +90,16 @@ export type createCardProps = {
 
 export type cardProps = {
     card: cardResponse
+}
+
+
+export type UserResponse = {
+    _id:string
+    username:string
+    role:string
+}
+
+export type AddMemeberToTaskboardRequest = {
+    _id:string
+    members:string[]
 }

@@ -29,10 +29,12 @@ export function Taskboard({ tb, onDelete }: TaskboardProps) {
           //setError(extractApiErrorMessage(err))
         }
   }
+  
+  tb.members.push(tb.owner)
 
   const membersLabel =
   tb.members.length > 0
-    ? tb.members.join(", ")
+    ? tb.members.map(user=>user.username).join(", ")
     : ""
 
   return (

@@ -36,3 +36,13 @@ export async function getTaskboards(req: Request, res: Response) {
     const taskboards = await taskboardService.getTaskboards(userId)
     res.status(200).json(taskboards)
 }
+
+export async function getTaskboard(req: Request, res: Response) {
+    const userId = req.user._id
+    const { id } = req.params
+    const body = { _id: id}
+
+    const result = mongoIdSchema.parse(body)
+    const taskboard = await taskboardService.getTaskboard(result._id, userId)
+    res.status(200).json(taskboard)
+}
