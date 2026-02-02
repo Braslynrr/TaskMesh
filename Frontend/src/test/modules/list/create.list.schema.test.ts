@@ -1,4 +1,4 @@
-import { createListSchema } from "@/modules/taskboard/taskboard.schemas"
+import { createListSchema } from "@/modules/list/list.schemas"
 import { describe, it, expect } from "vitest"
 
 describe("create List Schema", () => {

@@ -1,6 +1,6 @@
-import { createCard } from "@/modules/taskboard/taskboard.api";
-import { createCardSchema } from "@/modules/taskboard/taskboard.schemas";
-import { createCardProps } from "@/modules/taskboard/taskboard.types";
+import { createCard } from "@/modules/card/card.api"
+import { createCardSchema } from "@/modules/card/card.schema"
+import { createCardProps } from "@/modules/card/card.types"
 
 
 

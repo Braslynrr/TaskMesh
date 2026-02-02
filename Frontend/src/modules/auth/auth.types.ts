@@ -19,3 +19,10 @@ export type PassowrdResetRequest = {
   password: string
   confirmPassword:string
 }
+
+
+export type UserResponse = {
+    _id:string
+    username:string
+    role:string
+}

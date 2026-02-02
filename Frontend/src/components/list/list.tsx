@@ -1,10 +1,11 @@
-import { cardResponse, listProps } from "@/modules/taskboard/taskboard.types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
 import { useEffect, useState } from "react";
 import { CreateCardForm } from "../card/createCard";
-import { getCards } from "@/modules/taskboard/taskboard.api";
 import { Card } from "../card/card";
+import { listProps } from "@/modules/list/list.types";
+import { cardResponse } from "@/modules/card/card.types";
+import { getCards } from "@/modules/card/card.api";
 
 
 export function List({list}:listProps){

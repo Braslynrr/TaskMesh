@@ -1,10 +1,10 @@
 "use client"
 
+import { UserResponse } from "@/modules/auth/auth.types"
 import { addMemberToTaskboard } from "@/modules/taskboard/taskboard.api"
-import { UserResponse } from "@/modules/taskboard/taskboard.types"
 import { useState } from "react"
 
-export function AddMemberSection({
+export function ManageMembersSection({
   taskboardId,
   members: initialMembers,
 }: {
@@ -20,7 +20,6 @@ export function AddMemberSection({
     try{
 
         const data = {_id:taskboardId, members:[username]}
-        console.log(data)
         const taskboard = await addMemberToTaskboard(data)
         setMembers(taskboard.members)
         setUsername("")

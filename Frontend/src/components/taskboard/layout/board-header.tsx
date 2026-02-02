@@ -1,6 +1,6 @@
 import { UserLoggedIn } from "@/components/user/user.login"
 import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
-import { AddMemberSection } from "../addMemberSection"
+import { ManageMembersSection } from "../manageMembersSection"
 
 export function BoardHeader({
   title,
@@ -9,16 +9,15 @@ export function BoardHeader({
   title: string
   taskboard?: TaskboardResponse
 }) {
-  console.log(taskboard)
 
   return (
     <header className={taskboard? "grid grid-cols-3 border-b px-4 py-2":"grid grid-cols-2 border-b px-4 py-2"}>
       <span>{title} {taskboard?.name}</span>
 
       {taskboard && (
-        <AddMemberSection
+        <ManageMembersSection
           taskboardId={taskboard._id}
-          members={taskboard.members}
+          members={[taskboard.owner,...taskboard.members]}
         />
       )}
 

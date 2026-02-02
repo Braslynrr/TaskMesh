@@ -1,4 +1,4 @@
-import { cardProps } from "@/modules/taskboard/taskboard.types";
+import { cardProps } from "@/modules/card/card.types";
 
 
 export function Card({ card }:cardProps) {

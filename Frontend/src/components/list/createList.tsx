@@ -1,6 +1,7 @@
-import { createList } from "@/modules/taskboard/taskboard.api"
-import { createListSchema } from "@/modules/taskboard/taskboard.schemas"
-import { CreateListProps } from "@/modules/taskboard/taskboard.types"
+import { createList } from "@/modules/list/list.api"
+import { createListSchema } from "@/modules/list/list.schemas"
+import { CreateListProps } from "@/modules/list/list.types"
+
 
 
 export function CreateList({taskboardId, onCreate}:CreateListProps){
