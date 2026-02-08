@@ -3,6 +3,7 @@
 import { deleteTaskboard } from "@/modules/taskboard/taskboard.api";
 import { TaskboardProps} from "@/modules/taskboard/taskboard.types";
 import { useRouter } from "next/navigation"
+import UserAvatar from "../user/user.avatar";
 
 
 
@@ -32,20 +33,15 @@ export function Taskboard({ tb, onDelete }: TaskboardProps) {
   
   tb.members.push(tb.owner)
 
-  const membersLabel =
-  tb.members.length > 0
-    ? tb.members.map(user=>user.username).join(", ")
-    : ""
-
   return (
     <div className="w-full max-w-xs overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg shadow-slate-950/5" onClick={goToTaskboard}>
         <div className="h-max w-full rounded px-3 py-2 text-black">
             <h6 className="font-sans text-base font-bold text-current antialiased md:text-lg lg:text-xl">
             {tb.name}
             </h6>
-            <p className="my-1 font-sans text-base text-slate-600 antialiased">
-            Members: {membersLabel}
-            </p>
+            <div className="flex font-sans text-base text-slate-600 antialiased">
+            Members: { tb.members.map(member=> <UserAvatar key={member._id} user={member} />) }
+            </div>
         </div>
         <div className="w-full rounded px-3 pb-3 pt-1.5">
             

@@ -1,6 +1,7 @@
 import mongoose, { Types } from "mongoose";
+import { CardDoc } from "./card.types";
 
-const Cardschema = new mongoose.Schema(
+const Cardschema = new mongoose.Schema<CardDoc>(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -11,12 +12,12 @@ const Cardschema = new mongoose.Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true
     },
     assignedTo: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user"
+      ref: "User"
     }]
   },
   { timestamps: true }

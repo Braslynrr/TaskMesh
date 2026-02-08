@@ -20,13 +20,13 @@ export function CreateCardForm({ onCancel, onCreate, listId }:createCardProps) {
         const parsed = createCardSchema.safeParse(values)
 
         if (!parsed.success) {
-              console.log(parsed)
               return
             }
         
             try {
               const list = await createCard(parsed.data)
               onCreate(list)
+              onCancel()
             }
             catch(err) {
               //setError(extractApiErrorMessage(err))

@@ -5,8 +5,8 @@ import { createComment, deleteComment, getComments, updateComment } from "./comm
 const router = Router()
 
 router.post("/", authMiddleware, createComment)
-router.get("/", authMiddleware, getComments)
-router.delete("/", authMiddleware, deleteComment)
+router.get("/:id", authMiddleware, getComments)
+router.delete("/:id", authMiddleware, deleteComment)
 router.patch("/", authMiddleware, updateComment)
 
 export default router

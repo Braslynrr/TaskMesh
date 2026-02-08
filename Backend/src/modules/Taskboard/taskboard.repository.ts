@@ -1,10 +1,5 @@
-import mongoose, { HydratedDocument, Types } from "mongoose"
-
-export type TaskboardDoc = HydratedDocument<{
-  name: string
-  ownerId: Types.ObjectId
-  members: Types.ObjectId[]
-}>
+import mongoose, { Types } from "mongoose"
+import { TaskboardDoc } from "./taskboard.types"
 
 const TaskboardSchema = new mongoose.Schema<TaskboardDoc>({
   name: { type: String, required: true },
@@ -23,7 +18,7 @@ export const taskboardModel = mongoose.model("Taskboard", TaskboardSchema)
 
 export const taskboardRepository = {
 
-  findbyId(_id:string){
+  findbyId(_id: string) {
     return taskboardModel.findOne({ _id })
   },
 
@@ -31,21 +26,23 @@ export const taskboardRepository = {
     return taskboardModel.findOne({ name })
   },
 
-  create(data: { name: string; ownerId:string }) {
+  create(data: { name: string; ownerId: string }) {
     const taskboard = {
-        ownerId: new Types.ObjectId(data.ownerId),
-        name: data.name
+      ownerId: new Types.ObjectId(data.ownerId),
+      name: data.name
     }
     return taskboardModel.create(taskboard)
   },
 
-  addMembers(data: { _id: string; members: string[]}){
+  addMembers(data: { _id: string; members: string[] }) {
     const taskboard = taskboardModel.findOneAndUpdate(
       { _id: data._id },
-      {  $addToSet: 
-        { members: 
-          { 
-            $each: data.members.map(id => new Types.ObjectId(id)) 
+      {
+        $addToSet:
+        {
+          members:
+          {
+            $each: data.members.map(id => new Types.ObjectId(id))
           }
         }
       },
@@ -56,17 +53,18 @@ export const taskboardRepository = {
   },
 
   delete(data: { _id: string; ownerId: string }) {
-  return taskboardModel.deleteOne({
-    _id: new Types.ObjectId(data._id),
-    ownerId: new Types.ObjectId(data.ownerId),
-  })
+    return taskboardModel.deleteOne({
+      _id: new Types.ObjectId(data._id),
+      ownerId: new Types.ObjectId(data.ownerId),
+    })
   },
 
-  getTaskboards(id:string){
+  getTaskboards(id: string) {
     return taskboardModel.find({
       $or: [
-      { ownerId: id },
-      { members: id }]})
+        { ownerId: id },
+        { members: id }]
+    })
   }
 
 }

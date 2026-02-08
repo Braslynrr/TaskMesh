@@ -1,6 +1,5 @@
 import { serializeUser } from "../Users/user.serializer";
-import { TaskboardDoc } from "./taskboard.repository";
-import { Taskboard } from "./taskboard.types";
+import { Taskboard, TaskboardDoc } from "./taskboard.types";
 
 export function serializeTaskboard(taskboard:TaskboardDoc): Taskboard {
     return {

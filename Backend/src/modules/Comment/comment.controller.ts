@@ -14,7 +14,9 @@ export async function createComment(req: Request, res: Response) {
 
 export async function deleteComment(req: Request, res: Response) {
     const userId = req.user._id
-    const data = mongoIdSchema.parse(req.body)
+    const { id } = req.params
+    const body = { _id: id}
+    const data = mongoIdSchema.parse(body)
 
     const result = await commentService.deleteComment(data, userId)
     res.status(200).json(result)
@@ -31,7 +33,10 @@ export async function updateComment(req: Request, res: Response) {
 
 export async function getComments(req: Request, res: Response) {
     const userId = req.user._id
-    const data = mongoIdSchema.parse(req.body)
+    const { id } = req.params
+    const body = { _id: id}
+
+    const data = mongoIdSchema.parse(body)
 
     const result = await commentService.getComments(data, userId)
     res.status(200).json(result)

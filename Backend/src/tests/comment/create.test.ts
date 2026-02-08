@@ -53,7 +53,7 @@ describe("POST /api/comment", () => {
         .send(body)
             
         expect(res.status).toBe(201)
-        expect(res.body).toMatchObject({authorId:user2Id , ...body})
+        expect(res.body).toMatchObject({author: {_id:user2.user._id } , ...body})
         
     })
     

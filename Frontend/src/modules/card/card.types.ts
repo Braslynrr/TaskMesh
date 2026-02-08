@@ -1,3 +1,4 @@
+import { UserResponse } from "../auth/auth.types"
 import { MongoIdRequest } from "../general/general.types"
 
 export type getCardsRequest = MongoIdRequest
@@ -8,6 +9,10 @@ export type createCardRequest = {
     listId: String
 }
 
+export type assignToCardRequest = {
+    _id:string
+    assignedTo:string[]
+}
 
 export type cardResponse = {
     _id: string,
@@ -15,7 +20,7 @@ export type cardResponse = {
     description: string,
     listId: String,
     createdBy: string,
-    assignedTo: string[],
+    assignedTo: UserResponse[],
     createdAt: Date,
     updatedAt: Date,
 
@@ -30,4 +35,17 @@ export type createCardProps = {
 
 export type cardProps = {
     card: cardResponse
+    taskboardMembers: UserResponse[]
+    taskBoardOwner: UserResponse
+    user:UserResponse    
+    onAssign: (card:cardResponse) => void
+}
+
+
+export type assignCardProps = {
+    onCancel: () => void,
+    taskboardUsers: UserResponse[]
+    currentAssignedUsers: UserResponse[]
+    onAssign: (card:cardResponse) => void
+    cardId:string
 }

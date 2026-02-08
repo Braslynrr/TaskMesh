@@ -1,7 +1,8 @@
 "use client"
 
-import { UserResponse } from "@/modules/taskboard/taskboard.types"
+import { UserResponse } from "@/modules/auth/auth.types"
 import { useEffect, useState } from "react"
+import UserAvatar from "./user.avatar"
 
 export function UserLoggedIn() {
   const [user, setUser] = useState<UserResponse>()
@@ -14,6 +15,6 @@ export function UserLoggedIn() {
   if (!user) return null
 
   return <div className="justify-self-end">
-    <span className="border border-gray-200 px-3 rounded-2xl hover:border-gray-500 ">{user.username}</span>
+    <UserAvatar user={user} />
   </div>
 }

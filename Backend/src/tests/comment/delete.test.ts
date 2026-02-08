@@ -17,16 +17,10 @@ describe("DELETE /api/comment", () => {
         const card = await createCard(list._id.toString(), userId)
         const comment = await createComment(userId, card._id.toString())
         const {token} = await createAuthUser("test1")
-
-        const body = 
-            {
-                _id: comment._id.toString(),
-            }
         
         const res = await request(app)
-        .delete("/api/comment")
+        .delete(`/api/comment/${comment._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(body)
             
         expect(res.status).toBe(403)
         expect(res.body.issues[0].message).toBe("user cannot perform this action")
@@ -41,16 +35,10 @@ describe("DELETE /api/comment", () => {
         const user2Id = user2.user._id.toString()
         const card = await createCard(list._id.toString(), userId, "test", "test", [user2Id])
         const comment = await createComment(user2Id, card._id.toString())
-
-        const body = 
-            {
-                _id: comment._id.toString(),
-            }
         
         const res = await request(app)
-        .delete("/api/comment")
+        .delete(`/api/comment/${comment._id.toString()}`)
         .set("Cookie", `auth_token=${user2.token}`)
-        .send(body)
             
         expect(res.status).toBe(200)
         expect(res.body).toMatchObject(
@@ -68,15 +56,9 @@ describe("DELETE /api/comment", () => {
         const card = await createCard(list._id.toString(), userId)
         const comment = await createComment(userId, card._id.toString())
 
-        const body = 
-            {
-                _id: comment._id.toString(),
-            }
-        
         const res = await request(app)
-        .delete("/api/comment")
+        .delete(`/api/comment/${comment._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(body)
             
         expect(res.status).toBe(200)
         expect(res.body).toMatchObject(

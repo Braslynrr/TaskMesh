@@ -22,17 +22,11 @@ describe("GET /api/comment", () => {
                 { length: 4 }, (_, i) => createComment(userId, card._id.toString(), `text ${i}`)
              )
         )
-
-        const body = 
-            {
-                _id: card._id.toString(),
-            }
         
         const res = await request(app)
-        .get("/api/comment")
+        .get(`/api/comment/${card._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(body)
-
+        
         expect(res.status).toBe(403)
         expect(res.body.issues[0].message).toBe("user is not a member of this taskboard")
         
@@ -45,15 +39,9 @@ describe("GET /api/comment", () => {
         const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
         const card = await createCard(list._id.toString(), userId)
 
-        const body = 
-            {
-                _id: card._id.toString(),
-            }
-        
         const res = await request(app)
-        .get("/api/comment")
+        .get(`/api/comment/${card._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(body)
             
         expect(res.status).toBe(200)
         expect(res.body).toHaveLength(0)
@@ -70,16 +58,10 @@ describe("GET /api/comment", () => {
                 { length: 4 }, (_, i) => createComment(userId, card._id.toString(), `text ${i}`)
              )
         )
-
-        const body = 
-            {
-                _id: card._id.toString(),
-            }
         
         const res = await request(app)
-        .get("/api/comment")
+        .get(`/api/comment/${card._id.toString()}`)
         .set("Cookie", `auth_token=${token}`)
-        .send(body)
             
         expect(res.status).toBe(200)
         expect(res.body).toHaveLength(4)

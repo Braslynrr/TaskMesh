@@ -4,8 +4,9 @@ import { commentSerializer as serializerComment } from "./comment.serializer";
 import { mongoIdDTO } from "../../utils/zodObjectId";
 import { NotFoundError } from "../../core/errors/errors";
 import { completePolicyCheck } from "../Card/card.service";
-import { assertUserIsMember, assertUserIsOwner } from "../Taskboard/taskboard.policy";
+import { assertUserIsMember } from "../Taskboard/taskboard.policy";
 import { assertUserCanModifyComments, assertUserCanCreateComments } from "./comment.policy";
+import { CommentDoc } from "./comment.types";
 
 
 async function completeCommentPolicyCheck(userId:string ,commentId:string, policyFunction:Function){
@@ -28,16 +29,22 @@ export const commentService = {
 
         await completePolicyCheck(userId, data.cardId, assertUserCanCreateComments)
 
-        const comment = await commentRepository.createComment({authorId:userId, ... data})
-        return serializerComment(comment)
+        const newComment = await commentRepository.createComment({authorId:userId, ... data})
+
+        const populatedComment = await commentService.populateDocument(newComment)
+        
+        return serializerComment(populatedComment)
     },
 
     async getComments(data:mongoIdDTO, userId:string){
 
         await completePolicyCheck(userId, data._id, assertUserIsMember)
 
-        const comments = await commentRepository.getCommentsByCardId(data._id)
-        return comments.map( comment => serializerComment(comment))
+        const newComments = await commentRepository.getCommentsByCardId(data._id)
+
+        const populatedComments = await Promise.all( newComments.map(comment => commentService.populateDocument(comment)))
+   
+        return populatedComments.map( comment => serializerComment(comment))
     }, 
 
     async deleteComment(data: mongoIdDTO, userId:string){
@@ -52,7 +59,13 @@ export const commentService = {
 
         await completeCommentPolicyCheck(userId, data._id, assertUserCanModifyComments)
 
-        const comment = await commentRepository.updateComment(data)
-        return serializerComment(comment)
-    }
+        const newComment = await commentRepository.updateComment(data)
+
+        const populatedComment = await commentService.populateDocument(newComment)
+
+        return serializerComment(populatedComment)
+    },
+    
+    async populateDocument(doc: CommentDoc){
+        return await doc.populate([{ path: "authorId", select: "_id username role" }])}
 }

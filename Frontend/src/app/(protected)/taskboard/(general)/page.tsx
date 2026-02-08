@@ -17,7 +17,6 @@ export default function TaskBoardPage() {
     async function loadTaskboards() {
       try {
         const data = await getTaskboards()
-        console.log(data)
         setTaskboards(data)
       } catch (err) {
         setError(extractApiErrorMessage(err))

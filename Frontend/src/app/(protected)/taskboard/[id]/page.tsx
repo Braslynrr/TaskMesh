@@ -9,6 +9,7 @@ import { ListResponse } from "@/modules/list/list.types"
 import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
 import { getList, moveList } from "@/modules/list/list.api"
 import { getTaskboard } from "@/modules/taskboard/layout.taskboard.api"
+import { UserResponse } from "@/modules/auth/auth.types"
 
 export default function TaskboardPage({
   params,
@@ -20,21 +21,27 @@ export default function TaskboardPage({
 
   const [lists, setLists] = useState<ListResponse[]>([])
   const [taskboard, setTaskboard] = useState<TaskboardResponse>()
+  const [user, setUser] = useState<UserResponse>()
 
   useEffect(() => {
-    async function loadList() {
+    async function loadListAndUser() {
       try {
         const data = await getList(id)
         const task = await getTaskboard(id)
         setLists(data)
         setTaskboard(task)
+
+        const user = localStorage.getItem("user")
+        if(user) setUser(JSON.parse(user))
+
       } catch (err) {
         console.error(err)
       }
     }
 
-    loadList()
+    loadListAndUser()
   }, [])
+
 
   async function handleDragEnd(event:DragEndEvent){
     const { active, over } = event
@@ -53,7 +60,6 @@ export default function TaskboardPage({
       }
 
       const res = await moveList(data)
-      console.log(res)
     } 
     catch(e)
     {
@@ -75,8 +81,8 @@ export default function TaskboardPage({
           items={lists.map(l => l._id)}
           strategy={horizontalListSortingStrategy}>
           
-         {lists.map((list) => (
-            <List key={list._id} list={list} />
+         {taskboard && user &&  lists.map((list) => (
+            <List key={list._id} list={list} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner,...taskboard.members]} />
         ))}
       
       </SortableContext>

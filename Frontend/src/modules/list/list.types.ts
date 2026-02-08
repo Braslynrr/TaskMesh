@@ -1,3 +1,4 @@
+import { UserResponse } from "../auth/auth.types"
 
 export type CreateListProps = {
   taskboardId: string
@@ -24,4 +25,7 @@ export type moveListRequest = {
 
 export type listProps = {
     list: ListResponse
+    taskBoardOwner: UserResponse
+    taskboardMembers: UserResponse[]
+    user:UserResponse
 }

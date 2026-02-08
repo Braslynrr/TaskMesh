@@ -1,10 +1,11 @@
 import { ConflictError, NotFoundError } from "../../core/errors/errors";
 import { assertUserIsMember, assertUserIsOwner } from "./taskboard.policy";
-import { TaskboardDoc, taskboardRepository } from "./taskboard.repository";
+import {  taskboardRepository } from "./taskboard.repository";
 import { createTaskboardDTO, addMemberDTO} from "./taskboard.schema";
 import { mongoIdDTO } from "../../utils/zodObjectId";
 import { serializeTaskboard } from "./taskboard.serializer";
 import { userRepository } from "../Users/user.repository";
+import { TaskboardDoc } from "./taskboard.types";
 
 export const taskboardService = {
     async createTaskboard(data:createTaskboardDTO, userId:string) {

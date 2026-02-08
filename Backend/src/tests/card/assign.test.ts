@@ -80,18 +80,18 @@ describe("POST /api/card/assign", () => {
 
         
         for(let i in cardList){
-            const userid = userList[i]._id.toString()
+            const user = userList[i]
             const res = await request(app)
             .post("/api/card/assign")
             .set("Cookie", `auth_token=${token}`)
             .send(
             {
                 _id: cardList[i]._id.toString(),
-                assignedTo: [userid]
+                assignedTo: [user._id.toString()]
             })
 
             expect(res.status).toBe(200)
-            expect(res.body.assignedTo).toContain(userid)
+            expect(res.body.assignedTo).toMatchObject([{username: user.username, _id:user._id.toString() }])
         }
     })
 

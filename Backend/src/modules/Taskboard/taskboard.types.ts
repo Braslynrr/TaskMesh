@@ -1,3 +1,4 @@
+import { HydratedDocument, Types } from "mongoose"
 import { User } from "../Users/user.types"
 
 export type Taskboard = {
@@ -6,3 +7,9 @@ export type Taskboard = {
     owner: User
     members: string|User[]
 }
+
+export type TaskboardDoc = HydratedDocument<{
+  name: string
+  ownerId: Types.ObjectId
+  members: Types.ObjectId[]
+}>
