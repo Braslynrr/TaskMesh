@@ -3,9 +3,11 @@ import { assertUserIsMember, assertUserIsOwner } from "./taskboard.policy";
 import {  taskboardRepository } from "./taskboard.repository";
 import { createTaskboardDTO, addMemberDTO} from "./taskboard.schema";
 import { mongoIdDTO } from "../../utils/zodObjectId";
-import { serializeTaskboard } from "./taskboard.serializer";
+import { serializeTaskboard, serializeTaskboardSnapshot } from "./taskboard.serializer";
 import { userRepository } from "../Users/user.repository";
 import { TaskboardDoc } from "./taskboard.types";
+import { listService } from "../List/list.service";
+import { cardService } from "../Card/card.service";
 
 export const taskboardService = {
     async createTaskboard(data:createTaskboardDTO, userId:string) {
@@ -73,6 +75,24 @@ export const taskboardService = {
         return serializeTaskboard(populatedTaskboard)
     },
 
-    async populateDocument(doc: TaskboardDoc){
-        return await doc.populate([{ path: "members", select: "_id username role" }, { path: "ownerId", select: "_id username role" }])}
+    async getTaskboardSnapshot(id:string, userId:string){
+        const taskboard = await taskboardRepository.findbyId(id)
+        
+        assertUserIsMember({taskboard, userId})
+
+        const populatedTaskboard = await taskboardService.populateDocument(taskboard)
+
+        const lists = await listService.getList(id, userId)
+
+        const listIds = lists.map(l => ({ _id :l._id }) )
+
+        const cards = await Promise.all( listIds.map( id => cardService.getCards( id , userId)))
+
+        return serializeTaskboardSnapshot(serializeTaskboard(populatedTaskboard), lists, cards.flat())
+    },
+    
+    async populateDocument(doc: TaskboardDoc) {
+        return await doc.populate([{ path: "members", select: "_id username" }, { path: "ownerId", select: "_id username" }])
+    }, 
+    
 }   

@@ -1,5 +1,7 @@
+import { CardResponse } from "../Card/card.types";
+import { listResponse } from "../List/list.types";
 import { serializeUser } from "../Users/user.serializer";
-import { Taskboard, TaskboardDoc } from "./taskboard.types";
+import { Taskboard, TaskboardDoc, TaskBoardSnapshot } from "./taskboard.types";
 
 export function serializeTaskboard(taskboard:TaskboardDoc): Taskboard {
     return {
@@ -7,5 +9,13 @@ export function serializeTaskboard(taskboard:TaskboardDoc): Taskboard {
         name: taskboard.name,
         members: taskboard.members.map(member => serializeUser(member)),
         owner: serializeUser(taskboard.ownerId)
+    }
+}
+
+export function serializeTaskboardSnapshot(taskboard: Taskboard, lists:listResponse[], cards: CardResponse[]): TaskBoardSnapshot {
+    return {
+        ...taskboard,
+        lists: lists,
+        cards: cards
     }
 }

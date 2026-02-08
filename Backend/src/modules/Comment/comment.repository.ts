@@ -30,6 +30,10 @@ export const commentRepository = {
     return commentModel.find({ cardId })
   },
 
+  getCommentsNumberById(cardId:string){
+    return commentModel.find({ cardId }).countDocuments()
+  },
+
   updateComment(data: { _id: string, text: string }) {
     return commentModel.findByIdAndUpdate({ _id: data._id }, { $set: { text: data.text } }, { new: true })
   },

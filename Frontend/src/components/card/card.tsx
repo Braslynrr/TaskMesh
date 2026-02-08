@@ -1,5 +1,7 @@
+"use client"
+
 import { cardProps } from "@/modules/card/card.types";
-import { useEffect, useState } from "react";
+import { ToggleEventHandler, useState } from "react";
 import CreateComment from "../comment/CreateComment";
 import Comment from "../comment/comment";
 import { commentResponse } from "@/modules/comment/comment.types";
@@ -13,21 +15,23 @@ export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign }:
     const [isManaging, setIsManaging] = useState(false)
     const [comments, setComments] = useState<commentResponse[]>()
 
+    function handleToggle(e:React.SyntheticEvent<HTMLDetailsElement>) {
+        const el = e.currentTarget
+        if (el.open && !comments) {
+            loadComments()
+        }
+    }
 
-    useEffect(() => {
-        async function loadComments() {
+    async function loadComments() {
 
-            try {
-                const res = await getComments(card._id)
-                setComments(res)
-            } catch (err) {
-
-            }
+        try {
+            const res = await getComments(card._id)
+            setComments(res)
+        } catch (err) {
 
         }
 
-        loadComments()
-    }, [])
+    }
 
     const canModify =
         user._id === taskBoardOwner._id ||
@@ -75,9 +79,9 @@ export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign }:
 
             <div className="flex flex-col gap-2 ">
 
-                <details className="group text-xs font-medium">
+                <details className="group text-xs font-medium" onToggle={handleToggle}>
                     <summary className="uppercase cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-                        Comments {comments && comments.length > 0 && `(${comments.length})`}
+                        Comments {card.comments > 0 && `(${card.comments})`}
                     </summary>
 
                     <div className="mt-2 space-y-2">

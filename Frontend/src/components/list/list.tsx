@@ -8,9 +8,9 @@ import { cardResponse } from "@/modules/card/card.types";
 import { getCards } from "@/modules/card/card.api";
 
 
-export function List({ list, taskBoardOwner, user, taskboardMembers }: listProps) {
+export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards}: listProps) {
   const [isCreating, setIsCreating] = useState(false)
-  const [cards, setCards] = useState<cardResponse[]>([])
+  const [cards, setCards] = useState<cardResponse[]>(list_cards)
 
   function newAssignation(card: cardResponse) {
     const oldCard = cards.find(c => c._id === card._id)
@@ -19,21 +19,6 @@ export function List({ list, taskBoardOwner, user, taskboardMembers }: listProps
       setCards(prev => prev.map(c => c._id === card._id ? card : c))
 
   }
-
-  useEffect(() => {
-    async function loadCards() {
-
-      try {
-        const requestedCards = await getCards({ _id: list._id })
-        setCards(requestedCards)
-      } catch (e) {
-
-      }
-    }
-
-    loadCards()
-  }, [])
-
 
   const {
     setNodeRef,

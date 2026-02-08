@@ -1,5 +1,6 @@
 import { ForbiddenError, NotFoundError } from "../../core/errors/errors";
 import { mongoIdDTO } from "../../utils/zodObjectId";
+import { commentRepository } from "../Comment/comment.repository";
 import { ListRepository } from "../List/list.repository";
 import { assertUserIsMember, assertUserIsOwner } from "../Taskboard/taskboard.policy";
 import { taskboardRepository } from "../Taskboard/taskboard.repository";
@@ -7,7 +8,7 @@ import { assertUserCanHandleCards } from "./card.policy";
 import { cardRepository } from "./card.repository";
 import { assignUsersToCardDTO, createCardDTO, moveFromListDTO, updateCardDTO } from "./card.schema";
 import { serializeCard } from "./card.serializer";
-import { CardDoc } from "./card.types";
+import { CardDoc, CardObject } from "./card.types";
 
 
 export async function completePolicyCheck(userId: string, cardId: string, policyFunction: Function, functionParams: {} = undefined) {
@@ -141,7 +142,11 @@ export const cardService = {
         return serializeCard(populatedCard)
     },
 
-    async populateDoc(doc: CardDoc) {
-        return await doc.populate([{ path: "createdBy", select: "_id username role" }, { path: "assignedTo", select: "_id username role" }])
+    async populateDoc(doc: CardDoc): Promise<CardObject> {
+        const card = await doc.populate([{ path: "createdBy", select: "_id username role" }, { path: "assignedTo", select: "_id username role" }])
+        const count = await commentRepository.getCommentsNumberById(doc._id.toString())
+        const cardObject = card.toObject()
+        cardObject.comments = count
+        return cardObject
     }
 }

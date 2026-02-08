@@ -1,4 +1,5 @@
 import { UserResponse } from "../auth/auth.types"
+import { cardResponse } from "../card/card.types"
 
 export type CreateListProps = {
   taskboardId: string
@@ -28,4 +29,5 @@ export type listProps = {
     taskBoardOwner: UserResponse
     taskboardMembers: UserResponse[]
     user:UserResponse
+    list_cards:cardResponse[]
 }

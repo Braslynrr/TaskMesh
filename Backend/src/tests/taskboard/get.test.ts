@@ -2,7 +2,6 @@ import request from "supertest"
 import app from "../../app"
 import { createAuthUser, createUser } from "../factories/user.factory"
 import { createTaskboard, createTaskboardWithMembers } from "../factories/taskboard.factory"
-import { serializeUser } from "../../modules/Users/user.serializer"
 
 describe("GET /api/taskboard/", () => {
 

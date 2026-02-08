@@ -6,10 +6,10 @@ import { use, useEffect, useState } from "react"
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core"
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable"
 import { ListResponse } from "@/modules/list/list.types"
-import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
+import { TaskboardSnapshotResponse } from "@/modules/taskboard/taskboard.types"
 import { getList, moveList } from "@/modules/list/list.api"
-import { getTaskboard } from "@/modules/taskboard/layout.taskboard.api"
 import { UserResponse } from "@/modules/auth/auth.types"
+import { getTaskboardSnapshot } from "@/modules/taskboard/taskboard.api"
 
 export default function TaskboardPage({
   params,
@@ -20,15 +20,14 @@ export default function TaskboardPage({
   const {id} = use(params)
 
   const [lists, setLists] = useState<ListResponse[]>([])
-  const [taskboard, setTaskboard] = useState<TaskboardResponse>()
+  const [taskboard, setTaskboard] = useState<TaskboardSnapshotResponse>()
   const [user, setUser] = useState<UserResponse>()
 
   useEffect(() => {
     async function loadListAndUser() {
       try {
-        const data = await getList(id)
-        const task = await getTaskboard(id)
-        setLists(data)
+        const task = await getTaskboardSnapshot(id)
+        setLists(task.lists)
         setTaskboard(task)
 
         const user = localStorage.getItem("user")
@@ -82,7 +81,7 @@ export default function TaskboardPage({
           strategy={horizontalListSortingStrategy}>
           
          {taskboard && user &&  lists.map((list) => (
-            <List key={list._id} list={list} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner,...taskboard.members]} />
+            <List key={list._id} list={list} list_cards={taskboard.cards.filter(card=> card.listId === list._id)} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner,...taskboard.members]} />
         ))}
       
       </SortableContext>

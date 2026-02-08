@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client"
-import { AddMemeberToTaskboardRequest, createTaskboardRequest, TaskboardResponse } from "./taskboard.types"
+import { AddMemeberToTaskboardRequest, createTaskboardRequest, TaskboardResponse, TaskboardSnapshotResponse } from "./taskboard.types"
 import { DeleteResponse } from "../general/general.types"
 
 export async function getTaskboards(): Promise<TaskboardResponse[]> {
@@ -9,6 +9,11 @@ export async function getTaskboards(): Promise<TaskboardResponse[]> {
 
 export async function getTaskboard(id:string): Promise<TaskboardResponse> {
     const res = await apiClient.get(`/taskboard/${id}`)
+    return res.data
+}
+
+export async function getTaskboardSnapshot(id:string): Promise<TaskboardSnapshotResponse> {
+    const res = await apiClient.get(`/taskboard/${id}/snapshot`)
     return res.data
 }
 

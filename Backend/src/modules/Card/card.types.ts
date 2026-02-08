@@ -10,6 +10,7 @@ export interface CardResponse {
   assignedTo: User[]
   createdAt: Date
   updatedAt: Date
+  comments:number
 }
 
 
@@ -21,5 +22,21 @@ export type CardDoc  = HydratedDocument<{
   assignedTo: Types.ObjectId[]
   createdAt: Date
   updatedAt: Date
-
+  comments:number
 }>
+
+
+export type CardObject = {
+    title: string;
+    description: string;
+    listId: Types.ObjectId;
+    createdBy: Types.ObjectId;
+    assignedTo: Types.ObjectId[];
+    createdAt: Date;
+    updatedAt: Date;
+    comments: number;
+} & {
+    _id: Types.ObjectId;
+} & {
+    __v: number;
+}

@@ -23,7 +23,7 @@ export type cardResponse = {
     assignedTo: UserResponse[],
     createdAt: Date,
     updatedAt: Date,
-
+    comments: number
 }
 
 
