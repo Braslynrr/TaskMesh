@@ -6,7 +6,7 @@ const router = Router()
 
 router.post("/create", authMiddleware, createList)
 router.get("/:id", authMiddleware, getLists)
-router.delete("/", authMiddleware, deleteList)
+router.delete("/:id", authMiddleware, deleteList)
 router.post("/move", authMiddleware, moveList)
 
 export default router

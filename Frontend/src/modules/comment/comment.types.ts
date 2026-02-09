@@ -2,7 +2,13 @@ import { UserResponse } from "../auth/auth.types"
 
 export type createCommentProps = {onCancel: () => void, onCreate: (comment: any) => void, cardId:string}
 
-export type CommentProps = {comment:commentResponse}
+export type CommentProps = {
+    comment:commentResponse
+    user:UserResponse
+    taskboardOwner:UserResponse
+    onDelete: (comment:commentResponse) => void
+    onModify: (comment:commentResponse) => void
+}
 
 export type createCommentRequest = {
     cardId: string
@@ -16,4 +22,9 @@ export type commentResponse = {
     text:string,
     createdAt: Date
     updatedAt: Date
+}
+
+export type updateCommentRequest = {
+    _id:string
+    text:string
 }

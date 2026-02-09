@@ -28,8 +28,8 @@ export default function CreateComment({onCancel, onCreate, cardId} : createComme
 
             <textarea value={comment} onChange={ (e)=> setComment(e.target.value)} className="border border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-lg p-3" name="comment" placeholder="Comment"/>
             <div className="grid grid-cols-2">
-                <button className="bg-red-600 rounded-2xl px-1 py-1 hover:bg-red-800" onClick={onCancel}>Cancel</button>
-                <button className="bg-green-700 rounded-2xl px-1 py-1 hover:bg-green-900">Create</button>
+                <button className="text-red-700 rounded-2xl px-1 py-1 hover:text-red-500" onClick={onCancel}>Cancel</button>
+                <button className="text-green-700 rounded-2xl px-1 py-1 hover:text-green-500">Create</button>
             </div>
         </form>
 

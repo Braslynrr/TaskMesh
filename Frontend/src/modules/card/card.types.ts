@@ -19,7 +19,7 @@ export type cardResponse = {
     title: string,
     description: string,
     listId: String,
-    createdBy: string,
+    createdBy: UserResponse,
     assignedTo: UserResponse[],
     createdAt: Date,
     updatedAt: Date,
@@ -39,6 +39,7 @@ export type cardProps = {
     taskBoardOwner: UserResponse
     user:UserResponse    
     onAssign: (card:cardResponse) => void
+    onDelete: (card:cardResponse) => void
 }
 
 

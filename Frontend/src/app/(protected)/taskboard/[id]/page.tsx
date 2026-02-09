@@ -7,7 +7,7 @@ import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core"
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable"
 import { ListResponse } from "@/modules/list/list.types"
 import { TaskboardSnapshotResponse } from "@/modules/taskboard/taskboard.types"
-import { getList, moveList } from "@/modules/list/list.api"
+import { moveList } from "@/modules/list/list.api"
 import { UserResponse } from "@/modules/auth/auth.types"
 import { getTaskboardSnapshot } from "@/modules/taskboard/taskboard.api"
 
@@ -81,7 +81,8 @@ export default function TaskboardPage({
           strategy={horizontalListSortingStrategy}>
           
          {taskboard && user &&  lists.map((list) => (
-            <List key={list._id} list={list} list_cards={taskboard.cards.filter(card=> card.listId === list._id)} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner,...taskboard.members]} />
+            <List key={list._id} list={list} list_cards={taskboard.cards.filter(card=> card.listId === list._id)} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner,...taskboard.members]} 
+            onDelete={ (list) => setLists( (prev) => prev.filter(l => l._id!==list._id ))}/>
         ))}
       
       </SortableContext>

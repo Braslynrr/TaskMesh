@@ -1,4 +1,5 @@
 import { ConflictError, NotFoundError } from "../../core/errors/errors";
+import { mongoIdDTO } from "../../utils/zodObjectId";
 import { assertUserIsMember } from "../Taskboard/taskboard.policy";
 import { taskboardRepository } from "../Taskboard/taskboard.repository";
 import { ListRepository } from "./list.repository";
@@ -38,8 +39,15 @@ export const listService = {
         return lists.map(list => serializeList(list))
     },
 
-    async delete(data:searchListDTO, userId: string){
-        const taskboard = await taskboardRepository.findbyId(data.taskboardId)
+    async delete(data:mongoIdDTO, userId: string){
+
+        const list = await ListRepository.getListById(data._id)
+
+        if(!list){
+            throw new NotFoundError("list does not exist")
+        }
+
+        const taskboard = await taskboardRepository.findbyId(list.taskboardId.toString())
 
         if(!taskboard){
             throw new NotFoundError("taskboard does not exist")
@@ -47,8 +55,7 @@ export const listService = {
 
         assertUserIsMember({taskboard, userId})
 
-
-        const result = await ListRepository.delete(data)
+        const result = await ListRepository.delete(data._id)
         return result
     }, 
 

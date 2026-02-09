@@ -48,11 +48,8 @@ export const ListRepository = {
       .find({ taskboardId }).countDocuments()
   },
 
-  delete(data: { _id: string; taskboardId: string }) {
-    return ListModel.deleteOne({
-      _id: data._id,
-      taskboardId: data.taskboardId,
-    });
+  delete( _id: string) {
+    return ListModel.deleteOne({ _id });
   },
 
   bulkUpdatePositions(updates: { _id: string; position: number }[]) {

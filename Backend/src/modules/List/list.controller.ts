@@ -14,7 +14,9 @@ export async function createList(req: Request, res: Response) {
 
 export async function deleteList(req: Request, res: Response) {
     const userId = req.user._id
-    const data = searchListSchema.parse(req.body)
+    const { id } = req.params
+    const body = { _id: id}
+    const data = mongoIdSchema.parse(body)
     const result = await listService.delete(data, userId)
     res.status(200).json(result)
 }

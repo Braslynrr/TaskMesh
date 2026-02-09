@@ -30,4 +30,5 @@ export type listProps = {
     taskboardMembers: UserResponse[]
     user:UserResponse
     list_cards:cardResponse[]
+    onDelete: (list:ListResponse) => void
 }

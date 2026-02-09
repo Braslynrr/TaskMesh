@@ -1,7 +1,6 @@
 import { apiClient } from "@/lib/api-client"
 import { createCardRequest, cardResponse, getCardsRequest, assignToCardRequest } from "./card.types"
-
-
+import { DeleteResponse } from "../general/general.types"
 
 export async function createCard(data:createCardRequest): Promise<cardResponse> {
     const res = await apiClient.post(`card/create`, data)
@@ -13,8 +12,13 @@ export async function getCards(data:getCardsRequest): Promise<cardResponse[]> {
     return res.data
 }
 
-
 export async function assignToCard(data:assignToCardRequest): Promise<cardResponse> {
     const res = await apiClient.post(`card/assign`, data)
+    return res.data
+}
+
+export async function deleteCard(id:string): Promise<DeleteResponse>
+{
+    const res = await apiClient.delete(`card/${id}`)
     return res.data
 }
