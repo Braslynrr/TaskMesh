@@ -1,4 +1,6 @@
 import mongoose, { Types } from "mongoose";
+import { cardModel } from "../Card/card.repository";
+import { commentModel } from "../Comment/comment.repository";
 
 const ListSchema = new mongoose.Schema(
   {
@@ -13,7 +15,19 @@ const ListSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+ListSchema.pre("deleteOne", { document: true }, async function () {
+  const list = this
+
+  const cards = await cardModel.find({ listId: list._id }).select("_id")
+
+  const cardIds = cards.map(c => c._id)
+
+  await commentModel.deleteMany({ cardId: { $in: cardIds } })
+  await cardModel.deleteMany({ listId: list._id })
+})
+
 export const ListModel = mongoose.model("List", ListSchema);
+
 
 export const ListRepository = {
   getListByIds(data: { _id: string; taskboardId: string }) {
@@ -21,7 +35,7 @@ export const ListRepository = {
     if (!data._id || !data.taskboardId) {
       return null;
     }
-    
+
     return ListModel.findOne({
       _id: data._id,
       taskboardId: data.taskboardId,
@@ -43,13 +57,17 @@ export const ListRepository = {
       .lean();
   },
 
-  countList(taskboardId: string){
+  countList(taskboardId: string) {
     return ListModel
       .find({ taskboardId }).countDocuments()
   },
 
-  delete( _id: string) {
-    return ListModel.deleteOne({ _id });
+  async delete(_id: string) {
+    const list = await ListModel.findById({ _id })
+
+    if (!list) return null
+
+    return list.deleteOne()
   },
 
   bulkUpdatePositions(updates: { _id: string; position: number }[]) {
@@ -62,8 +80,8 @@ export const ListRepository = {
       }))
     );
   },
-  
-  getListById(_id:string){
+
+  getListById(_id: string) {
     return ListModel.findById(_id)
   }
 

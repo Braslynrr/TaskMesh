@@ -78,7 +78,7 @@ export default function RegisterPage(){
           />
           <button
             type="submit"
-            className="w-full rounded bg-white px-3 py-2 text-black"
+            className="w-full rounded bg-gray-200  px-3 py-2 text-black hover:bg-white"
           >
             sign up
           </button>
