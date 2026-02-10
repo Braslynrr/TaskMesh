@@ -4,27 +4,6 @@ import { createAuthUser, createUser } from "../factories/user.factory"
 import { createTaskboard } from "../factories/taskboard.factory"
 
 describe("POST /api/taskboard/add", () => {
-    
-  it("should add members to taskboard", async () => {
-
-    const memberlist = [ await createUser("test1"), await createUser("test2")]
-    const usernmaeList = memberlist.map(m => m.username)
-    const toCompareList =  memberlist.map(u=> ({username: u.username, _id:u._id.toString()}))
-    const {token, taskboard} = await createTaskboard()
-
-    const res = await request(app)
-      .post("/api/taskboard/add")
-      .set("Cookie", `auth_token=${token}`)
-      .send({
-        _id: taskboard._id.toString(),
-        members: usernmaeList
-      })
-
-    expect(res.status).toBe(200)
-    expect(res.body).not.toBeNull()
-    expect(res.body.members).toMatchObject(toCompareList)
-
-  })
 
   it("fails when members is empty", async () => {
     const {token, taskboard} = await createTaskboard()
@@ -57,14 +36,14 @@ describe("POST /api/taskboard/add", () => {
 
     expect(res.status).toBe(409)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("the users are already a members")
+    expect(res.body.issues[0].message).toBe("the user is already a member")
 
   })
 
     it("fails when _id is incorrect", async () => {
 
     const memberlist = [ await createUser("test1"), await createUser("test2")]
-    const idList = memberlist.map(m => m._id.toString())
+    const usernmaeList = memberlist.map(m => m.username)
     const {token} = await createTaskboard()
 
 
@@ -73,7 +52,7 @@ describe("POST /api/taskboard/add", () => {
       .set("Cookie", `auth_token=${token}`)
       .send({
         _id: "096b0abc98937822669a7c40",
-        members: idList
+        members: usernmaeList
       })
 
     expect(res.status).toBe(404)
@@ -86,7 +65,7 @@ describe("POST /api/taskboard/add", () => {
     it("fails when _id is not an uuid", async () => {
 
     const memberlist = [ await createUser("test1"), await createUser("test2")]
-    const idList = memberlist.map(m => m._id.toString())
+    const usernmaeList = memberlist.map(m => m.username)
     const {token} = await createTaskboard()
 
 
@@ -95,7 +74,7 @@ describe("POST /api/taskboard/add", () => {
       .set("Cookie", `auth_token=${token}`)
       .send({
         _id: "test",
-        members: idList
+        members: usernmaeList
       })
 
     expect(res.status).toBe(400)
@@ -106,18 +85,18 @@ describe("POST /api/taskboard/add", () => {
 
   it("fails when user is not taskboard owner", async () => {
 
-        const {taskboard} = await createTaskboard()
-        const {token, user} = await createAuthUser("test3")
-  
+        const {taskboard, user} = await createTaskboard()
+        const {token} = await createAuthUser("test3")
+
         const memberlist = [ await createUser("test1"), await createUser("test2")]
-        const idList = memberlist.map(m => m._id.toString())
+        const usernmaeList = memberlist.map(m => m.username)
 
         const res = await request(app)
         .post("/api/taskboard/add")
         .set("Cookie", `auth_token=${token}`)
         .send({
             _id: taskboard._id,
-            members: idList,
+            members: usernmaeList,
             ownerId: user._id
         })
 
@@ -125,4 +104,47 @@ describe("POST /api/taskboard/add", () => {
         expect(res.body).not.toBeNull()
         expect(res.body.issues[0].message).toBe("only owner can perform this action")
       })
+
+
+    it("fails when username does not exist", async () => {
+
+    const memberlist = [ await createUser("test1"), await createUser("test2")]
+    const usernmaeList = memberlist.map(m => m.username)
+    const toCompareList =  memberlist.map(u=> ({username: u.username, _id:u._id.toString()}))
+    const {token, taskboard} = await createTaskboard()
+
+    const res = await request(app)
+      .post("/api/taskboard/add")
+      .set("Cookie", `auth_token=${token}`)
+      .send({
+        _id: taskboard._id.toString(),
+        members: ["any member"]
+      })
+
+    expect(res.status).toBe(404)
+    expect(res.body).not.toBeNull()
+    expect(res.body.issues[0].message).toBe("given username is not registered")
+  })
+    
+
+    it("should add members to taskboard", async () => {
+
+    const memberlist = [ await createUser("test1"), await createUser("test2")]
+    const usernmaeList = memberlist.map(m => m.username)
+    const toCompareList =  memberlist.map(u=> ({username: u.username, _id:u._id.toString()}))
+    const {token, taskboard} = await createTaskboard()
+
+    const res = await request(app)
+      .post("/api/taskboard/add")
+      .set("Cookie", `auth_token=${token}`)
+      .send({
+        _id: taskboard._id.toString(),
+        members: usernmaeList
+      })
+
+    expect(res.status).toBe(200)
+    expect(res.body).not.toBeNull()
+    expect(res.body.members).toMatchObject(toCompareList)
+
+  })
 })

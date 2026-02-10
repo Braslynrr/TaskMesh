@@ -6,14 +6,16 @@ import { Card } from "../card/card";
 import { listProps } from "@/modules/list/list.types";
 import { cardResponse } from "@/modules/card/card.types";
 import { deleteList } from "@/modules/list/list.api";
+import { extractApiErrorMessage } from "@/lib/api-error";
 
 
-export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards, onDelete}: listProps) {
+export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards, onDelete }: listProps) {
   const originalTitle = list.title
   const [isCreating, setIsCreating] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [cards, setCards] = useState<cardResponse[]>(list_cards)
   const [title, setTitle] = useState(list.title)
+  const [error, setError] = useState("")
 
   function newAssignation(card: cardResponse) {
     const oldCard = cards.find(c => c._id === card._id)
@@ -25,18 +27,18 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
 
   async function newTitle() {
     try {
-        // todo
-    } catch (e) {
-
+      // todo
+    } catch (err) {
+      setError(extractApiErrorMessage(err))
     }
   }
 
   async function deleteOne() {
-     try {
-        const res = await deleteList(list._id)
-        onDelete(list)
-    } catch (e) {
-
+    try {
+      const res = await deleteList(list._id)
+      onDelete(list)
+    } catch (err) {
+      setError(extractApiErrorMessage(err))
     }
   }
 
@@ -58,6 +60,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
 
   return (
     <div className="flex flex-col bg-gray-100 rounded-md p-3 gap-2 text-black min-w-56 max-w-80 w-56 flex-1 overflow-y-auto" ref={setNodeRef} style={style} {...attributes}>
+      <span className="text-red-700">{error}</span>
       <div
         className="relative font-semibold cursor-grab select-none">
         {!isEditing ?

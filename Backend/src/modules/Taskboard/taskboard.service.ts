@@ -29,14 +29,20 @@ export const taskboardService = {
 
         const usernameToUser = await Promise.all(data.members.map(username => userRepository.findByUsername(username)))
 
-        const userToID = usernameToUser.map(user => user._id.toString())
+        const nullsRemoved = usernameToUser.filter(item => item !== null)
+
+        if(nullsRemoved.length < 1){
+            throw new NotFoundError("given username is not registered")
+        }
+
+        const userToID = nullsRemoved.map(user => user._id.toString())
 
         const currentMembers = taskboard.members.map(member => member._id.toString())
 
         data.members = userToID.filter(id => id != taskboard.ownerId.toString() && !currentMembers.includes(id))
 
         if(data.members.length < 1){
-            throw new ConflictError("the users are already a members")
+            throw new ConflictError("the user is already a member")
         }
 
         const newTaskboard = await taskboardRepository.addMembers(data)

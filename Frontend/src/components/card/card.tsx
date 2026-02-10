@@ -9,19 +9,21 @@ import { getComments } from "@/modules/comment/comment.api";
 import UserAvatar from "../user/user.avatar";
 import AssigCardManager from "./assign.card";
 import { deleteCard } from "@/modules/card/card.api";
+import { extractApiErrorMessage } from "@/lib/api-error";
 
 
 export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, onDelete }: cardProps) {
     const [isCreating, setIsCreating] = useState(false)
     const [isManaging, setIsManaging] = useState(false)
     const [comments, setComments] = useState<commentResponse[]>([])
+    const [error, setError] = useState("")
 
     async function onDeleteCard() {
         try {
             const res = await deleteCard(card._id)
             onDelete(card)
-        } catch (e) {
-
+        } catch (err) {
+            setError(extractApiErrorMessage(err))
         }
     }
 
@@ -46,9 +48,8 @@ export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, o
             const res = await getComments(card._id)
             setComments(res)
         } catch (err) {
-
+            setError(extractApiErrorMessage(err))
         }
-
     }
 
     const isTaskboardOwner = user._id === taskBoardOwner._id
@@ -63,6 +64,8 @@ export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, o
 
     return (
         <div className="group/card flex flex-col bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition">
+            <span className="text-red-700">{error}</span>
+
             <div className="relative">
                 <h4 className="font-semibold text-sm text-gray-900 text-center">
                     {card.title}

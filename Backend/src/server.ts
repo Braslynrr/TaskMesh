@@ -3,7 +3,7 @@ import app from "./app"
 import { connectMongo } from "./core/db/mongo"
 
 
-const port = 5000;
+const port = process.env.PORT ?? "3000";
 
 async function start() {
   await connectMongo()

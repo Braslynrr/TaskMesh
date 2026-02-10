@@ -1,41 +1,39 @@
+import { extractApiErrorMessage } from "@/lib/api-error"
 import { createList } from "@/modules/list/list.api"
 import { createListSchema } from "@/modules/list/list.schemas"
 import { CreateListProps } from "@/modules/list/list.types"
+import { useState } from "react"
 
+export function CreateList({ taskboardId, onCreate }: CreateListProps) {
+  const [title, setTitle] = useState("")
+  const [error, setError] = useState("")
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
 
-export function CreateList({taskboardId, onCreate}:CreateListProps){
-
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault()
-
-        const formData = new FormData(e.currentTarget)
-        const values = 
-        {
-            title: formData.get("title"),
-            taskboardId: taskboardId
-        }
-
-        const parsed = createListSchema.safeParse(values)
-
-        if (!parsed.success) {
-              //setError("Invalid credentials")
-              return
-            }
-        
-            try {
-              const list = await createList(parsed.data)
-              onCreate(list)
-            }
-            catch(err) {
-              //setError(extractApiErrorMessage(err))
-            }
-
+    try {
+      setError("")
+      const parsed = createListSchema.parse({ title, taskboardId })
+      const list = await createList(parsed)
+      onCreate(list)
+      setTitle("")
+    } catch (err) {
+      setError(extractApiErrorMessage(err))
     }
+  }
 
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 bg-gray-100 p-3 rounded-2xl">
+      <span className="text-red-700">{error}</span>
 
-    return <form onSubmit={handleSubmit} className="flex flex-col gap-3 bg-gray-100 text-black rounded-2xl p-3">
-        <input name="title" className="border border-b-black rounded-2xl text-center" type="text" placeholder="Title"/>
-        <button className=" bg-gray-100 text-green-500 hover:text-green-700" type="submit" >Create List</button>
+      <input
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+        className="border rounded-2xl text-center border-gray-300 text-black"
+        placeholder="Title"
+      />
+
+      <button className="text-green-500 hover:text-green-700">Create List</button>
     </form>
+  )
 }

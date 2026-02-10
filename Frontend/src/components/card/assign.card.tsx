@@ -3,31 +3,32 @@ import { assignCardProps } from "@/modules/card/card.types";
 import { useState } from "react";
 import UserAvatar from "../user/user.avatar";
 import { assignToCard } from "@/modules/card/card.api";
+import { extractApiErrorMessage } from "@/lib/api-error";
 
 export default function AssigCardManager({ onCancel, onAssign, currentAssignedUsers, taskboardUsers, cardId }: assignCardProps) {
 
     const [assignedUsers, setAssignedUsers] = useState<UserResponse[]>(currentAssignedUsers)
-    const [users, setUsers] = useState<UserResponse[]>(taskboardUsers.filter(u => !currentAssignedUsers.some(a => a._id === u._id))
-    )
+    const [users, setUsers] = useState<UserResponse[]>(taskboardUsers.filter(u => !currentAssignedUsers.some(a => a._id === u._id)))
     const [id, setId] = useState(users[0]?._id ?? "")
+    const [error, setError] = useState("")
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
 
         const body = {
             _id: cardId,
-            assignedTo: assignedUsers.map(member=> member._id)
+            assignedTo: assignedUsers.map(member => member._id)
         }
 
-        try{
-
+        try {
+            setError("")
             const res = await assignToCard(body)
             console.log()
             onAssign(res)
             onCancel()
 
-        }catch(e){
-
+        } catch (err) {
+            setError(extractApiErrorMessage(err))
         }
 
     }
@@ -59,6 +60,7 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
 
 
     return <form onSubmit={handleSubmit} className="flex flex-col p-1 gap-1">
+        <span className="text-red-700">{error}</span>
 
         <div className="flex overflow-x-auto gap-1 p-1">
             {assignedUsers.map(member => <div key={member._id} onClick={() => remove(member._id)} className="flex gap-1 hover:shadow px-1 py-1 rounded-2xl"><UserAvatar user={member} /> <span className="text-red-800 hover:text-red-500">X</span></div>)}

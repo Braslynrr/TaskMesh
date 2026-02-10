@@ -14,14 +14,14 @@ export default function TaskBoardLayout({
 
   const param = use(params)
 
-  const taskboard = param? use(getTaskboard(param.id)) : undefined
+  const taskboard = param ? use(getTaskboard(param.id)) : undefined
 
   return (
-        <BoardLayout>
-              <BoardHeader title="Taskboard" taskboard={taskboard} />
-              <BoardListCanvas>
-                 {children}
-              </BoardListCanvas>
-        </BoardLayout>
+    <BoardLayout>
+      <BoardHeader title="Taskmesh" taskboard={taskboard} />
+      <BoardListCanvas>
+        {children}
+      </BoardListCanvas>
+    </BoardLayout>
   )
 }

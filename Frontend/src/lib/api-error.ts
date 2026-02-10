@@ -1,7 +1,15 @@
+import { ZodError } from "zod"
 import { getApiErrorMessage } from "./api-error.helper"
 import { ApiErrorResponse } from "./api-error.types"
 
 export function extractApiErrorMessage(error: unknown): string {
+
+
+  if(typeof error === "object" && (error as any)?.issues !== undefined ){
+      const data =  error as ZodError
+      return data.issues.reduce( (all, issue) => `${all} ${issue.message}`, "")
+  }
+      
   if (
     typeof error === "object" &&
     error !== null &&
