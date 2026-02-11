@@ -1,16 +1,15 @@
+import { _resetConfig } from "./src/core/config/config"
 import { connectTestDB, disconnectTestDB, clearTestDB } from "./src/tests/setup/mongo"
 
 beforeAll(async () => {
-  process.env.JWT_SECRET = "test-secret"
   await connectTestDB()
 })
 
 afterEach(async () => {
   await clearTestDB()
+  _resetConfig()
 })
 
 afterAll(async () => {
   await disconnectTestDB()
 })
-
-console.log("🧪 Jest setup loaded")

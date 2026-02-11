@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import { UnauthorizedError } from "../errors/errors"
+import { getConfig } from "../../core/config/config"
 
 export function authMiddleware(req, _res, next) {
   
@@ -10,12 +11,16 @@ export function authMiddleware(req, _res, next) {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {_id: string,username: string}
+    const config = getConfig()
 
-    req.user =  { _id: payload._id, username: payload.username}
+    const secret = config.jwt.secret.value
+    const payload = jwt.verify(token, secret) as { _id:string }
+    
+    req.user =  { _id: payload._id}
 
     next()
-  } catch {
+  } catch (e) {
+    
     throw new UnauthorizedError("Invalid or expired token")
   }
 }

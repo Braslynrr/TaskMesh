@@ -9,13 +9,14 @@ import listRoutes from "./modules/List/list.routes"
 import cardRoutes from "./modules/Card/card.routes"
 import commentRoutes from "./modules/Comment/comment.routes"
 import { errorHandler } from "./core/middlewares/error-handler"
+import { getConfig } from "./core/config/config"
 
-
+const config = getConfig()
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ALLOW_LIST ?? "*",
+    origin: config.app.origin,
     credentials: true,
   })
 )

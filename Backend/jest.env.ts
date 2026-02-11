@@ -1,0 +1,6 @@
+process.env.NODE_ENV="test"
+process.env.JWT_SECRET="test-secret1"
+process.env.JWT_REFRESH="test-secret2"
+process.env.AUTH_TIME="1m"
+process.env.REFRESH_TIME="2m"
+process.env.MONGO_URI="mongodb://127.0.0.1:27017/jest_test"

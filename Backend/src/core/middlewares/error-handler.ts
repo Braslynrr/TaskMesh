@@ -1,6 +1,5 @@
 import { ZodError } from "zod"
 import { HttpError } from "../errors/http-error"
-import { issue } from "zod/v4/core/util.cjs"
 
 export function errorHandler(err, req, res, next) {
   // 1️⃣ Zod validation errors FIRST
