@@ -1,3 +1,5 @@
+*.log
 *.env
+logs/
 dist/
 node_modules/

@@ -10,7 +10,7 @@ export function getEnv() {
     if (!parsed.success) {
       console.error("Invalid environment variables:")
       for (const issue of parsed.error.issues) {
-        console.error(` - ${issue.path.join(".")}: ${issue.message}`)
+        console.error({ err: ` - ${issue.path.join(".")}: ${issue.message}` }, "Something failed")
       }
       process.exit(1)
     }
