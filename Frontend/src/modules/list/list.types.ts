@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react"
 import { UserResponse } from "../auth/auth.types"
 import { cardResponse } from "../card/card.types"
 
@@ -25,10 +26,12 @@ export type moveListRequest = {
 }
 
 export type listProps = {
+    isDragging?:boolean
     list: ListResponse
     taskBoardOwner: UserResponse
     taskboardMembers: UserResponse[]
     user:UserResponse
     list_cards:cardResponse[]
     onDelete: (list:ListResponse) => void
+    setCards:Dispatch<SetStateAction<cardResponse[]>>
 }

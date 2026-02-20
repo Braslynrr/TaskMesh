@@ -1,4 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 import { useState } from "react";
 import { CreateCardForm } from "../card/createCard";
@@ -7,18 +8,18 @@ import { listProps } from "@/modules/list/list.types";
 import { cardResponse } from "@/modules/card/card.types";
 import { deleteList } from "@/modules/list/list.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
+import { SortableContext } from "@dnd-kit/sortable"
 
 
-export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards, onDelete }: listProps) {
+export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards, onDelete, setCards, isDragging }: listProps) {
   const originalTitle = list.title
   const [isCreating, setIsCreating] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-  const [cards, setCards] = useState<cardResponse[]>(list_cards)
   const [title, setTitle] = useState(list.title)
   const [error, setError] = useState("")
 
   function newAssignation(card: cardResponse) {
-    const oldCard = cards.find(c => c._id === card._id)
+    const oldCard = list_cards.find(c => c._id === card._id)
 
     if (oldCard)
       setCards(prev => prev.map(c => c._id === card._id ? card : c))
@@ -42,14 +43,25 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
     }
   }
 
-
   const {
     setNodeRef,
     attributes,
     listeners,
     transform,
     transition,
-  } = useSortable({ id: list._id })
+  } = useSortable({ id: list._id, data: { type: "list" } })
+
+
+  const { setNodeRef: setDroppableRef } = useDroppable({
+    id: list._id,
+    data: { type: "list" },
+  })
+
+
+  function setRefs(node: HTMLElement | null) {
+    setNodeRef(node)
+    setDroppableRef(node)
+  }
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -59,7 +71,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
   const canDeleteLists = taskBoardOwner._id === user._id
 
   return (
-    <div className="flex flex-col bg-gray-100 rounded-md p-3 gap-2 text-black min-w-56 max-w-80 w-56 flex-1 overflow-y-auto" ref={setNodeRef} style={style} {...attributes}>
+    <div className={`flex flex-col bg-gray-100 rounded-md p-3 gap-2 text-black min-w-56 max-w-80 w-56 flex-1 overflow-y-auto ${isDragging ? "border-2 border-blue-800 hover:border-blue-500 transition" : ""}`} ref={setRefs} style={style} {...attributes} >
       <span className="text-red-700">{error}</span>
       <div
         className="relative font-semibold cursor-grab select-none">
@@ -79,8 +91,9 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
         <hr />
       </div>
 
-
-      {cards.map(card => <Card key={card._id} card={card} taskBoardOwner={taskBoardOwner} user={user} taskboardMembers={taskboardMembers} onAssign={(card) => newAssignation(card)} onDelete={(card) => setCards((prev) => prev.filter(c => c._id !== card._id))}></Card>)}
+      <SortableContext items={list_cards.filter(card => card.listId === list._id).map(card => card._id)} >
+        {list_cards.map(card => <Card key={card._id} card={card} taskBoardOwner={taskBoardOwner} user={user} taskboardMembers={taskboardMembers} onAssign={(card) => newAssignation(card)} onDelete={(card) => setCards((prev) => prev.filter(c => c._id !== card._id))}></Card>)}
+      </SortableContext>
 
       {isCreating ? (
         <CreateCardForm

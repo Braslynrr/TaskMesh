@@ -10,9 +10,11 @@ import UserAvatar from "../user/user.avatar";
 import AssigCardManager from "./assign.card";
 import { deleteCard } from "@/modules/card/card.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities"
 
 
-export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, onDelete }: cardProps) {
+export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, onDelete, ghost }: cardProps) {
     const [isCreating, setIsCreating] = useState(false)
     const [isManaging, setIsManaging] = useState(false)
     const [comments, setComments] = useState<commentResponse[]>([])
@@ -52,6 +54,20 @@ export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, o
         }
     }
 
+      const {
+        setNodeRef,
+        attributes,
+        listeners,
+        transform,
+        transition,
+      } = useSortable({ id: card._id,  data: {type:"card"}})
+    
+      const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }
+
+
     const isTaskboardOwner = user._id === taskBoardOwner._id
     const isCardOwner = card.createdBy._id === user._id
 
@@ -63,11 +79,11 @@ export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, o
 
 
     return (
-        <div className="group/card flex flex-col bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition">
+        <div className={`group/card flex flex-col bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition ${ ghost? "opacity-80 shadow-xl" : "" }`} ref={setNodeRef} style={style} {...attributes}>
             <span className="text-red-700">{error}</span>
 
-            <div className="relative">
-                <h4 className="font-semibold text-sm text-gray-900 text-center">
+            <div className="relative cursor-grab" {...listeners} >
+                <h4 className="font-semibold text-sm text-gray-900 text-center" >
                     {card.title}
                 </h4>
 

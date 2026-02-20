@@ -40,6 +40,7 @@ export type cardProps = {
     user:UserResponse    
     onAssign: (card:cardResponse) => void
     onDelete: (card:cardResponse) => void
+    ghost?: boolean
 }
 
 
@@ -49,4 +50,9 @@ export type assignCardProps = {
     currentAssignedUsers: UserResponse[]
     onAssign: (card:cardResponse) => void
     cardId:string
+}
+
+export type moveCardRequest = {
+    _id: string
+    listId: string
 }
