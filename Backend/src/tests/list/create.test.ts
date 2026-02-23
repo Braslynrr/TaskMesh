@@ -30,7 +30,7 @@ describe("POST /api/list/create", () => {
 
 
    it("fails when taskboard ID doesn't exist", async () => {
-    const {token, taskboard} = await createTaskboard()
+    const {token} = await createTaskboard()
 
     const res = await request(app)
       .post("/api/list/create")

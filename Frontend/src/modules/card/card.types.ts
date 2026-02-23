@@ -40,9 +40,31 @@ export type cardProps = {
     user:UserResponse    
     onAssign: (card:cardResponse) => void
     onDelete: (card:cardResponse) => void
-    ghost?: boolean
+    onUpdate: (card:cardResponse) => void
 }
 
+
+export type cardViewProps = {
+    card: cardResponse
+    canModify:boolean
+    taskboardMembers: UserResponse[]
+    taskBoardOwner: UserResponse
+    user:UserResponse  
+    isTaskboardOwner:boolean
+    setEditCard: () => void
+    onAssign: (card:cardResponse) => void
+    onDelete: (card:cardResponse) => void
+}
+
+export type ghostCardProps = {
+    card: cardResponse
+}
+
+export type  cardEditProps = {
+    card: cardResponse
+    cancel: () => void
+    onUpdate: (card:cardResponse) => void
+}
 
 export type assignCardProps = {
     onCancel: () => void,
@@ -55,4 +77,10 @@ export type assignCardProps = {
 export type moveCardRequest = {
     _id: string
     listId: string
+}
+
+export type updateCardRequest = {
+    _id: string
+    title: string
+    description:string
 }

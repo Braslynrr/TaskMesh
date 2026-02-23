@@ -83,6 +83,10 @@ export const ListRepository = {
 
   getListById(_id: string) {
     return ListModel.findById(_id)
+  },
+
+  updateList(data: { _id: string, title: string }) {
+    return ListModel.findByIdAndUpdate({ _id: data._id }, { $set: { title: data.title } }, { new: true })
   }
 
 };

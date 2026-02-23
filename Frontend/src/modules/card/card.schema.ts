@@ -5,3 +5,10 @@ export const createCardSchema = z.object({
     listId: z.string(),
     description: z.string().min(10 , "card should have a description (minimun of 10 characters)")
 })
+
+
+export const updateCardSchema = z.object({
+    _id: z.string(),
+    title:  z.string().min(4, "title must be at least 4 characters"),
+    description: z.string().min(10 , "card should have a description (minimun of 10 characters)")
+})

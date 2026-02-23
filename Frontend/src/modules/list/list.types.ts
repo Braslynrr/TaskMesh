@@ -35,3 +35,8 @@ export type listProps = {
     onDelete: (list:ListResponse) => void
     setCards:Dispatch<SetStateAction<cardResponse[]>>
 }
+
+export type updateListRequest = {
+    _id:string,
+    title:string
+}

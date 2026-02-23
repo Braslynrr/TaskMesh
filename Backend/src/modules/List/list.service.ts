@@ -3,7 +3,7 @@ import { mongoIdDTO } from "../../utils/zodObjectId";
 import { assertUserIsMember } from "../Taskboard/taskboard.policy";
 import { taskboardRepository } from "../Taskboard/taskboard.repository";
 import { ListRepository } from "./list.repository";
-import { createListDTO, movePositionListDTO, searchListDTO } from "./list.schema";
+import { createListDTO, movePositionListDTO, searchListDTO, updateListDTO } from "./list.schema";
 import { serializeList } from "./list.serializer";
 
 
@@ -56,6 +56,9 @@ export const listService = {
         assertUserIsMember({taskboard, userId})
 
         const result = await ListRepository.delete(data._id)
+
+        listService.orderList(taskboard._id.toString(), userId)
+
         return result
     }, 
 
@@ -97,9 +100,46 @@ export const listService = {
 
     },
 
+    async orderList(taskboardId:string, userId:string){
+
+        const lists = await listService.getList(taskboardId, userId)
+
+        const updates = lists.map((l, index) => ({
+            _id: l._id.toString(),
+            position: index + 1
+        }));
+
+        const result = await ListRepository.bulkUpdatePositions(updates);
+        
+        if(!result.isOk()){
+            throw new ConflictError(result.getWriteErrors().toString())
+        }
+    },
+
     async getListByIds(data: searchListDTO){
         const list = await ListRepository.getListByIds(data)
         return serializeList(list) 
+    },
+
+    async updateList(data: updateListDTO, userId: string)
+    {
+        const list = await ListRepository.getListById(data._id)
+
+        if(!list){
+            throw new NotFoundError("list does not exist")
+        }
+
+        const taskboard = await taskboardRepository.findbyId(list.taskboardId.toString())
+
+         if(!taskboard){
+            throw new NotFoundError("taskboard does not exist")
+        }
+
+        assertUserIsMember({taskboard:taskboard, userId})
+
+        const updatedList = await  ListRepository.updateList(data)
+
+        return serializeList(updatedList)
     }
 
 }

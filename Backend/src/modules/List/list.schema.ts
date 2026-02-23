@@ -19,8 +19,17 @@ export const searchListSchema = z.object({
     _id: objectIdSchema,
 })
 
+export const updateListShema = z.object(
+    {
+        _id:objectIdSchema,
+        title:z.string().min(4)
+    }
+)
+
 export type searchListDTO = z.infer<typeof searchListSchema>
 
 export type createListDTO = z.infer<typeof createListSchema>
 
 export type movePositionListDTO = z.infer<typeof movePositionListSchema>
+
+export type updateListDTO = z.infer<typeof updateListShema>

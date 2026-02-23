@@ -1,7 +1,8 @@
 import { Response, Request } from "express";
-import { createListSchema, movePositionListSchema, searchListSchema } from "./list.schema";
+import { createListSchema, movePositionListSchema, updateListShema } from "./list.schema";
 import { listService } from "./list.service";
 import { mongoIdSchema } from "../../utils/zodObjectId";
+
 
 
 export async function createList(req: Request, res: Response) {
@@ -36,5 +37,12 @@ export async function moveList(req: Request, res: Response) {
     const userId = req.user._id
     const data = movePositionListSchema.parse(req.body)
     const lists = await listService.movePosition(data, userId)
-     res.status(200).json(lists)
+    res.status(200).json(lists)
+}
+
+export async function updateList(req: Request, res: Response) {
+    const userId = req.user._id
+    const data = updateListShema.parse(req.body)
+    const newList = await listService.updateList(data, userId)
+    res.status(200).json(newList)
 }

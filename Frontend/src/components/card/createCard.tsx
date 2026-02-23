@@ -37,8 +37,8 @@ export function CreateCardForm({ onCancel, onCreate, listId }: createCardProps) 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition">
             <span className="text-red-700">{error}</span>
-            <input className="border border-gray-200 font-semibold text-sm text-gray-900 text-center rounded-2xl" name="title" type="text" placeholder="Title" />
-            <textarea className="border border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-lg p-3" name="description" placeholder="Description" />
+            <input className="border border-gray-200 font-semibold text-sm text-gray-900 text-center rounded-2xl" name="title" type="text" placeholder="Title" required/>
+            <textarea className="border border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-lg p-3" name="description" placeholder="Description" required/>
             <div className="grid grid-cols-2">
                 <button type="button" onClick={onCancel} className="text-red-500 hover:text-red-800" >Cancel</button>
                 <button type="submit" className="text-green-500 hover:text-green-800">Add</button>

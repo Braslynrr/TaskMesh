@@ -12,8 +12,8 @@ import { UserResponse } from "@/modules/auth/auth.types"
 import { getTaskboardSnapshot } from "@/modules/taskboard/taskboard.api"
 import { extractApiErrorMessage } from "@/lib/api-error"
 import { cardResponse } from "@/modules/card/card.types"
-import { Card } from "@/components/card/card"
 import { moveCard } from "@/modules/card/card.api"
+import { GhostCard } from "@/components/card/ghost.card"
 
 export default function TaskboardPage({
   params,
@@ -153,7 +153,7 @@ export default function TaskboardPage({
           onDragCancel={handleDragCancel}>
 
           <DragOverlay>
-            {activeCard ? <Card card={activeCard} onAssign={() => undefined} taskBoardOwner={user!} user={user!} onDelete={() => undefined} taskboardMembers={[]} ghost /> : null}
+            {activeCard ? <GhostCard card={activeCard} /> : null}
           </DragOverlay>
 
 

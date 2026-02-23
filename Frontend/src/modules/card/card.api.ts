@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client"
-import { createCardRequest, cardResponse, getCardsRequest, assignToCardRequest, moveCardRequest } from "./card.types"
+import { createCardRequest, cardResponse, getCardsRequest, assignToCardRequest, moveCardRequest, updateCardRequest } from "./card.types"
 import { DeleteResponse } from "../general/general.types"
 
 export async function createCard(data:createCardRequest): Promise<cardResponse> {
@@ -25,5 +25,10 @@ export async function deleteCard(id:string): Promise<DeleteResponse>
 
 export async function moveCard(data:moveCardRequest): Promise<cardResponse> {
     const res = await apiClient.post(`card/move`, data)
+    return res.data
+}
+
+export async function updateCard(data:updateCardRequest): Promise<cardResponse> {
+    const res = await apiClient.patch(`card/`, data)
     return res.data
 }

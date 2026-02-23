@@ -6,7 +6,7 @@ import { CreateCardForm } from "../card/createCard";
 import { Card } from "../card/card";
 import { listProps } from "@/modules/list/list.types";
 import { cardResponse } from "@/modules/card/card.types";
-import { deleteList } from "@/modules/list/list.api";
+import { deleteList, updateList } from "@/modules/list/list.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
 import { SortableContext } from "@dnd-kit/sortable"
 
@@ -26,10 +26,21 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
 
   }
 
-  async function newTitle() {
+  async function newTitle(e: React.FormEvent) {
+    e.preventDefault()
+
     try {
-      // todo
+      const data = {
+        _id: list._id,
+        title: title
+      }
+      const res = await updateList(data)
+      setIsEditing(false)
+      setError("")
+
     } catch (err) {
+
+      setTitle(list.title)
       setError(extractApiErrorMessage(err))
     }
   }
@@ -78,11 +89,11 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
         {!isEditing ?
           <h3 {...listeners} className="text-center">{title}</h3>
           :
-          <div className="flex gap-1">
-            <input className="border border-gray-400 rounded-2xl text-center" value={title} onChange={(e) => setTitle(e.target.value)}></input>
-            <button onClick={() => setIsEditing(false)} className="text-red-800 text-2xl hover:text-red-500">X</button>
-            <button onClick={newTitle} className="text-green-800 text-2xl hover:text-green-500">✔</button>
-          </div>
+          <form onSubmit={newTitle} className="flex gap-1">
+            <input className="border border-gray-400 rounded-2xl text-center" value={title} onChange={(e) => setTitle(e.target.value)} required></input>
+            <button type="button" onClick={() => { setError(""); setIsEditing(false) }} className="text-red-800 text-2xl hover:text-red-500">X</button>
+            <button type="submit" className="text-green-800 text-2xl hover:text-green-500">✔</button>
+          </form>
         }
 
         {!isEditing && <button onClick={() => setIsEditing(true)} className="absolute right-4 top-0 border-gray-100 text-blue-800 hover:text-blue-500">✎</button>}
@@ -92,7 +103,16 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
       </div>
 
       <SortableContext items={list_cards.filter(card => card.listId === list._id).map(card => card._id)} >
-        {list_cards.map(card => <Card key={card._id} card={card} taskBoardOwner={taskBoardOwner} user={user} taskboardMembers={taskboardMembers} onAssign={(card) => newAssignation(card)} onDelete={(card) => setCards((prev) => prev.filter(c => c._id !== card._id))}></Card>)}
+        {list_cards.map(card => <Card
+          key={card._id}
+          card={card}
+          taskBoardOwner={taskBoardOwner}
+          user={user}
+          taskboardMembers={taskboardMembers}
+          onAssign={(card) => newAssignation(card)}
+          onDelete={(card) => setCards((prev) => prev.filter(c => c._id !== card._id))}
+          onUpdate={(card) => setCards(prev => prev.map(c => c._id === card._id ? card : c))}
+        ></Card>)}
       </SortableContext>
 
       {isCreating ? (
