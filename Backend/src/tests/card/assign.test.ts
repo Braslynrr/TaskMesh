@@ -15,7 +15,7 @@ describe("POST /api/card/assign", () => {
             Array.from({ length: 4 }, (_, i) => 
                 createUser(`${i}`)))
 
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const listId= list._id.toString()
 
         const cardList = await Promise.all(
@@ -45,7 +45,7 @@ describe("POST /api/card/assign", () => {
         const userId = user._id.toString()
         const {taskboard} = await createTaskboardWithMembers([userId])
 
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const listId= list._id.toString()
 
         const card = await createCard(listId, userId)
@@ -71,7 +71,7 @@ describe("POST /api/card/assign", () => {
         const {token, user, taskboard} = await createTaskboardWithMembers(userList.map(user=> user._id.toString()))
         
 
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const listId= list._id.toString()
 
         const cardList = await Promise.all(

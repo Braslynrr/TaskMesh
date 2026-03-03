@@ -7,65 +7,84 @@ import { completePolicyCheck } from "../Card/card.service";
 import { assertUserIsMember } from "../Taskboard/taskboard.policy";
 import { assertUserCanModifyComments, assertUserCanCreateComments } from "./comment.policy";
 import { CommentDoc } from "./comment.types";
+import { boardEmitter } from "../Socket/socket.server";
+import { SocketEvents } from "../Socket/socket.events";
 
 
-async function completeCommentPolicyCheck(userId:string ,commentId:string, policyFunction:Function){
+async function completeCommentPolicyCheck(userId: string, commentId: string, policyFunction: Function) {
 
     const comment = await commentRepository.getCommentById(commentId)
 
-    if(!comment){
+    if (!comment) {
         throw new NotFoundError("comment does not exist")
     }
-    
-    const cardId = comment.cardId.toString() 
 
-    return {comment, ... await completePolicyCheck(userId, cardId, policyFunction, {comment})}
-} 
+    const cardId = comment.cardId.toString()
+
+    return { comment, ... await completePolicyCheck(userId, cardId, policyFunction, { comment }) }
+}
 
 
 export const commentService = {
 
-    async createComment(data: createCommentDTO, userId:string){
+    async createComment(data: createCommentDTO, userId: string) {
 
-        await completePolicyCheck(userId, data.cardId, assertUserCanCreateComments)
+        const { taskboard, card } = await completePolicyCheck(userId, data.cardId, assertUserCanCreateComments)
 
-        const newComment = await commentRepository.createComment({authorId:userId, ... data})
+        const taskboardId = taskboard._id.toString()
+
+        const newComment = await commentRepository.createComment({ authorId: userId, ...data })
 
         const populatedComment = await commentService.populateDocument(newComment)
-        
+
+        const emitter = boardEmitter(taskboardId)
+        emitter.emit(SocketEvents.COMMENT_DELETED, { cardId: card._id.toString() })
+
         return serializerComment(populatedComment)
     },
 
-    async getComments(data:mongoIdDTO, userId:string){
+    async getComments(data: mongoIdDTO, userId: string) {
 
         await completePolicyCheck(userId, data._id, assertUserIsMember)
 
         const newComments = await commentRepository.getCommentsByCardId(data._id)
 
-        const populatedComments = await Promise.all( newComments.map(comment => commentService.populateDocument(comment)))
-   
-        return populatedComments.map( comment => serializerComment(comment))
-    }, 
+        const populatedComments = await Promise.all(newComments.map(comment => commentService.populateDocument(comment)))
 
-    async deleteComment(data: mongoIdDTO, userId:string){
+        return populatedComments.map(comment => serializerComment(comment))
+    },
 
-        await completeCommentPolicyCheck(userId, data._id, assertUserCanModifyComments)
+    async deleteComment(data: mongoIdDTO, userId: string) {
+
+        const { taskboard, card } = await completeCommentPolicyCheck(userId, data._id, assertUserCanModifyComments)
+
+        const taskboardId = taskboard._id.toString()
+
+
+        const emitter = boardEmitter(taskboardId)
+        emitter.emit(SocketEvents.COMMENT_DELETED, { cardId: card._id.toString() })
 
         const result = await commentRepository.deleteComment(data._id)
         return result
     },
 
-    async updateComment(data: updateCommentDTO, userId:string) {
+    async updateComment(data: updateCommentDTO, userId: string) {
 
-        await completeCommentPolicyCheck(userId, data._id, assertUserCanModifyComments)
+        const { taskboard, card } = await completeCommentPolicyCheck(userId, data._id, assertUserCanModifyComments)
+
+        const taskboardId = taskboard._id.toString()
 
         const newComment = await commentRepository.updateComment(data)
 
         const populatedComment = await commentService.populateDocument(newComment)
 
+        const emitter = boardEmitter(taskboardId)
+        emitter.emit(SocketEvents.COMMENT_UPDATED, { cardId: card._id.toString() })
+
         return serializerComment(populatedComment)
     },
-    
-    async populateDocument(doc: CommentDoc){
-        return await doc.populate([{ path: "authorId", select: "_id username role" }])}
+
+    async populateDocument(doc: CommentDoc) {
+        return await doc.populate([{ path: "authorId", select: "_id username role" }])
+    }
 }

@@ -23,4 +23,5 @@ export type TaskboardDoc = HydratedDocument<{
   name: string
   ownerId: Types.ObjectId
   members: Types.ObjectId[]
+  listCounter:number
 }>

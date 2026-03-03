@@ -1,6 +1,6 @@
 import mongoose, { Types } from "mongoose"
 import { TaskboardDoc } from "./taskboard.types"
-import { ListModel, ListRepository } from "../List/list.repository"
+import { ListModel } from "../List/list.repository"
 import { cardModel } from "../Card/card.repository"
 import { commentModel } from "../Comment/comment.repository"
 
@@ -15,9 +15,11 @@ const TaskboardSchema = new mongoose.Schema<TaskboardDoc>({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   }],
+  listCounter: { type: Number, default: 0 },
+
 }, { timestamps: true })
 
-TaskboardSchema.pre("deleteOne", { document: true }, async function () {  
+TaskboardSchema.pre("deleteOne", { document: true }, async function () {
   const taskboard = this
 
   const lists = await ListModel.find({ taskboardId: taskboard._id }).select("_id")
@@ -87,6 +89,14 @@ export const taskboardRepository = {
         { ownerId: id },
         { members: id }]
     })
+  },
+
+  AddToListCounter(id: string) {
+    return taskboardModel.findByIdAndUpdate(
+      id,
+      { $inc: { listCounter: 1 } },
+      { new: true }
+    )
   }
 
 }

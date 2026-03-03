@@ -9,7 +9,7 @@ describe("GET /api/card", () => {
 
     it("should retrieve empty list", async () => {
         const {token, user, taskboard} = await createTaskboard()
-        const list = await createListforTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListforTaskboard(taskboard._id.toString(), "test")
         const listId= list._id.toString()
         await Promise.all(
             Array.from({ length: 4 }, (_, i) => 
@@ -31,7 +31,7 @@ describe("GET /api/card", () => {
     
     it("should retrieve all list cards", async () => {
         const {token, user, taskboard} = await createTaskboard()
-        const list = await createListforTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListforTaskboard(taskboard._id.toString(), "test")
         const listId= list._id.toString()
         await Promise.all(
             Array.from({ length: 4 }, (_, i) => 

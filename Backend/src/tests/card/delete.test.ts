@@ -13,7 +13,7 @@ describe("DELETE /api/card", () => {
 
     it("fails when card id does not exist", async () => {
         const { token, user, taskboard } = await createTaskboard()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
 
         const res = await request(app)
             .delete(`/api/card/096b0abc98937822669a7c40`)
@@ -27,7 +27,7 @@ describe("DELETE /api/card", () => {
 
     it("fails when external user tries to delete", async () => {
         const { user, taskboard } = await createTaskboard()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const listId = list._id.toString()
         const cardList = await Promise.all(
             Array.from({ length: 4 }, (_, i) =>
@@ -47,7 +47,7 @@ describe("DELETE /api/card", () => {
 
     it("should delete a card", async () => {
         const { token, user, taskboard } = await createTaskboard()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const listId = list._id.toString()
         const cardList = await Promise.all(
             Array.from({ length: 4 }, (_, i) =>
@@ -71,7 +71,7 @@ describe("DELETE /api/card", () => {
         const { token, user, taskboard } = await createTaskboard()
         const userId = user._id.toString()
 
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const card = await createCard(list._id.toString(), userId)
 
         const comment1 = await createComment(userId, card._id.toString())

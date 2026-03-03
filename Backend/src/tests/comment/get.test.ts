@@ -13,7 +13,7 @@ describe("GET /api/comment", () => {
     it("fails when user is not member of taskboard", async () => {
         const {user ,taskboard} = await createTaskboard()
         const userId = user._id.toString()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const card = await createCard(list._id.toString(), userId)
         const {token} = await createAuthUser("test1")
 
@@ -36,7 +36,7 @@ describe("GET /api/comment", () => {
     it("should retrieve empty list form card", async () => {
         const {token, user ,taskboard} = await createTaskboard()
         const userId = user._id.toString()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const card = await createCard(list._id.toString(), userId)
 
         const res = await request(app)
@@ -51,7 +51,7 @@ describe("GET /api/comment", () => {
     it("should retrieve all comments form card", async () => {
         const {token, user ,taskboard} = await createTaskboard()
         const userId = user._id.toString()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const card = await createCard(list._id.toString(), userId)
         await Promise.all(
             Array.from( 

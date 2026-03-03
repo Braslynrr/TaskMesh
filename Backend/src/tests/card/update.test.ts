@@ -12,7 +12,7 @@ describe("PATCH /api/card", () => {
         const {user, taskboard} = await createTaskboard()
         const {token} = await createAuthUser("test1")
 
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const listId= list._id.toString()
 
         const card = await createCard(listId, user._id.toString())
@@ -36,7 +36,7 @@ describe("PATCH /api/card", () => {
     it("should update cards text fields", async () => {
         const {token, user, taskboard} = await createTaskboard()
 
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const listId= list._id.toString()
 
         const card = await createCard(listId, user._id.toString())

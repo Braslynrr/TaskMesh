@@ -1,5 +1,7 @@
 import { ConflictError, NotFoundError } from "../../core/errors/errors";
 import { mongoIdDTO } from "../../utils/zodObjectId";
+import { SocketEvents } from "../Socket/socket.events";
+import { boardEmitter } from "../Socket/socket.server";
 import { assertUserIsMember } from "../Taskboard/taskboard.policy";
 import { taskboardRepository } from "../Taskboard/taskboard.repository";
 import { ListRepository } from "./list.repository";
@@ -9,74 +11,87 @@ import { serializeList } from "./list.serializer";
 
 export const listService = {
 
-    async createList(data: createListDTO, userId: string){
-
-        const nextNumberList = await ListRepository.countList(data.taskboardId)
-        data.position = nextNumberList + 1
+    async createList(data: createListDTO, userId: string) {
 
         const taskboard = await taskboardRepository.findbyId(data.taskboardId)
 
-        if(!taskboard){
+        if (!taskboard) {
             throw new NotFoundError("assigned taskboard does not exist")
         }
-        
-        assertUserIsMember({taskboard, userId})
 
+        assertUserIsMember({ taskboard, userId })
+
+        const updatedBoard = await taskboardRepository.AddToListCounter(data.taskboardId)
+        data.position = updatedBoard.listCounter
+        
         const list = await ListRepository.create(data)
-        return serializeList(list)
+        const serializedList = serializeList(list)
+
+
+        const emitter = boardEmitter(data.taskboardId)
+        emitter.emit(SocketEvents.LIST_CREATED, { list: serializedList })
+
+        return serializedList
     },
 
-    async getList(taskboardId:string, userId: string){
+    async getList(taskboardId: string, userId: string) {
         const taskboard = await taskboardRepository.findbyId(taskboardId)
 
-        if(!taskboard){
+        if (!taskboard) {
             return []
         }
 
-        assertUserIsMember({taskboard, userId})
+        assertUserIsMember({ taskboard, userId })
 
         const lists = await ListRepository.getLists(taskboardId)
         return lists.map(list => serializeList(list))
     },
 
-    async delete(data:mongoIdDTO, userId: string){
+    async delete(data: mongoIdDTO, userId: string) {
 
         const list = await ListRepository.getListById(data._id)
 
-        if(!list){
+        if (!list) {
             throw new NotFoundError("list does not exist")
         }
 
-        const taskboard = await taskboardRepository.findbyId(list.taskboardId.toString())
+        const taskboardId = list.taskboardId.toString()
 
-        if(!taskboard){
+        const taskboard = await taskboardRepository.findbyId(taskboardId)
+
+        if (!taskboard) {
             throw new NotFoundError("taskboard does not exist")
         }
 
-        assertUserIsMember({taskboard, userId})
+        assertUserIsMember({ taskboard, userId })
 
         const result = await ListRepository.delete(data._id)
 
         listService.orderList(taskboard._id.toString(), userId)
 
-        return result
-    }, 
+        const emitter = boardEmitter(taskboardId)
+        emitter.emit(SocketEvents.LIST_DELETED, { listId: data._id })
 
-    async movePosition(data: movePositionListDTO, userId: string){
+        return result
+    },
+
+    async movePosition(data: movePositionListDTO, userId: string) {
 
         const taskboard = await taskboardRepository.findbyId(data.taskboardId)
 
-        if(!taskboard){
+        if (!taskboard) {
             throw new NotFoundError("taskboard does not exist")
         }
 
-        assertUserIsMember({taskboard, userId})
+        assertUserIsMember({ taskboard, userId })
 
-        const list = await ListRepository.getListByIds({_id:data._id, taskboardId:data.taskboardId});
+        const list = await ListRepository.getListByIds({ _id: data._id, taskboardId: data.taskboardId });
 
         if (!list) throw new NotFoundError("the moved list does not exist");
 
         const originalLists = await ListRepository.getLists(list.taskboardId.toString());
+
+        const originalPosition = originalLists.findIndex(l=> l._id.toString() === list._id.toString())
 
         // Remove moved list
         const filtered = originalLists.filter(l => !l._id.equals(list._id));
@@ -91,16 +106,19 @@ export const listService = {
         }));
 
         const lists = await ListRepository.bulkUpdatePositions(updates);
-        
-        if(!lists.isOk()){
+
+        if (!lists.isOk()) {
             throw new ConflictError(lists.getWriteErrors().toString())
         }
+
+        const emitter = boardEmitter(taskboard._id.toString())
+        emitter.emit(SocketEvents.LIST_MOVED, { listId: list._id.toString(), from: originalPosition + 1, to: data.position })
 
         return ListRepository.getLists(data.taskboardId)
 
     },
 
-    async orderList(taskboardId:string, userId:string){
+    async orderList(taskboardId: string, userId: string) {
 
         const lists = await listService.getList(taskboardId, userId)
 
@@ -110,36 +128,42 @@ export const listService = {
         }));
 
         const result = await ListRepository.bulkUpdatePositions(updates);
-        
-        if(!result.isOk()){
+
+        if (!result.isOk()) {
             throw new ConflictError(result.getWriteErrors().toString())
         }
     },
 
-    async getListByIds(data: searchListDTO){
+    async getListByIds(data: searchListDTO) {
         const list = await ListRepository.getListByIds(data)
-        return serializeList(list) 
+        return serializeList(list)
     },
 
-    async updateList(data: updateListDTO, userId: string)
-    {
+    async updateList(data: updateListDTO, userId: string) {
         const list = await ListRepository.getListById(data._id)
 
-        if(!list){
+        if (!list) {
             throw new NotFoundError("list does not exist")
         }
 
-        const taskboard = await taskboardRepository.findbyId(list.taskboardId.toString())
+        const taskboardId = list.taskboardId.toString()
 
-         if(!taskboard){
+        const taskboard = await taskboardRepository.findbyId(taskboardId)
+
+        if (!taskboard) {
             throw new NotFoundError("taskboard does not exist")
         }
 
-        assertUserIsMember({taskboard:taskboard, userId})
+        assertUserIsMember({ taskboard: taskboard, userId })
 
-        const updatedList = await  ListRepository.updateList(data)
+        const updatedList = await ListRepository.updateList(data)
 
-        return serializeList(updatedList)
+        const serializedList = serializeList(updatedList)
+
+        const emitter = boardEmitter(taskboardId)
+        emitter.emit(SocketEvents.LIST_UPDATED, { list: serializedList })
+
+        return serializedList
     }
 
 }

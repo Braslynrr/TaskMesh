@@ -2,6 +2,8 @@ import { ForbiddenError, NotFoundError } from "../../core/errors/errors";
 import { mongoIdDTO } from "../../utils/zodObjectId";
 import { commentRepository } from "../Comment/comment.repository";
 import { ListRepository } from "../List/list.repository";
+import { SocketEvents } from "../Socket/socket.events";
+import { boardEmitter } from "../Socket/socket.server";
 import { assertUserIsMember, assertUserIsOwner } from "../Taskboard/taskboard.policy";
 import { taskboardRepository } from "../Taskboard/taskboard.repository";
 import { assertUserCanHandleCards } from "./card.policy";
@@ -52,7 +54,7 @@ export const cardService = {
 
         const cards = await cardRepository.getCardsByListId(listId._id)
 
-        const populatedCards = await Promise.all( cards.map( card => cardService.populateDoc(card)))
+        const populatedCards = await Promise.all(cards.map(card => cardService.populateDoc(card)))
 
         return populatedCards.map(card => serializeCard(card))
     },
@@ -76,17 +78,26 @@ export const cardService = {
 
         const newCard = await cardRepository.createCard({ createdBy: userId, ...data })
 
-        
+
         const populatedCard = await cardService.populateDoc(newCard)
 
-        return serializeCard(populatedCard)
+        const serializedCard = serializeCard(populatedCard)
+
+        const emitter = boardEmitter(taskboard._id.toString())
+        emitter.emit(SocketEvents.CARD_CREATED, { card: serializedCard })
+
+        return serializedCard
     },
 
     async deleteCard(cardId: mongoIdDTO, userId: string) {
 
-        await completePolicyCheck(userId, cardId._id, assertUserCanHandleCards)
+        const { taskboard } = await completePolicyCheck(userId, cardId._id, assertUserCanHandleCards)
 
         const result = cardRepository.delete(cardId._id)
+
+        const emitter = boardEmitter(taskboard._id.toString())
+        emitter.emit(SocketEvents.CARD_DELETED, { cardId: cardId._id })
+
         return result
     },
 
@@ -106,18 +117,28 @@ export const cardService = {
 
         const populatedCard = await cardService.populateDoc(updatedCard)
 
-        return serializeCard(populatedCard)
+        const serializedCard = serializeCard(populatedCard)
+
+        const emitter = boardEmitter(taskboard._id.toString())
+        emitter.emit(SocketEvents.CARD_UPDATED, { card: serializedCard })
+
+        return serializedCard
     },
 
     async updateCard(data: updateCardDTO, userId: string) {
 
-        await completePolicyCheck(userId, data._id, assertUserCanHandleCards)
+        const { taskboard } = await completePolicyCheck(userId, data._id, assertUserCanHandleCards)
 
         const updatedCard = await cardRepository.updateCard(data)
 
         const populatedCard = await cardService.populateDoc(updatedCard)
 
-        return serializeCard(populatedCard)
+        const serializedCard = serializeCard(populatedCard)
+
+        const emitter = boardEmitter(taskboard._id.toString())
+        emitter.emit(SocketEvents.CARD_CREATED, { card: serializedCard })
+
+        return serializedCard
 
     },
 
@@ -139,11 +160,16 @@ export const cardService = {
 
         const populatedCard = await cardService.populateDoc(newCard)
 
-        return serializeCard(populatedCard)
+        const serializedCard = serializeCard(populatedCard)
+
+        const emitter = boardEmitter(taskboard._id.toString())
+        emitter.emit(SocketEvents.CARD_MOVED, { cardId: data._id, to: data.listId })
+
+        return serializedCard
     },
 
     async populateDoc(doc: CardDoc): Promise<CardObject> {
-        const card = await doc.populate([{ path: "createdBy", select: "_id username role" }, { path: "assignedTo", select: "_id username role" }])
+        const card = await doc.populate([{ path: "createdBy", select: "_id username" }, { path: "assignedTo", select: "_id username" }])
         const count = await commentRepository.getCommentsNumberById(doc._id.toString())
         const cardObject = card.toObject()
         cardObject.comments = count

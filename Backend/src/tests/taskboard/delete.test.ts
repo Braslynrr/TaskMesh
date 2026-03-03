@@ -55,8 +55,8 @@ describe("DELETE /api/taskboard/", () => {
         const { token, user, taskboard } = await createTaskboard()
         const userId = user._id.toString()
 
-        const list1 = await createListForTaskboard(taskboard._id.toString(), "L1", 1)
-        const list2 = await createListForTaskboard(taskboard._id.toString(), "L2", 2)
+        const list1 = await createListForTaskboard(taskboard._id.toString(), "L1")
+        const list2 = await createListForTaskboard(taskboard._id.toString(), "L2")
 
         const card1 = await createCard(list1._id.toString(), userId)
         const card2 = await createCard(list2._id.toString(), userId)

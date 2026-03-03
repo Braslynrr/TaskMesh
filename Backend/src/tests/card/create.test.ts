@@ -10,7 +10,7 @@ describe("POST /api/card/create", () => {
         it("fails when user is not member of the taskboard", async () => {
         const {taskboard} = await createTaskboard()
         const {token} =  await createAuthUser("test1")
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
 
         
         const res = await request(app)
@@ -30,7 +30,7 @@ describe("POST /api/card/create", () => {
 
     it("fails when create a card with invalid listId", async () => {
         const {token, taskboard} = await createTaskboard()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
 
         
         const res = await request(app)
@@ -51,7 +51,7 @@ describe("POST /api/card/create", () => {
     
     it("should create a card", async () => {
         const {token, taskboard} = await createTaskboard()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
 
         const body = 
             {

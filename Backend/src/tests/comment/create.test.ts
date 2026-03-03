@@ -12,7 +12,7 @@ describe("POST /api/comment", () => {
     it("fails when user is not member of taskboard", async () => {
         const {user ,taskboard} = await createTaskboard()
         const userId = user._id.toString()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const card = await createCard(list._id.toString(), userId)
 
         const {token} = await createAuthUser("test1")
@@ -36,7 +36,7 @@ describe("POST /api/comment", () => {
     it("should allow assigned user to create a comment", async () => {
         const {user ,taskboard} = await createTaskboard()
         const userId = user._id.toString()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const user2 = await createAuthUser("test1")
         const user2Id = user2.user._id.toString()
         const card = await createCard(list._id.toString(), userId, "test", "test", [user2Id])
@@ -60,7 +60,7 @@ describe("POST /api/comment", () => {
     it("should create a comment", async () => {
         const {token, user ,taskboard} = await createTaskboard()
         const userId = user._id.toString()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const card = await createCard(list._id.toString(), userId)
 
         const body = 

@@ -25,7 +25,7 @@ describe("GET /api/taskboard/:id/snapshot", () => {
     it("retrieves a complete taskboard snapshot", async () => {
         const { token, user, taskboard } = await createTaskboard()
         const userId = user._id.toString()
-        const list = await createListForTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListForTaskboard(taskboard._id.toString(), "test")
         const card = await createCard(list._id.toString(), userId)
         await createComment(userId, card._id.toString())
 

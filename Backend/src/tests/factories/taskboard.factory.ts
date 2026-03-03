@@ -1,4 +1,5 @@
 import { taskboardRepository } from "../../modules/Taskboard/taskboard.repository"
+import { serializeTaskboard } from "../../modules/Taskboard/taskboard.serializer"
 import { createAuthUser } from "../factories/user.factory"
 
 
@@ -18,7 +19,16 @@ export async function createTaskboardWithMembers(members:string[], name:string="
 
     const {_id} = await taskboardRepository.create({name: name, ownerId: user._id })
 
-    const taskboardWithMembers = await taskboardRepository.addMembers({ _id: _id.toString(), members: members})
+    const taskboardWithMembers = await AddMemberToTaskboard(_id.toString(), members)
 
-    return {token, user , taskboard:{ _id:taskboardWithMembers._id.toString() ,name: taskboardWithMembers.name, ownerId: taskboardWithMembers.ownerId, members: taskboardWithMembers.members.map(m=>m.toString()) }}
+    return {token, user , taskboard: taskboardWithMembers}
+}
+
+
+export async function AddMemberToTaskboard(taskboardId:string, members:string[]){
+
+    const result = await taskboardRepository.addMembers({_id:taskboardId, members:members})
+
+    return serializeTaskboard(result)
+
 }

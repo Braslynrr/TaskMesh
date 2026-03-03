@@ -10,8 +10,8 @@ describe("POST /api/card/move", () => {
 
     it("fails when user its not member of the taskboard", async () => {
         const { user, taskboard} = await createTaskboard()
-        const list = await createListforTaskboard(taskboard._id.toString(), "test", 1)
-        const list2 = await createListforTaskboard(taskboard._id.toString(), "test", 2)
+        const list = await createListforTaskboard(taskboard._id.toString(), "test")
+        const list2 = await createListforTaskboard(taskboard._id.toString(), "test")
 
         const {token} = await createAuthUser("test1")
 
@@ -38,7 +38,7 @@ describe("POST /api/card/move", () => {
 
     it("fails when the other list does not exist", async () => {
         const {token, user, taskboard} = await createTaskboard()
-        const list = await createListforTaskboard(taskboard._id.toString(), "test", 1)
+        const list = await createListforTaskboard(taskboard._id.toString(), "test")
 
         const listId = list._id.toString()
 
@@ -64,8 +64,8 @@ describe("POST /api/card/move", () => {
     it("fails when list belong to different taskboard", async () => {
         const {token, user, taskboard} = await createTaskboard()
         const taskboard2 = await createTaskboard("test1", "test1")
-        const list = await createListforTaskboard(taskboard._id.toString(), "test", 1)
-        const list2 = await createListforTaskboard(taskboard2.taskboard._id.toString(), "test", 2)
+        const list = await createListforTaskboard(taskboard._id.toString(), "test")
+        const list2 = await createListforTaskboard(taskboard2.taskboard._id.toString(), "test")
 
         const listId = list._id.toString()
         const listId2 = list2._id.toString()
@@ -90,8 +90,8 @@ describe("POST /api/card/move", () => {
     
     it("should move a list to other list", async () => {
         const {token, user, taskboard} = await createTaskboard()
-        const list = await createListforTaskboard(taskboard._id.toString(), "test", 1)
-        const list2 = await createListforTaskboard(taskboard._id.toString(), "test", 2)
+        const list = await createListforTaskboard(taskboard._id.toString(), "test")
+        const list2 = await createListforTaskboard(taskboard._id.toString(), "test")
 
         const listId = list._id.toString()
         const listId2 = list2._id.toString()
