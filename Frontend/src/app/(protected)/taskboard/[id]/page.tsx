@@ -5,7 +5,7 @@ import { List } from "@/components/list/list"
 import { use, useEffect, useState } from "react"
 import { rectIntersection, DndContext, DragEndEvent, DragStartEvent, DragOverlay, DragCancelEvent } from "@dnd-kit/core"
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable"
-import { ListResponse } from "@/modules/list/list.types"
+import { listResponse } from "@/modules/list/list.types"
 import { TaskboardSnapshotResponse } from "@/modules/taskboard/taskboard.types"
 import { moveList } from "@/modules/list/list.api"
 import { UserResponse } from "@/modules/auth/auth.types"
@@ -14,6 +14,7 @@ import { extractApiErrorMessage } from "@/lib/api-error"
 import { cardResponse } from "@/modules/card/card.types"
 import { moveCard } from "@/modules/card/card.api"
 import { GhostCard } from "@/components/card/ghost.card"
+import { useBoardSocket } from "@/socket-lib/useBoardSocket"
 
 export default function TaskboardPage({
   params,
@@ -22,7 +23,7 @@ export default function TaskboardPage({
 }) {
   const [error, setError] = useState("")
   const { id } = use(params)
-  const [lists, setLists] = useState<ListResponse[]>([])
+  const [lists, setLists] = useState<listResponse[]>([])
   const [cards, setCards] = useState<cardResponse[]>([])
   const [taskboard, setTaskboard] = useState<TaskboardSnapshotResponse>()
   const [user, setUser] = useState<UserResponse>()
@@ -45,7 +46,14 @@ export default function TaskboardPage({
     }
 
     loadListAndUser()
-  }, [])
+  }, [id])
+
+  useBoardSocket({
+    taskboardId: id,
+    moveCards: arrayMove,
+    setLists,
+    setCards,
+  })
 
   function handleDragCancel(event: DragCancelEvent) {
     setActiveCard(null)
@@ -66,7 +74,7 @@ export default function TaskboardPage({
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
-    if (!over || active.id === over.id) {
+    if (!over || !active || active.id === over.id) {
       setActiveCard(null)
       return
     }
@@ -75,6 +83,8 @@ export default function TaskboardPage({
     const overType = over.data.current?.type
 
     const type = `${activeType} to ${overType}`
+
+    console.log(type)
 
     let listiId = over.id.toString()
     let originalList = ""
@@ -85,8 +95,14 @@ export default function TaskboardPage({
         const oldIndex = lists.findIndex(l => l._id === active.id)
         const newIndex = lists.findIndex(l => l._id === over.id)
 
-        setLists((lists) => arrayMove(lists, oldIndex, newIndex))
 
+        console.log("--------------------- Request Action -------------------")
+        console.log(`${oldIndex} -> ${newIndex}`)
+        console.log(arrayMove(lists, oldIndex, newIndex))
+
+        setLists((prev) => arrayMove(prev, oldIndex, newIndex))
+
+        
         try {
           const data = {
             _id: active.id.toString(),
@@ -98,7 +114,7 @@ export default function TaskboardPage({
         }
         catch (err) {
           setError(extractApiErrorMessage(err))
-          setLists((lists) => arrayMove(lists, newIndex, oldIndex))
+          setLists((prev) => arrayMove(prev, newIndex, oldIndex))
         }
         break;
       case "card to card":

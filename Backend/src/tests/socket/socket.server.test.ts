@@ -1,11 +1,13 @@
 import { io as Client } from "socket.io-client"
 import { getIO } from "../../modules/Socket/socket.server"
-import { SocketEvents } from "../../modules/Socket/socket.events"
 import { getServer } from "../factories/server.factory"
+import { createAuthUser } from "../factories/user.factory"
+import { SocketEvents } from "../../modules/Socket/socket.events"
 
 describe("Socket.io connection", () => {
   let server: any
   let port: number
+  let authToken: string
 
   beforeAll(async () => {
     server = getServer()
@@ -18,12 +20,22 @@ describe("Socket.io connection", () => {
     })
   })
 
+  beforeEach(async () => {
+    const { token } = await createAuthUser()
+    authToken = token
+  })
+
   afterAll((done) => {
     server.close(done)
   })
 
   it("should connect successfully", (done) => {
-    const client = Client(`http://localhost:${port}`)
+    const client = Client(`http://localhost:${port}`, {
+      auth: {
+        token:authToken,
+      }
+    })
+
 
     client.on(SocketEvents.CONNECT, () => {
       expect(client.connected).toBe(true)
@@ -37,7 +49,12 @@ describe("Socket.io connection", () => {
   })
 
   it("should join a room", async () => {
-    const client = Client(`http://localhost:${port}`)
+     const client = Client(`http://localhost:${port}`, {
+      auth: {
+        token:authToken,
+      },
+      transports: ["websocket"],
+    })
 
     await new Promise<void>((resolve) => {
       client.on(SocketEvents.CONNECT, resolve)

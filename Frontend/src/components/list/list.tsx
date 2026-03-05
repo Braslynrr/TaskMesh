@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateCardForm } from "../card/createCard";
 import { Card } from "../card/card";
 import { listProps } from "@/modules/list/list.types";
@@ -18,6 +18,10 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
   const [title, setTitle] = useState(list.title)
   const [error, setError] = useState("")
 
+  useEffect(() => {
+    setTitle(list.title)
+  }, [list.title])
+
   function newAssignation(card: cardResponse) {
     const oldCard = list_cards.find(c => c._id === card._id)
 
@@ -26,7 +30,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
 
   }
 
-  async function newTitle(e: React.FormEvent) {
+  async function newListTitle(e: React.FormEvent) {
     e.preventDefault()
 
     try {
@@ -40,7 +44,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
 
     } catch (err) {
 
-      setTitle(list.title)
+      setTitle(originalTitle)
       setError(extractApiErrorMessage(err))
     }
   }
@@ -89,7 +93,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
         {!isEditing ?
           <h3 {...listeners} className="text-center">{title}</h3>
           :
-          <form onSubmit={newTitle} className="flex gap-1">
+          <form onSubmit={newListTitle} className="flex gap-1">
             <input className="border border-gray-400 rounded-2xl text-center" value={title} onChange={(e) => setTitle(e.target.value)} required></input>
             <button type="button" onClick={() => { setError(""); setIsEditing(false) }} className="text-red-800 text-2xl hover:text-red-500">X</button>
             <button type="submit" className="text-green-800 text-2xl hover:text-green-500">✔</button>
@@ -112,6 +116,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
           onAssign={(card) => newAssignation(card)}
           onDelete={(card) => setCards((prev) => prev.filter(c => c._id !== card._id))}
           onUpdate={(card) => setCards(prev => prev.map(c => c._id === card._id ? card : c))}
+          setCards={setCards}
         ></Card>)}
       </SortableContext>
 

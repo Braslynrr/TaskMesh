@@ -1,5 +1,5 @@
-import { CardResponse } from "../Card/card.types"
-import { listResponse } from "../List/list.types"
+import { cardResponse } from "@/modules/card/card.types"
+import { listResponse } from "@/modules/list/list.types"
 
 export interface ServerToClientEvents {
 
@@ -58,7 +58,7 @@ export type listMovedPayload = basePayload & {
 }
 
 export type cardUpsertPayload = basePayload & {
-    card: CardResponse
+    card: cardResponse
 }
 
 export type cardMovedPayload = basePayload & {

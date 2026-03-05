@@ -4,10 +4,10 @@ import { cardResponse } from "../card/card.types"
 
 export type CreateListProps = {
   taskboardId: string
-  onCreate: (list:ListResponse) => void
+  onCreate: (list:listResponse) => void
 }
 
-export type ListResponse = {
+export type listResponse = {
     _id:string
     title:string
     taskboardId:string  
@@ -27,12 +27,12 @@ export type moveListRequest = {
 
 export type listProps = {
     isDragging?:boolean
-    list: ListResponse
+    list: listResponse
     taskBoardOwner: UserResponse
     taskboardMembers: UserResponse[]
     user:UserResponse
     list_cards:cardResponse[]
-    onDelete: (list:ListResponse) => void
+    onDelete: (list:listResponse) => void
     setCards:Dispatch<SetStateAction<cardResponse[]>>
 }
 

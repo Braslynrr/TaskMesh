@@ -6,7 +6,7 @@ import { CardView } from "./card.view";
 import { EditCard } from "./update.card";
 
 
-export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, onDelete, onUpdate }: cardProps) {
+export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, onDelete, onUpdate, setCards }: cardProps) {
     const [isEditing, setIsEditing] = useState(false)
 
     const isTaskboardOwner = user._id === taskBoardOwner._id
@@ -20,7 +20,7 @@ export function Card({ card, user, taskBoardOwner, taskboardMembers, onAssign, o
 
 
     return !isEditing? 
-        <CardView card={card} user={user} taskBoardOwner={taskBoardOwner} taskboardMembers={taskboardMembers} onAssign={onAssign} onDelete={onDelete} canModify={canModify} isTaskboardOwner={isTaskboardOwner}  setEditCard={ ()=> setIsEditing(true) }/>
+        <CardView card={card} user={user} taskBoardOwner={taskBoardOwner} taskboardMembers={taskboardMembers} onAssign={onAssign} onDelete={onDelete} canModify={canModify} isTaskboardOwner={isTaskboardOwner}  setEditCard={ ()=> setIsEditing(true)} setCards={setCards}/>
         :
         <EditCard card={card} cancel={()=> setIsEditing(false)} onUpdate={onUpdate}/>
         

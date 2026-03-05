@@ -1,14 +1,16 @@
-import { createTaskboard } from "../factories/taskboard.factory"
+import { AddMemberToTaskboard, createTaskboard } from "../factories/taskboard.factory"
 import { io as Client } from "socket.io-client"
-import { SocketEvents } from "../../modules/Socket/socket.events"
 import request from "supertest"
 import { getServer } from "../factories/server.factory"
 import { createListForTaskboard } from "../factories/list.factory"
+import { createAuthUser } from "../factories/user.factory"
+import { SocketEvents } from "../../modules/Socket/socket.events"
 
 describe("WebSocket for List", () => {
     let server: any
     let port: number
-    let token: string
+    let socketToken: string
+    let APIToken: string
     let taskboardId: string
 
     beforeAll(async () => {
@@ -25,7 +27,10 @@ describe("WebSocket for List", () => {
 
     beforeEach(async () => {
         const result = await createTaskboard()
-        token = result.token
+        const user = await createAuthUser("test1")
+        await AddMemberToTaskboard(result.taskboard._id.toString(), [user.user._id])
+        socketToken = user.token
+        APIToken = result.token
         taskboardId = result.taskboard._id.toString()
     })
 
@@ -36,11 +41,17 @@ describe("WebSocket for List", () => {
 
 
     it("should receive LIST_CREATED when a list is created", async () => {
-        const client = Client(`http://localhost:${port}`)
+        const client = Client(`http://localhost:${port}`, {
+            auth: {
+                token: socketToken,
+            }
+        })
 
         await new Promise<void>((resolve) => {
-            client.on("connect", () => resolve())
+            client.on(SocketEvents.CONNECT, () => resolve())
         })
+
+        expect(client.connected).toBe(true)
 
         client.emit(SocketEvents.JOIN_TASKBOARD, taskboardId)
 
@@ -52,7 +63,7 @@ describe("WebSocket for List", () => {
 
         const res = await request(server)
             .post("/api/list/create")
-            .set("Cookie", `auth_token=${token}`)
+            .set("Cookie", `auth_token=${APIToken}`)
             .send({
                 title: "test",
                 taskboardId: taskboardId
@@ -70,11 +81,17 @@ describe("WebSocket for List", () => {
 
     it("should receive LIST_UPDATED when a list is updated", async () => {
 
-        const client = Client(`http://localhost:${port}`)
+        const client = Client(`http://localhost:${port}`, {
+            auth: {
+                token: socketToken,
+            }
+        })
 
         await new Promise<void>((resolve) => {
-            client.on("connect", () => resolve())
+            client.on(SocketEvents.CONNECT, () => resolve())
         })
+
+        expect(client.connected).toBe(true)
 
         client.emit(SocketEvents.JOIN_TASKBOARD, taskboardId)
 
@@ -93,7 +110,7 @@ describe("WebSocket for List", () => {
 
         const res = await request(server)
             .patch(`/api/list/`)
-            .set("Cookie", `auth_token=${token}`)
+            .set("Cookie", `auth_token=${APIToken}`)
             .send(body)
 
         expect(res.status).toBe(200)
@@ -108,11 +125,18 @@ describe("WebSocket for List", () => {
 
     it("should receive LIST_MOVED when a list is moved", async () => {
 
-        const client = Client(`http://localhost:${port}`)
+        const client = Client(`http://localhost:${port}`, {
+            auth: {
+                token: socketToken,
+            }
+        })
+
 
         await new Promise<void>((resolve) => {
-            client.on("connect", () => resolve())
+            client.on(SocketEvents.CONNECT, () => resolve())
         })
+
+        expect(client.connected).toBe(true)
 
         client.emit(SocketEvents.JOIN_TASKBOARD, taskboardId)
 
@@ -128,7 +152,7 @@ describe("WebSocket for List", () => {
 
         const res = await request(server)
             .post("/api/list/move")
-            .set("Cookie", `auth_token=${token}`)
+            .set("Cookie", `auth_token=${APIToken}`)
             .send({
                 _id: list2._id,
                 taskboardId: list1.taskboardId,
@@ -151,11 +175,17 @@ describe("WebSocket for List", () => {
 
     it("should receive LIST_DELETED when a list is deleted", async () => {
 
-        const client = Client(`http://localhost:${port}`)
+        const client = Client(`http://localhost:${port}`, {
+            auth: {
+                token: socketToken,
+            }
+        })
 
         await new Promise<void>((resolve) => {
-            client.on("connect", () => resolve())
+            client.on(SocketEvents.CONNECT, () => resolve())
         })
+
+        expect(client.connected).toBe(true)
 
         client.emit(SocketEvents.JOIN_TASKBOARD, taskboardId)
 
@@ -169,7 +199,7 @@ describe("WebSocket for List", () => {
 
         const res = await request(server)
             .delete(`/api/list/${list1._id}`)
-            .set("Cookie", `auth_token=${token}`)
+            .set("Cookie", `auth_token=${APIToken}`)
 
 
         expect(res.status).toBe(200)

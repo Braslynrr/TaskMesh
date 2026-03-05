@@ -41,6 +41,7 @@ export type cardProps = {
     onAssign: (card:cardResponse) => void
     onDelete: (card:cardResponse) => void
     onUpdate: (card:cardResponse) => void
+    setCards: React.Dispatch<React.SetStateAction<cardResponse[]>>
 }
 
 
@@ -54,6 +55,7 @@ export type cardViewProps = {
     setEditCard: () => void
     onAssign: (card:cardResponse) => void
     onDelete: (card:cardResponse) => void
+    setCards: React.Dispatch<React.SetStateAction<cardResponse[]>>
 }
 
 export type ghostCardProps = {

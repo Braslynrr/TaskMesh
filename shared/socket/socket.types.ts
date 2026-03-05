@@ -1,5 +1,5 @@
-import { CardResponse } from "../Card/card.types"
-import { listResponse } from "../List/list.types"
+import { CardResponse } from "../../Backend/src/modules/Card/card.types"
+import { listResponse } from "../../Backend/src/modules/List/list.types"
 
 export interface ServerToClientEvents {
 

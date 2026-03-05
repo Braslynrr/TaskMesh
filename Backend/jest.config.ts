@@ -10,6 +10,10 @@ const config: Config = {
   testPathIgnorePatterns: ["/node_modules/", "/dist/"],
   moduleFileExtensions: ["ts", "js"],
   clearMocks: true,
+
+  moduleNameMapper: {
+    "^@shared/(.*)$": "<rootDir>/../shared/$1"
+  }
 }
 
 export default config

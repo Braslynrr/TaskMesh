@@ -23,12 +23,12 @@ export async function login(req:Request, res:Response) {
 
   res.cookie("auth_token", token, {
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: "none",
   secure: config.env === "production"})
 
   res.cookie("refresh_token", refreshToken , {
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: "none",
   path: "api/user/refresh",
   secure: config.env === "production"})
 
@@ -45,7 +45,7 @@ export async function refreshUser(req:Request, res:Response) {
 
   res.cookie("auth_token", token, {
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: "none",
   secure: config.env === "production"})
 
   res.sendStatus(201)

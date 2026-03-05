@@ -1,7 +1,7 @@
 import { UserResponse } from "../auth/auth.types"
 import { cardResponse } from "../card/card.types"
 import { MongoIdRequest } from "../general/general.types"
-import { ListResponse } from "../list/list.types"
+import { listResponse } from "../list/list.types"
 
 export type TaskboardResponse = {
     _id:string
@@ -15,7 +15,7 @@ export type TaskboardSnapshotResponse = {
     name:string
     owner: UserResponse
     members: UserResponse[]
-    lists: ListResponse[]
+    lists: listResponse[]
     cards:cardResponse[]
 }
 

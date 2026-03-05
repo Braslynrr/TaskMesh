@@ -37,8 +37,8 @@ export const commentService = {
 
         const populatedComment = await commentService.populateDocument(newComment)
 
-        const emitter = boardEmitter(taskboardId)
-        emitter.emit(SocketEvents.COMMENT_DELETED, { cardId: card._id.toString() })
+        const emitter = boardEmitter(taskboardId, userId)
+        emitter.emit(SocketEvents.COMMENT_CREATED, { cardId: card._id.toString(), authorId: userId })
 
         return serializerComment(populatedComment)
     },
@@ -61,8 +61,8 @@ export const commentService = {
         const taskboardId = taskboard._id.toString()
 
 
-        const emitter = boardEmitter(taskboardId)
-        emitter.emit(SocketEvents.COMMENT_DELETED, { cardId: card._id.toString() })
+        const emitter = boardEmitter(taskboardId, userId)
+        emitter.emit(SocketEvents.COMMENT_DELETED, { cardId: card._id.toString(), authorId: userId })
 
         const result = await commentRepository.deleteComment(data._id)
         return result
@@ -78,8 +78,8 @@ export const commentService = {
 
         const populatedComment = await commentService.populateDocument(newComment)
 
-        const emitter = boardEmitter(taskboardId)
-        emitter.emit(SocketEvents.COMMENT_UPDATED, { cardId: card._id.toString() })
+        const emitter = boardEmitter(taskboardId, userId)
+        emitter.emit(SocketEvents.COMMENT_UPDATED, { cardId: card._id.toString(), authorId: userId })
 
         return serializerComment(populatedComment)
     },

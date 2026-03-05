@@ -83,8 +83,8 @@ export const cardService = {
 
         const serializedCard = serializeCard(populatedCard)
 
-        const emitter = boardEmitter(taskboard._id.toString())
-        emitter.emit(SocketEvents.CARD_CREATED, { card: serializedCard })
+        const emitter = boardEmitter(taskboard._id.toString(),userId)
+        emitter.emit(SocketEvents.CARD_CREATED, { card: serializedCard, authorId: userId })
 
         return serializedCard
     },
@@ -95,8 +95,8 @@ export const cardService = {
 
         const result = cardRepository.delete(cardId._id)
 
-        const emitter = boardEmitter(taskboard._id.toString())
-        emitter.emit(SocketEvents.CARD_DELETED, { cardId: cardId._id })
+        const emitter = boardEmitter(taskboard._id.toString(), userId)
+        emitter.emit(SocketEvents.CARD_DELETED, { cardId: cardId._id, authorId: userId })
 
         return result
     },
@@ -119,8 +119,8 @@ export const cardService = {
 
         const serializedCard = serializeCard(populatedCard)
 
-        const emitter = boardEmitter(taskboard._id.toString())
-        emitter.emit(SocketEvents.CARD_UPDATED, { card: serializedCard })
+        const emitter = boardEmitter(taskboard._id.toString(), userId)
+        emitter.emit(SocketEvents.CARD_UPDATED, { card: serializedCard, authorId: userId })
 
         return serializedCard
     },
@@ -135,8 +135,8 @@ export const cardService = {
 
         const serializedCard = serializeCard(populatedCard)
 
-        const emitter = boardEmitter(taskboard._id.toString())
-        emitter.emit(SocketEvents.CARD_CREATED, { card: serializedCard })
+        const emitter = boardEmitter(taskboard._id.toString(), userId)
+        emitter.emit(SocketEvents.CARD_UPDATED, { card: serializedCard,authorId: userId })
 
         return serializedCard
 
@@ -162,8 +162,8 @@ export const cardService = {
 
         const serializedCard = serializeCard(populatedCard)
 
-        const emitter = boardEmitter(taskboard._id.toString())
-        emitter.emit(SocketEvents.CARD_MOVED, { cardId: data._id, to: data.listId })
+        const emitter = boardEmitter(taskboard._id.toString(), userId)
+        emitter.emit(SocketEvents.CARD_MOVED, { cardId: data._id, to: data.listId, authorId: userId })
 
         return serializedCard
     },

@@ -1,10 +1,10 @@
 import { extractApiErrorMessage } from "@/lib/api-error";
-import { cardViewProps } from "@/modules/card/card.types"
+import { cardResponse, cardViewProps } from "@/modules/card/card.types"
 import { getComments } from "@/modules/comment/comment.api";
 import { commentResponse } from "@/modules/comment/comment.types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserAvatar from "../user/user.avatar";
 import AssigCardManager from "./assign.card";
 import CreateComment from "../comment/CreateComment";
@@ -12,30 +12,66 @@ import { deleteCard } from "@/modules/card/card.api";
 import Comment from "../comment/comment";
 
 
-export function CardView({ card, canModify, isTaskboardOwner, user ,taskBoardOwner, taskboardMembers, setEditCard, onDelete, onAssign }: cardViewProps) {
+export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwner, taskboardMembers, setEditCard, onDelete, onAssign, setCards }: cardViewProps) {
     const [error, setError] = useState("")
     const [isManaging, setIsManaging] = useState(false)
     const [isCreating, setIsCreating] = useState(false)
     const [comments, setComments] = useState<commentResponse[]>([])
+    const [isToggled, setIsToggled] = useState(false)
+
+    useEffect(() => {
+        if (!isToggled) return
+        setComments([])
+        loadComments()
+    }, [card])
 
 
     function onDeleteComment(comment: commentResponse) {
         setComments((prev) => prev.filter(com => com._id !== comment._id))
+
+        setCards((prev) => {
+            const card = prev.find(c => c._id === comment.cardId)
+            if (card) {
+                const newCard: cardResponse = { ...card, comments: card.comments - 1 }
+                return prev.map(c => c._id === card._id ? newCard : c)
+            }
+            return prev
+        })
     }
 
     function onUpdateComment(comment: commentResponse) {
         setComments((prev) => prev.map(com => com._id === comment._id ? comment : com))
-    }
 
-    function handleToggle(e: React.SyntheticEvent<HTMLDetailsElement>) {
-        const el = e.currentTarget
-        if (el.open && comments.length <= 0) {
+        if (isToggled && comments.length <= 0) {
             loadComments()
         }
     }
 
-    async function loadComments() {
+    function handleToggle(e: React.SyntheticEvent<HTMLDetailsElement>) {
+        const el = e.currentTarget
+        const open = el.open
 
+        setIsToggled(open)
+
+        if (open && comments.length <= 0) {
+            loadComments()
+        }
+    }
+
+    function handleCreateComment(comment: commentResponse) {
+        setComments((prev) => [...prev, comment])
+
+        setCards((prev) => {
+            const card = prev.find(c => c._id === comment.cardId)
+            if (card) {
+                const newCard: cardResponse = { ...card, comments: card.comments + 1 }
+                return prev.map(c => c._id === card._id ? newCard : c)
+            }
+            return prev
+        })
+    }
+
+    async function loadComments() {
         try {
             const res = await getComments(card._id)
             setComments(res)
@@ -43,7 +79,7 @@ export function CardView({ card, canModify, isTaskboardOwner, user ,taskBoardOwn
             setError(extractApiErrorMessage(err))
         }
     }
-    
+
     async function onDeleteCard() {
         try {
             const res = await deleteCard(card._id)
@@ -135,7 +171,7 @@ export function CardView({ card, canModify, isTaskboardOwner, user ,taskBoardOwn
             {canModify &&
                 <div className="text-xs text-gray-400 italic text-center">
                     {isCreating ?
-                        <CreateComment onCancel={() => setIsCreating(false)} onCreate={(comment) => setComments((prev) => [...prev, comment])} cardId={card._id} /> :
+                        <CreateComment onCancel={() => setIsCreating(false)} onCreate={handleCreateComment} cardId={card._id} /> :
                         <button onClick={() => setIsCreating(true)} className="border border-gray-200  rounded-full px-1 hover:border-gray-500"> + </button>
                     }
                 </div>

@@ -28,8 +28,8 @@ export const listService = {
         const serializedList = serializeList(list)
 
 
-        const emitter = boardEmitter(data.taskboardId)
-        emitter.emit(SocketEvents.LIST_CREATED, { list: serializedList })
+        const emitter = boardEmitter(data.taskboardId, userId)
+        emitter.emit(SocketEvents.LIST_CREATED, { list: serializedList, authorId: userId })
 
         return serializedList
     },
@@ -69,8 +69,8 @@ export const listService = {
 
         listService.orderList(taskboard._id.toString(), userId)
 
-        const emitter = boardEmitter(taskboardId)
-        emitter.emit(SocketEvents.LIST_DELETED, { listId: data._id })
+        const emitter = boardEmitter(taskboardId, userId)
+        emitter.emit(SocketEvents.LIST_DELETED, { listId: data._id, authorId: userId })
 
         return result
     },
@@ -111,8 +111,8 @@ export const listService = {
             throw new ConflictError(lists.getWriteErrors().toString())
         }
 
-        const emitter = boardEmitter(taskboard._id.toString())
-        emitter.emit(SocketEvents.LIST_MOVED, { listId: list._id.toString(), from: originalPosition + 1, to: data.position })
+        const emitter = boardEmitter(taskboard._id.toString(),userId)
+        emitter.emit(SocketEvents.LIST_MOVED, { listId: list._id.toString(), from: originalPosition + 1, to: data.position, authorId: userId })
 
         return ListRepository.getLists(data.taskboardId)
 
@@ -160,8 +160,8 @@ export const listService = {
 
         const serializedList = serializeList(updatedList)
 
-        const emitter = boardEmitter(taskboardId)
-        emitter.emit(SocketEvents.LIST_UPDATED, { list: serializedList })
+        const emitter = boardEmitter(taskboardId, userId)
+        emitter.emit(SocketEvents.LIST_UPDATED, { list: serializedList, authorId: userId })
 
         return serializedList
     }

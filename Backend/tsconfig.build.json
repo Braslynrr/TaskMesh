@@ -9,5 +9,11 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "baseUrl": ".",
   },
-  "lib": ["es2015"]
+  "lib": ["es2015"],
+  "exclude": [
+    "src/tests",
+    "**/*.test.ts",
+    "jest.config.ts",
+    "jest.setup.ts"
+  ]
 }
