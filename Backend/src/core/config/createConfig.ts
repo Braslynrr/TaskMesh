@@ -23,6 +23,7 @@ export function createConfig(env: ReturnType<typeof getEnv>) {
     app: {
       origin: env.CORS_ALLOW_LIST,
       port: env.PORT,
+      sameSite: env.SAME_SITE,
     },
   } as const
 }

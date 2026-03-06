@@ -72,6 +72,16 @@ export const taskboardRepository = {
     return taskboard
   },
 
+  removeMember(data: { _id: string, userId: string }) {
+    const taskboard = taskboardModel.findByIdAndUpdate(
+      data._id,
+      { $pull: { members: data.userId } },
+      { new: true }
+    )
+
+    return taskboard
+  },
+
   async delete(data: { _id: string; ownerId: string }) {
     const taskboard = await taskboardModel.findOne({
       _id: new Types.ObjectId(data._id),

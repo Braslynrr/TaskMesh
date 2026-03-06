@@ -10,7 +10,7 @@ export default function TaskBoardLayout({
   
   return (
         <BoardLayout>
-              <BoardHeader title="My Boards" taskboard={undefined}/>
+              <BoardHeader title="My Boards" taskboardId={""}/>
               <BoardCanvas>
                  {children}
               </BoardCanvas>

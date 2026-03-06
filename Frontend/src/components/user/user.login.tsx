@@ -3,8 +3,10 @@
 import { UserResponse } from "@/modules/auth/auth.types"
 import { useEffect, useState } from "react"
 import UserAvatar from "./user.avatar"
+import { logout } from "@/modules/auth/auth.api"
 
 export function UserLoggedIn() {
+  const [open, setOpen] = useState(false)
   const [user, setUser] = useState<UserResponse>()
 
   useEffect(() => {
@@ -12,9 +14,28 @@ export function UserLoggedIn() {
     if (data) setUser(JSON.parse(data))
   }, [])
 
-  if (!user) return null
+  async function handleLogout() {
+    const res = await logout()
 
-  return <div className="justify-self-end">
-    <UserAvatar user={user} />
-  </div>
+    window.location.href = "/login"
+  }
+
+  return (
+    <div className="justify-self-end relative">
+      <button onClick={() => setOpen(!open)}>
+        {user && <UserAvatar user={user} />}
+      </button>
+
+      {open && (
+        <div className="absolute right-0 mt-2 w-24 bg-gray-800 border rounded shadow-md">
+          <button
+            onClick={handleLogout}
+            className="block w-full text-left px-3 py-2 hover:bg-gray-500"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  )
 }

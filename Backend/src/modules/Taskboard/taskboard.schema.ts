@@ -5,13 +5,18 @@ export const createTaskboardSchemma = z.object({
     name: z.string().min(4),
 })
 
-
 export const addMemberSchemma = z.object({
     _id: objectIdSchema,
     members: z.array(z.string().min(4)).min(1)
 })
 
+export const removeMemberSchema = z.object({
+    _id:objectIdSchema,
+    userId: objectIdSchema
+})
 
 export type createTaskboardDTO = z.infer<typeof createTaskboardSchemma>
 
 export type addMemberDTO = z.infer<typeof addMemberSchemma>
+
+export type removeMemberDTO = z.infer<typeof removeMemberSchema>

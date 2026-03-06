@@ -33,3 +33,8 @@ export async function addMemberToTaskboard(data:AddMemeberToTaskboardRequest): P
     const res = await apiClient.post(`taskboard/add`, data)
     return res.data
 }
+
+export async function removeTaskboardMember(id:string,userId:string): Promise<TaskboardResponse> {
+    const res = await apiClient.delete(`taskboard/${id}/member/${userId}`)
+    return res.data
+}

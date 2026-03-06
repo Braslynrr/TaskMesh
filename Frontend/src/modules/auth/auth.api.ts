@@ -6,7 +6,6 @@ export async function login(data: LoginRequest): Promise<UserResponse> {
   return res.data
 }
 
-
 export async function register(data:RegisterRequest) {
   const res = await apiClient.post("/user/register", {...data, _retry:false})
   return res.data
@@ -16,4 +15,9 @@ export async function register(data:RegisterRequest) {
 export async function passwordReset(data:PassowrdResetRequest) {
   const res = await apiClient.post("/user/password", {...data, _retry:false})
   return res.data
+}
+
+export async function logout() {
+  const res = await apiClient.post("/user/logout")
+  return res
 }

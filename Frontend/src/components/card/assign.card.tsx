@@ -4,6 +4,7 @@ import { useState } from "react";
 import UserAvatar from "../user/user.avatar";
 import { assignToCard } from "@/modules/card/card.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
+import RemovableUserAvatar from "../user/removable.user.avatar";
 
 export default function AssigCardManager({ onCancel, onAssign, currentAssignedUsers, taskboardUsers, cardId }: assignCardProps) {
 
@@ -63,7 +64,7 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
         <span className="text-red-700">{error}</span>
 
         <div className="flex overflow-x-auto gap-1 p-1">
-            {assignedUsers.map(member => <div key={member._id} onClick={() => remove(member._id)} className="flex gap-1 hover:shadow px-1 py-1 rounded-2xl"><UserAvatar user={member} /> <span className="text-red-800 hover:text-red-500">X</span></div>)}
+            {assignedUsers.map(member => <RemovableUserAvatar user={member} remove={ () => remove(member._id)} isOwner={true}/>)}
         </div>
 
         <select value={id} onChange={(e) => setId(e.target.value)} className="border border-gray-400 rounded-lg text-center py-0.5">
