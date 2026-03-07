@@ -17,7 +17,7 @@ export function UserLoggedIn() {
   async function handleLogout() {
     const res = await logout()
 
-    window.location.href = "/login"
+    window.location.href = "/login?state=4"
   }
 
   return (

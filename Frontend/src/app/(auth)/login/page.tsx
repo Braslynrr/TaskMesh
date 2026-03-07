@@ -5,8 +5,8 @@ import { use } from "react"
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ expired?: string }>
+  searchParams: Promise<{ state?: string }>
 }) {
   const param = use(searchParams)
-  return <LoginClient expired={param.expired} />
+  return <LoginClient state={param.state} />
 }

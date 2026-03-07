@@ -22,7 +22,7 @@ apiClient.interceptors.response.use(
         await refreshClient.post("/user/refresh"); 
         return apiClient(originalRequest);
       } catch {
-        window.location.href = "/login?expired=1";
+        window.location.href = "/login?state=2";
       }
     }
 
