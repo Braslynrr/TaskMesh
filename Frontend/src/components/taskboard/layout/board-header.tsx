@@ -1,33 +1,59 @@
+"use client"
+
 import { UserLoggedIn } from "@/components/user/user.login"
 import { ManageMembersSection } from "../manageMembersSection"
 import Link from "next/link"
+import { useState } from "react"
 
-export function BoardHeader({
-  title,
-  taskboardId,
-}: {
+export function BoardHeader({ title, taskboardId }: {
   title: string
-  taskboardId: string
+  taskboardId?: string
 }) {
 
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <header className={taskboardId ? "grid grid-cols-3 border-b px-4 py-2" : "grid grid-cols-2 border-b px-4 py-2"}>
-      <div>
-        <Link href="/taskboard" className="font-medium underline">
-          {title}
-        </Link>
-        <span> 📑{taskboardId}</span>
-      </div>
+    <>
+      <header className="grid grid-cols-3 items-center border-b px-4 py-2">
 
+        <div>
+          <Link href="/taskboard" className="font-medium underline">
+            {title}
+          </Link>
+          {taskboardId && <span> 📑{taskboardId}</span>}
+        </div>
 
-      {taskboardId && (
-        <ManageMembersSection
-          taskboardId={taskboardId}
-        />
+        <button
+          className="md:hidden col-start-3 justify-self-end text-xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          ☰
+        </button>
+
+        <div className="hidden md:flex items-center gap-4">
+          {taskboardId && (
+            <ManageMembersSection taskboardId={taskboardId} />
+          )}
+        </div>
+        <div className="hidden md:flex justify-self-end gap-4">
+
+          <UserLoggedIn />
+
+        </div>
+
+      </header>
+
+      {menuOpen && (
+        <div className="md:hidden flex flex-col gap-3 border-b px-4 py-3 bg-gray-800">
+          {taskboardId && (
+            <ManageMembersSection mobile taskboardId={taskboardId} />
+          )}
+
+          <div className="justify-self-end">
+            <UserLoggedIn mobile/>
+          </div>
+        </div>
       )}
-
-      <UserLoggedIn />
-    </header>
+    </>
   )
 }

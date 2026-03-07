@@ -4,46 +4,61 @@ import { createTaskboardSchema } from "@/modules/taskboard/taskboard.schemas"
 import { CreateTaskboardProps } from "@/modules/taskboard/taskboard.types"
 import { useState } from "react"
 
-export function CreateTaskboard({ onCreated }: CreateTaskboardProps) {
+export function CreateTaskboard({ onCreated, onCancel }: CreateTaskboardProps) {
   const [error, setError] = useState("")
   const [name, setName] = useState("")
+  const [diseabled, setDisabled] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
 
     try {
+      setDisabled(true)
       setError("")
       const parsed = createTaskboardSchema.parse({ name })
       const newTaskboard = await createTaskboard(parsed)
       onCreated(newTaskboard)
       setName("")
+      onCancel()
     }
     catch (err) {
       setError(extractApiErrorMessage(err))
     }
+    setDisabled(false)
   }
 
 
   return (
-    <div className="w-full max-w-xs overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg shadow-slate-950/5">
-      <div className="h-max w-full rounded gap-3 p-2 text-black text-center items-center" >
+    <div className="w-full max-w-xs rounded-lg border border-slate-200 bg-white p-4 shadow-lg shadow-slate-950/5">
+      <div className="flex flex-col gap-3 text-center text-black">
 
-        <h6 className="font-bold antialiased md:text-lg lg:text-xl">
+        <h2 className="text-lg font-semibold">
           Create Taskboard
-        </h6>
-        <span className="text-red-700">{error}</span>
-        <form onSubmit={handleSubmit}>
+        </h2>
+
+        {error && <span className="text-sm text-red-600">{error}</span>}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
 
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             type="text"
             placeholder="Taskboard name"
-            className="w-full rounded-md border py-1 bg-gray-100 text-center" required />
+            className="w-full rounded-2xl border py-1 bg-gray-100 text-center" required />
+          <div className="grid grid-cols-2">
+            <button
+              type="submit"
+              className="rounded-md text-green-800 py-2 hover:text-green-500"
+              disabled={diseabled}
+            >
+              Create
+            </button>
 
-          <button type="submit" className="font-sans py-1 text-md text-green-800 hover:text-green-500">
-            Create
-          </button>
+            <button type="button" className="rounded-md text-red-800 py-2 hover:text-red-500" onClick={onCancel} >Cancel</button>
+
+          </div>
+
         </form>
       </div>
     </div>

@@ -10,8 +10,10 @@ import { UserResponse } from "@/modules/auth/auth.types"
 
 export function ManageMembersSection({
   taskboardId,
+  mobile
 }: {
   taskboardId: string
+  mobile?:boolean
 }) {
 
   const [user, setUser] = useState<UserResponse>()
@@ -71,7 +73,7 @@ export function ManageMembersSection({
 
       {error && <span className="text-red-700">{error}</span>}
 
-      <div className="flex flex-row">
+      <div className={`flex ${mobile? "flex-col":"flex-row"}`}>
 
         <div className="flex items-center gap-2">
 

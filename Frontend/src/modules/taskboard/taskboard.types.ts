@@ -27,6 +27,7 @@ export type createTaskboardRequest = {
 
 export type CreateTaskboardProps = {
   onCreated: (taskboard: TaskboardResponse) => void
+  onCancel: () => void
 }
 
 export type deleteTaskboardRequest = MongoIdRequest

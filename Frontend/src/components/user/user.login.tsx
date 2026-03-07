@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import UserAvatar from "./user.avatar"
 import { logout } from "@/modules/auth/auth.api"
 
-export function UserLoggedIn() {
+export function UserLoggedIn({ mobile }: { mobile?: boolean }) {
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState<UserResponse>()
 
@@ -21,21 +21,30 @@ export function UserLoggedIn() {
   }
 
   return (
-    <div className="justify-self-end relative">
-      <button onClick={() => setOpen(!open)}>
-        {user && <UserAvatar user={user} />}
+    !mobile?
+      <div className="justify-self-end relative">
+        <button onClick={() => setOpen(!open)}>
+          {user && <UserAvatar user={user} />}
+        </button>
+
+        {open && (
+          <div className="absolute right-0 mt-2 w-24 bg-gray-800 border rounded shadow-md">
+            <button
+              onClick={handleLogout}
+              className="block w-full text-left px-3 py-2 hover:bg-gray-500"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </div> 
+      :
+      <button
+        onClick={handleLogout}
+        className="block w-full text-left px-3 py-2 hover:bg-gray-500"
+      >
+        Logout
       </button>
 
-      {open && (
-        <div className="absolute right-0 mt-2 w-24 bg-gray-800 border rounded shadow-md">
-          <button
-            onClick={handleLogout}
-            className="block w-full text-left px-3 py-2 hover:bg-gray-500"
-          >
-            Logout
-          </button>
-        </div>
-      )}
-    </div>
   )
 }
