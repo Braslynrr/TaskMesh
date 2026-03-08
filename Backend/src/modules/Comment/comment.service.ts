@@ -1,6 +1,6 @@
 import { createCommentDTO, updateCommentDTO } from "./comment.schema";
 import { commentRepository } from "./comment.repository";
-import { commentSerializer as serializerComment } from "./comment.serializer";
+import { serializeComment as serializerComment } from "./comment.serializer";
 import { mongoIdDTO } from "../../utils/zodObjectId";
 import { NotFoundError } from "../../core/errors/errors";
 import { completePolicyCheck } from "../Card/card.service";

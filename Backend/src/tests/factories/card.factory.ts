@@ -1,3 +1,4 @@
+import { serializeCard } from "../../modules/Card/card.serializer";
 import { cardRepository } from "../../modules/Card/card.repository";
 
 
@@ -7,5 +8,5 @@ export async function createCard(listId:string, ownerId:string, title:string="te
 
     const assignedCard = await cardRepository.assingUsersToCard({_id: card._id.toString(), assignedTo: userList})
 
-    return assignedCard
+    return serializeCard(assignedCard)
 }

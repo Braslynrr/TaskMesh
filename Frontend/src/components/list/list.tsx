@@ -86,7 +86,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
   const canDeleteLists = taskBoardOwner._id === user._id
 
   return (
-    <div className={`flex flex-col bg-gray-100 rounded-md p-3 gap-2 text-black min-w-56 max-w-80 w-56 flex-1 overflow-y-auto ${isDragging ? "border-2 border-blue-800 hover:border-blue-500 transition" : ""}`} ref={setRefs} style={style} {...attributes} >
+    <div className={`flex flex-col bg-gray-100 rounded-md p-3 gap-2 text-black min-w-64 max-w-96 flex-1 overflow-y-auto ${isDragging ? "border-2 border-blue-800 hover:border-blue-500 transition" : ""}`} ref={setRefs} style={style} {...attributes} >
       <span className="text-red-700">{error}</span>
       <div
         className="relative font-semibold cursor-grab select-none">

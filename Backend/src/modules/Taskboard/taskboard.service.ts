@@ -8,6 +8,8 @@ import { userRepository } from "../Users/user.repository";
 import { TaskboardDoc } from "./taskboard.types";
 import { listService } from "../List/list.service";
 import { cardService } from "../Card/card.service";
+import { boardEmitter } from "../Socket/socket.server";
+import { SocketEvents } from "../Socket/socket.events";
 
 export const taskboardService = {
     async createTaskboard(data: createTaskboardDTO, userId: string) {
@@ -48,7 +50,12 @@ export const taskboardService = {
 
         const populatedTaskboard = await taskboardService.populateDocument(newTaskboard)
 
-        return serializeTaskboard(populatedTaskboard)
+        const serializedTaskboard = await serializeTaskboard(populatedTaskboard)
+
+        const emitter = boardEmitter(data._id, userId)
+        emitter.emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard: serializedTaskboard, authorId: userId })
+
+        return serializedTaskboard
     },
 
     async removeMember(data: removeMemberDTO, userId: string) {
@@ -64,7 +71,12 @@ export const taskboardService = {
 
         const populatedTaskboard = await taskboardService.populateDocument(newTaskboard)
 
-        return serializeTaskboard(populatedTaskboard)
+        const serializedTaskboard = await serializeTaskboard(populatedTaskboard)
+
+        const emitter = boardEmitter(data._id, userId)
+        emitter.emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard: serializedTaskboard, authorId: userId })
+
+        return serializedTaskboard
     },
 
     async delete(data: mongoIdDTO, userId: string) {

@@ -115,7 +115,7 @@ describe("WebSocket for List", () => {
 
         const body =
         {
-            _id: card.id.toString(),
+            _id: card._id,
             title: "new title",
             description: "new description"
         }

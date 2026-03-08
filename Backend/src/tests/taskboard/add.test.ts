@@ -109,8 +109,6 @@ describe("POST /api/taskboard/add", () => {
     it("fails when username does not exist", async () => {
 
     const memberlist = [ await createUser("test1"), await createUser("test2")]
-    const usernmaeList = memberlist.map(m => m.username)
-    const toCompareList =  memberlist.map(u=> ({username: u.username, _id:u._id.toString()}))
     const {token, taskboard} = await createTaskboard()
 
     const res = await request(app)

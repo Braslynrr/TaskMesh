@@ -11,7 +11,7 @@ import { extractApiErrorMessage } from "@/lib/api-error";
 
 export function Taskboard({ tb, onDelete }: TaskboardProps) {
   const [error, setError] = useState("")
-  const [members, setMembers] = useState([tb.owner, ...tb.members])
+  const [members, _] = useState([tb.owner, ...tb.members])
   const router = useRouter()
 
   async function goToTaskboard() {

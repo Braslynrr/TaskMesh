@@ -19,7 +19,7 @@ describe("PATCH /api/card", () => {
         
         const body = 
         {
-            _id: card.id.toString(),
+            _id: card._id,
             title: "test2",
             description: "test2"
         }
@@ -37,13 +37,13 @@ describe("PATCH /api/card", () => {
         const {token, user, taskboard} = await createTaskboard()
 
         const list = await createListForTaskboard(taskboard._id.toString(), "test")
-        const listId= list._id.toString()
+        const listId= list._id
 
-        const card = await createCard(listId, user._id.toString())
+        const card = await createCard(listId, user._id)
         
         const body = 
         {
-            _id: card.id.toString(),
+            _id: card._id,
             title: "test2",
             description: "test2"
         }

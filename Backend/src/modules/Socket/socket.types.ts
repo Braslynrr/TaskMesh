@@ -1,9 +1,12 @@
 import { CardResponse } from "../Card/card.types"
 import { listResponse } from "../List/list.types"
+import { Taskboard } from "../Taskboard/taskboard.types"
 
 export interface ServerToClientEvents {
 
     JOINED_TASKBOARD: (payload: taskboardPayload) => void
+    
+    TASKBOARD_MEMBERS: (payload: taskboardMembersPayload) => void,
 
     LIST_CREATED: (payload: listUpsertPayload) => void
 
@@ -41,6 +44,10 @@ type basePayload = {
 
 export type taskboardPayload = {
     taskboardId: string
+}
+
+export type taskboardMembersPayload = basePayload &  {
+    taskboard: Taskboard
 }
 
 export type listUpsertPayload = basePayload & {

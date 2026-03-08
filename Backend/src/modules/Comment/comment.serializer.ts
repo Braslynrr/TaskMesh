@@ -2,7 +2,7 @@ import { serializeUser } from "../Users/user.serializer";
 import { CommentDoc, CommentResponse } from "./comment.types";
 
 
-export function commentSerializer(comment:CommentDoc): CommentResponse
+export function serializeComment(comment:CommentDoc): CommentResponse
 {
     return {
         _id: comment._id.toString(),

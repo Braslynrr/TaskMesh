@@ -4,7 +4,7 @@ import { createListSchema } from "@/modules/list/list.schemas"
 import { CreateListProps } from "@/modules/list/list.types"
 import { useState } from "react"
 
-export function CreateList({ taskboardId, onCreate }: CreateListProps) {
+export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps) {
   const [title, setTitle] = useState("")
   const [error, setError] = useState("")
 
@@ -17,6 +17,7 @@ export function CreateList({ taskboardId, onCreate }: CreateListProps) {
       const list = await createList(parsed)
       onCreate(list)
       setTitle("")
+      onCancel()
     } catch (err) {
       setError(extractApiErrorMessage(err))
     }
@@ -25,15 +26,17 @@ export function CreateList({ taskboardId, onCreate }: CreateListProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 bg-gray-100 p-3 rounded-2xl">
       <span className="text-red-700">{error}</span>
-
+      <h3 className="text-black items-center text-center font-semibold">Create List</h3>
       <input
         value={title}
         onChange={e => setTitle(e.target.value)}
         className="border rounded-2xl text-center border-gray-300 text-black"
         placeholder="Title"
       />
-
-      <button className="text-green-500 hover:text-green-700">Create List</button>
+      <div className="grid grid-cols-2">
+        <button type="button" className="text-red-800 hover:text-red-500" onClick={onCancel}>Cancel</button>
+        <button type="submit" className="text-green-800 hover:text-green-500">Create</button>
+      </div>
     </form>
   )
 }

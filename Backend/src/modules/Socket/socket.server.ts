@@ -65,6 +65,7 @@ function handlingEvents() {
 
         socket.on(SocketEvents.LEAVE_TASKBOARD, (taskboardId: string) => {
             socket.leave(`${SocketEvents.TASKBOARD}:${taskboardId}`)
+            socket.leave(`user:${userId}`)
             logger.info(`Leaving taskboard: ${taskboardId}`)
         })
 
@@ -82,10 +83,10 @@ export function getIO() {
 
 export function boardEmitter(
     taskboardId: string,
-    userId:string
+    userId: string
 ) {
     const io = getIO()
-    if (io )
+    if (io)
         return io.to(`${SocketEvents.TASKBOARD}:${taskboardId}`).except(`user:${userId}`)
     return null
 }

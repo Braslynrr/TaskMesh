@@ -5,6 +5,7 @@ import { cardResponse } from "../card/card.types"
 export type CreateListProps = {
   taskboardId: string
   onCreate: (list:listResponse) => void
+  onCancel: () => void
 }
 
 export type listResponse = {

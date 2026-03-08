@@ -4,22 +4,25 @@ import { extractApiErrorMessage } from "@/lib/api-error"
 import { addMemberToTaskboard, getTaskboard, removeTaskboardMember } from "@/modules/taskboard/taskboard.api"
 import { useEffect, useState } from "react"
 import RemovableUserAvatar from "../user/removable.user.avatar"
-import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
 import OwnerUserAvatar from "../user/owner.avatar"
 import { UserResponse } from "@/modules/auth/auth.types"
+import { useTaskboardStore } from "@/stores/taskboardStore"
 
 export function ManageMembersSection({
   taskboardId,
   mobile
 }: {
   taskboardId: string
-  mobile?:boolean
+  mobile?: boolean
 }) {
 
   const [user, setUser] = useState<UserResponse>()
-  const [taskboard, setTaskboard] = useState<TaskboardResponse>()
   const [username, setUsername] = useState("")
   const [error, setError] = useState("")
+  const taskboard = useTaskboardStore(s => s.taskboard)
+  const setTaskboard = useTaskboardStore(s => s.setTaskboard)
+  const [isCreating, setIsCreating] = useState(false)
+
 
 
   useEffect(() => {
@@ -54,6 +57,7 @@ export function ManageMembersSection({
       setError(extractApiErrorMessage(err))
     }
 
+    setIsCreating(false)
   }
 
   async function removeMember(id: string, userId: string) {
@@ -73,7 +77,7 @@ export function ManageMembersSection({
 
       {error && <span className="text-red-700">{error}</span>}
 
-      <div className={`flex ${mobile? "flex-col":"flex-row"}`}>
+      <div className={`flex ${mobile ? "flex-col" : "flex-row"}`}>
 
         <div className="flex items-center gap-2">
 
@@ -89,10 +93,21 @@ export function ManageMembersSection({
                   remove={() => removeMember(taskboardId, member._id)}
                 />
             ))}
+
+            {!isCreating && isOwner &&
+              <div
+                onClick={() => setIsCreating(true)}
+                className="flex items-center justify-center w-7 h-7 mt-0.5 rounded-full border border-slate-300 text-slate-500 hover:text-slate-100 cursor-pointer justify-self-center"
+              >
+                +
+              </div>
+            }
+
           </div>
+
         </div>
 
-        {isOwner && <form onSubmit={handleSubmit} className="flex gap-2">
+        {isOwner && isCreating && <form onSubmit={handleSubmit} className="flex gap-2">
           <input
             type="text"
             name="username"

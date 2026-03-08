@@ -15,6 +15,7 @@ import { cardResponse } from "@/modules/card/card.types"
 import { moveCard } from "@/modules/card/card.api"
 import { GhostCard } from "@/components/card/ghost.card"
 import { useBoardSocket } from "@/socket-lib/useBoardSocket"
+import { SpinnerCircular } from "spinners-react"
 
 export default function TaskboardPage({
   params,
@@ -28,6 +29,9 @@ export default function TaskboardPage({
   const [taskboard, setTaskboard] = useState<TaskboardSnapshotResponse>()
   const [user, setUser] = useState<UserResponse>()
   const [activeCard, setActiveCard] = useState<cardResponse | null>(null)
+  const [creating, setCreating] = useState(false)
+  const [loading, setLoading] = useState(true)
+
 
   useEffect(() => {
     async function loadListAndUser() {
@@ -39,6 +43,8 @@ export default function TaskboardPage({
 
         const user = localStorage.getItem("user")
         if (user) setUser(JSON.parse(user))
+
+        setLoading(false)
 
       } catch (err) {
         setError(extractApiErrorMessage(err))
@@ -95,14 +101,9 @@ export default function TaskboardPage({
         const oldIndex = lists.findIndex(l => l._id === active.id)
         const newIndex = lists.findIndex(l => l._id === over.id)
 
-
-        console.log("--------------------- Request Action -------------------")
-        console.log(`${oldIndex} -> ${newIndex}`)
-        console.log(arrayMove(lists, oldIndex, newIndex))
-
         setLists((prev) => arrayMove(prev, oldIndex, newIndex))
 
-        
+
         try {
           const data = {
             _id: active.id.toString(),
@@ -157,6 +158,14 @@ export default function TaskboardPage({
   }
 
 
+  if (loading)
+    return (
+      <div className="flex items-center justify-center gap-2 py-6">
+        <p>Loading taskboard...</p>
+        <SpinnerCircular size={25} />
+      </div>
+    )
+
   return (
     <div className="flex flex-col">
       <span className=" text-red-700 items-center text-center text-3xl">{error}</span>
@@ -186,7 +195,17 @@ export default function TaskboardPage({
 
         </DndContext>
 
-        <CreateList key="createlist" onCreate={(list) => setLists([...lists, list])} taskboardId={id} ></CreateList>
+        {!creating ?
+          <div
+            onClick={() => setCreating(true)}
+            className="flex items-center justify-center w-12 h-12 ml-28 mt-32 rounded-full border border-slate-300 text-slate-500 hover:text-slate-100 cursor-pointer justify-self-center"
+          >
+            +
+          </div>
+          :
+          <CreateList key="createlist" onCreate={(list) => setLists([...lists, list])} taskboardId={id} onCancel={() => setCreating(false)} ></CreateList>
+
+        }
 
       </div>
     </div>

@@ -3,8 +3,10 @@ import { listResponse } from "@/modules/list/list.types"
 import { cardResponse } from "@/modules/card/card.types"
 import { socket } from "./socket-client"
 import { SocketEvents } from "@/socket-lib/socket.events"
-import { cardDeletedPayload, cardMovedPayload, cardUpsertPayload, commentDupsertPayload, listDeletedPayload, listMovedPayload, listUpsertPayload } from "@/socket-lib/socket.types"
+import { cardDeletedPayload, cardMovedPayload, cardUpsertPayload, commentDupsertPayload, listDeletedPayload, listMovedPayload, listUpsertPayload, taskboardMembersPayload } from "@/socket-lib/socket.types"
 import { arrayMove } from "@dnd-kit/sortable"
+import { useTaskboardStore } from "@/stores/taskboardStore"
+import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
 
 interface UseBoardSocketProps {
   taskboardId: string
@@ -18,6 +20,8 @@ export function useBoardSocket({
   setLists,
   setCards
 }: UseBoardSocketProps) {
+
+  const setTaskboard = useTaskboardStore(s => s.setTaskboard)
 
   useEffect(() => {
     if (!taskboardId) return
@@ -115,6 +119,11 @@ export function useBoardSocket({
       })
     }
 
+    const handleTaskboardMembers = (payload: taskboardMembersPayload) => {
+      const newTaskboard: TaskboardResponse = { ...payload.taskboard, members: [payload.taskboard.owner, ...payload.taskboard.members] }
+      setTaskboard(newTaskboard)
+    }
+
     socket.on(SocketEvents.LIST_CREATED, handleListCreated)
     socket.on(SocketEvents.LIST_UPDATED, handleListUpdated)
     socket.on(SocketEvents.LIST_DELETED, handleListDeleted)
@@ -131,6 +140,8 @@ export function useBoardSocket({
     socket.on(SocketEvents.COMMENT_UPDATED, handleCommentUpdated)
     socket.on(SocketEvents.COMMENT_DELETED, handleCommentDeleted)
 
+    socket.on(SocketEvents.TASKBOARD_MEMBERS, handleTaskboardMembers)
+
     return () => {
       socket.off(SocketEvents.LIST_CREATED, handleListCreated)
       socket.off(SocketEvents.LIST_UPDATED, handleListUpdated)
@@ -145,6 +156,9 @@ export function useBoardSocket({
       socket.off(SocketEvents.COMMENT_CREATED, handleCommentCreated)
       socket.off(SocketEvents.COMMENT_UPDATED, handleCommentUpdated)
       socket.off(SocketEvents.COMMENT_DELETED, handleCommentDeleted)
+
+      socket.off(SocketEvents.TASKBOARD_MEMBERS, handleTaskboardMembers)
+
 
       socket.emit(SocketEvents.LEAVE_TASKBOARD, taskboardId)
       socket.disconnect()
