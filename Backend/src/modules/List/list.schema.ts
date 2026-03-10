@@ -4,14 +4,14 @@ import { objectIdSchema } from "../../utils/zodObjectId";
 
 export const createListSchema = z.object({
     taskboardId: objectIdSchema,
-    title: z.string().min(4),
+    title: z.string().min(4, "title must be at least 4 characters"),
     position: z.int()
 })
 
 export const movePositionListSchema = z.object({
     taskboardId: objectIdSchema,
     _id: objectIdSchema,
-    position: z.int().min(1)
+    position: z.int().min(1, "position should be greater than one")
 })
 
 export const searchListSchema = z.object({
@@ -21,8 +21,8 @@ export const searchListSchema = z.object({
 
 export const updateListShema = z.object(
     {
-        _id:objectIdSchema,
-        title:z.string().min(4)
+        _id: objectIdSchema,
+        title: z.string().min(4, "title must be at least 4 characters"),
     }
 )
 

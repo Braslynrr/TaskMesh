@@ -70,7 +70,7 @@ describe("WebSocket for List", () => {
         {
             listId: lists[0]._id.toString(),
             title: `test`,
-            description: "test"
+            description: "test description"
         }
 
         const res = await request(server)

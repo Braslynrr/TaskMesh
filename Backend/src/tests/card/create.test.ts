@@ -20,7 +20,7 @@ describe("POST /api/card/create", () => {
             {
                 listId: list._id.toString(),
                 title: `test`,
-                description: "test"
+                description: "test description"
             })
             
         expect(res.status).toBe(403)
@@ -40,7 +40,7 @@ describe("POST /api/card/create", () => {
             {
                 listId: "096b0abc98937822669a7c40",
                 title: `test`,
-                description: "test"
+                description: "test description"
             })
             
         expect(res.status).toBe(404)
@@ -57,7 +57,7 @@ describe("POST /api/card/create", () => {
             {
                 listId: list._id.toString(),
                 title: `test`,
-                description: "test"
+                description: "test description"
             }
         
         const res = await request(app)

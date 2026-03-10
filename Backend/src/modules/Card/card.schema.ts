@@ -1,17 +1,18 @@
 import { z } from "zod"
 import { objectIdSchema } from "../../utils/zodObjectId";
 
+
 export const createCardSchema = z.object({
     listId: objectIdSchema,
-    title: z.string().min(4),
-    description: z.string()
+    title: z.string().min(4, "title must be 4 characters or more"),
+    description: z.string().min(10, "description must be 10 characters at least")
 })
 
 
 export const updateCardSchema = z.object({
     _id: objectIdSchema,
-    title: z.string().min(4),
-    description: z.string()
+    title: z.string().min(4, "title must be 4 characters or more"),
+    description: z.string().min(10, "description must be 10 characters at least")
 })
 
 

@@ -2,16 +2,16 @@ import { z } from "zod"
 import { objectIdSchema } from "../../utils/zodObjectId"
 
 export const createTaskboardSchemma = z.object({
-    name: z.string().min(4),
+    name: z.string().min(4, "name must be at least 4 characters"),
 })
 
 export const addMemberSchemma = z.object({
     _id: objectIdSchema,
-    members: z.array(z.string().min(4)).min(1)
+    members: z.array(z.string().min(4)).min(1, "members must have at least one member")
 })
 
 export const removeMemberSchema = z.object({
-    _id:objectIdSchema,
+    _id: objectIdSchema,
     userId: objectIdSchema
 })
 

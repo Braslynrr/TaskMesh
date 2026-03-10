@@ -52,7 +52,7 @@ describe("POST /api/taskboard/create", () => {
 
     expect(res.status).toBe(400)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Too small: expected string to have >=4 characters")
+    expect(res.body.issues[0].message).toBe("name must be at least 4 characters")
 
   })
 

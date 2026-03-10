@@ -51,7 +51,7 @@ describe("POST /api/user/register", () => {
 
     expect(res.status).toBe(400)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Too small: expected string to have >=4 characters")
+    expect(res.body.issues[0].message).toBe("username must be at least 4 characters")
   })
 
  it("should fail if payload is invalid (password)", async () => {
@@ -64,7 +64,7 @@ describe("POST /api/user/register", () => {
 
     expect(res.status).toBe(400)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Too small: expected string to have >=8 characters")
+    expect(res.body.issues[0].message).toBe("password must be at least 8 characters")
   })
 
 })

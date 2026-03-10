@@ -18,7 +18,7 @@ describe("POST /api/taskboard/add", () => {
 
     expect(res.status).toBe(400)
     expect(res.body).not.toBeNull()
-    expect(res.body.issues[0].message).toBe("Too small: expected array to have >=1 items")
+    expect(res.body.issues[0].message).toBe("members must have at least one member")
 
   })
 

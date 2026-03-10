@@ -4,12 +4,12 @@ import { objectIdSchema } from "../../utils/zodObjectId";
 
 export const createCommentSchema = z.object({
     cardId: objectIdSchema,
-    text: z.string()
+    text: z.string().min(1, "comment text should not be empty")
 })
 
 export const updateCommentSchema = z.object({
     _id: objectIdSchema,
-    text: z.string()
+    text: z.string().min(1, "comment text should not be empty")
 })
 
 

@@ -21,7 +21,7 @@ describe("PATCH /api/card", () => {
         {
             _id: card._id,
             title: "test2",
-            description: "test2"
+            description: "test description"
         }
 
         const res = await request(app)
@@ -45,7 +45,7 @@ describe("PATCH /api/card", () => {
         {
             _id: card._id,
             title: "test2",
-            description: "test2"
+            description: "test description"
         }
 
         const res = await request(app)

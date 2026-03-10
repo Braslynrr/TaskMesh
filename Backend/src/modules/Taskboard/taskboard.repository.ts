@@ -66,7 +66,7 @@ export const taskboardRepository = {
           }
         }
       },
-      { new: true }
+      { returnDocument: "after" }
     )
 
     return taskboard
@@ -76,7 +76,7 @@ export const taskboardRepository = {
     const taskboard = taskboardModel.findByIdAndUpdate(
       data._id,
       { $pull: { members: data.userId } },
-      { new: true }
+      { returnDocument: "after" }
     )
 
     return taskboard
@@ -105,7 +105,7 @@ export const taskboardRepository = {
     return taskboardModel.findByIdAndUpdate(
       id,
       { $inc: { listCounter: 1 } },
-      { new: true }
+      { returnDocument: "after" }
     )
   }
 

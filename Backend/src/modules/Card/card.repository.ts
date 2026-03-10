@@ -58,7 +58,7 @@ export const cardRepository = {
       {
         $set: { assignedTo: data.assignedTo.map(id => new Types.ObjectId(id)) }
       },
-      { new: true })
+      { returnDocument: "after" })
   },
 
   updateCard(data: { _id: string, title: string, description: string }) {
@@ -67,7 +67,7 @@ export const cardRepository = {
       {
         $set: { title: data.title, description: data.description },
       },
-      { new: true })
+      { returnDocument: "after" })
   },
 
   moveFromList(data: { _id: string, listId: string }) {
@@ -76,7 +76,7 @@ export const cardRepository = {
       {
         $set: { listId: data.listId },
       },
-      { new: true }
+      { returnDocument: "after" }
     )
   }
 
