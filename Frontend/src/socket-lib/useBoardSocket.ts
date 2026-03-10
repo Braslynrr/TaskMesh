@@ -7,6 +7,7 @@ import { cardDeletedPayload, cardMovedPayload, cardUpsertPayload, commentDupsert
 import { arrayMove } from "@dnd-kit/sortable"
 import { useTaskboardStore } from "@/stores/taskboardStore"
 import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
+import { useHighlightStore } from "@/stores/highlightStore"
 
 interface UseBoardSocketProps {
   taskboardId: string
@@ -22,6 +23,7 @@ export function useBoardSocket({
 }: UseBoardSocketProps) {
 
   const setTaskboard = useTaskboardStore(s => s.setTaskboard)
+  const triggerHighlight = useHighlightStore(s => s.triggerHighlight)
 
   useEffect(() => {
     if (!taskboardId) return
@@ -35,12 +37,15 @@ export function useBoardSocket({
     // Lists
     const handleListCreated = (payload: listUpsertPayload) => {
       setLists(prev => [...prev, payload.list])
+      triggerHighlight(payload.list._id, `created this list`, payload.authorId)
     }
 
     const handleListUpdated = (payload: listUpsertPayload) => {
       setLists(prev => prev.map(l =>
         l._id === payload.list._id ? payload.list : l
       ))
+
+      triggerHighlight(payload.list._id, `updated this list`, payload.authorId)
     }
 
     const handleListDeleted = (payload: listDeletedPayload) => {
@@ -51,6 +56,9 @@ export function useBoardSocket({
 
     const handleListMoved = (payload: listMovedPayload) => {
       setLists((prev) => arrayMove(prev, payload.from - 1, payload.to - 1))
+
+      triggerHighlight(payload.listId, `moved this list`, payload.authorId)
+
     }
 
 
@@ -58,12 +66,16 @@ export function useBoardSocket({
 
     const handleCardCreated = (payload: cardUpsertPayload) => {
       setCards((prev) => [...prev, payload.card])
+
+      triggerHighlight(payload.card._id, `created this card`, payload.authorId)
     }
 
     const handleCardUpdated = (payload: cardUpsertPayload) => {
       setCards(prev => prev.map(c =>
         c._id === payload.card._id ? payload.card : c
       ))
+
+      triggerHighlight(payload.card._id, `updated this card`, payload.authorId)
     }
 
     const handleCardDeleted = (payload: cardDeletedPayload) => {
@@ -82,6 +94,7 @@ export function useBoardSocket({
         return prev
       })
 
+      triggerHighlight(payload.cardId, `moved this card`, payload.authorId)
     }
 
     // comments
@@ -95,6 +108,8 @@ export function useBoardSocket({
         }
         return prev
       })
+
+      triggerHighlight(payload.cardId, `commented this task`, payload.authorId)
     }
 
     const handleCommentUpdated = (payload: commentDupsertPayload) => {
@@ -106,6 +121,8 @@ export function useBoardSocket({
         }
         return prev
       })
+
+      triggerHighlight(payload.cardId, `updated a comment`, payload.authorId)
     }
 
     const handleCommentDeleted = (payload: commentDupsertPayload) => {
@@ -117,6 +134,8 @@ export function useBoardSocket({
         }
         return prev
       })
+
+      triggerHighlight(payload.cardId, `deleted a comment`, payload.authorId)
     }
 
     const handleTaskboardMembers = (payload: taskboardMembersPayload) => {

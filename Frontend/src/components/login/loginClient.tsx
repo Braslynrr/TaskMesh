@@ -40,8 +40,6 @@ export default function LoginClient({ state }: { state?: string }) {
     setLoading(false)
   }
 
-  console.log(state)
-
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-4">

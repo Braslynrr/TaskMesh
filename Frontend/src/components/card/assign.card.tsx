@@ -25,7 +25,6 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
         try {
             setError("")
             const res = await assignToCard(body)
-            console.log()
             onAssign(res)
             onCancel()
 

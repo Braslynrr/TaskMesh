@@ -9,6 +9,7 @@ import { cardResponse } from "@/modules/card/card.types";
 import { deleteList, updateList } from "@/modules/list/list.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
 import { SortableContext } from "@dnd-kit/sortable"
+import { ActivityHighlight } from "../highLight/highlightWrapper";
 
 
 export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards, onDelete, setCards, isDragging }: listProps) {
@@ -107,17 +108,22 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
       </div>
 
       <SortableContext items={list_cards.filter(card => card.listId === list._id).map(card => card._id)} >
-        {list_cards.map(card => <Card
-          key={card._id}
-          card={card}
-          taskBoardOwner={taskBoardOwner}
-          user={user}
-          taskboardMembers={taskboardMembers}
-          onAssign={(card) => newAssignation(card)}
-          onDelete={(card) => setCards((prev) => prev.filter(c => c._id !== card._id))}
-          onUpdate={(card) => setCards(prev => prev.map(c => c._id === card._id ? card : c))}
-          setCards={setCards}
-        ></Card>)}
+
+        {list_cards.map(card =>
+          <ActivityHighlight key={`h-${card._id}`} id={card._id}>
+            <Card
+              key={card._id}
+              card={card}
+              taskBoardOwner={taskBoardOwner}
+              user={user}
+              taskboardMembers={taskboardMembers}
+              onAssign={(card) => newAssignation(card)}
+              onDelete={(card) => setCards((prev) => prev.filter(c => c._id !== card._id))}
+              onUpdate={(card) => setCards(prev => prev.map(c => c._id === card._id ? card : c))}
+              setCards={setCards}
+            ></Card>
+          </ActivityHighlight>
+        )}
       </SortableContext>
 
       {isCreating ? (

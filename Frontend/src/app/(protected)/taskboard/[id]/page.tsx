@@ -16,6 +16,7 @@ import { moveCard } from "@/modules/card/card.api"
 import { GhostCard } from "@/components/card/ghost.card"
 import { useBoardSocket } from "@/socket-lib/useBoardSocket"
 import { SpinnerCircular } from "spinners-react"
+import { ActivityHighlight } from "@/components/highLight/highlightWrapper"
 
 export default function TaskboardPage({
   params,
@@ -32,7 +33,7 @@ export default function TaskboardPage({
   const [creating, setCreating] = useState(false)
   const [loading, setLoading] = useState(true)
 
-
+  
   useEffect(() => {
     async function loadListAndUser() {
       try {
@@ -89,8 +90,6 @@ export default function TaskboardPage({
     const overType = over.data.current?.type
 
     const type = `${activeType} to ${overType}`
-
-    console.log(type)
 
     let listiId = over.id.toString()
     let originalList = ""
@@ -187,8 +186,11 @@ export default function TaskboardPage({
             strategy={horizontalListSortingStrategy}>
 
             {taskboard && cards && user && lists.map((list) => (
-              <List key={list._id} list={list} list_cards={cards.filter(card => card.listId === list._id)} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner, ...taskboard.members]}
-                onDelete={(list) => setLists((prev) => prev.filter(l => l._id !== list._id))} isDragging={activeCard !== null} setCards={setCards} />
+              <ActivityHighlight key={`h-${list._id}`} id={list._id}>
+                <List key={list._id} list={list} list_cards={cards.filter(card => card.listId === list._id)} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner, ...taskboard.members]}
+                  onDelete={(list) => setLists((prev) => prev.filter(l => l._id !== list._id))} isDragging={activeCard !== null} setCards={setCards} />
+
+              </ActivityHighlight>
             ))}
 
           </SortableContext>
@@ -198,7 +200,7 @@ export default function TaskboardPage({
         {!creating ?
           <div
             onClick={() => setCreating(true)}
-            className="flex items-center justify-center w-12 h-12 ml-28 mt-32 rounded-full border border-slate-300 text-slate-500 hover:text-slate-100 cursor-pointer justify-self-center"
+            className="flex items-center justify-center w-12 h-12 ml-20 mt-32 rounded-full border border-slate-300 text-slate-500 hover:text-slate-100 cursor-pointer justify-self-center"
           >
             +
           </div>
