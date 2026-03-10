@@ -4,6 +4,7 @@ import { UserLoggedIn } from "@/components/user/user.login"
 import { ManageMembersSection } from "../manageMembersSection"
 import Link from "next/link"
 import { useState } from "react"
+import { useTaskboardStore } from "@/stores/taskboardStore"
 
 export function BoardHeader({ title, taskboardId }: {
   title: string
@@ -11,6 +12,7 @@ export function BoardHeader({ title, taskboardId }: {
 }) {
 
   const [menuOpen, setMenuOpen] = useState(false)
+  const taskboard = useTaskboardStore(s=> s.taskboard)
 
   return (
     <>
@@ -20,7 +22,7 @@ export function BoardHeader({ title, taskboardId }: {
           <Link href="/taskboard" className="font-medium underline">
             {title}
           </Link>
-          {taskboardId && <span> 📑{taskboardId}</span>}
+          {taskboard && <span> 📑{taskboard.name}</span>}
         </div>
 
         <button

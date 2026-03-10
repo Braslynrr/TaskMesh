@@ -1,7 +1,6 @@
 import { UserResponse } from "@/modules/auth/auth.types";
 import { assignCardProps } from "@/modules/card/card.types";
 import { useState } from "react";
-import UserAvatar from "../user/user.avatar";
 import { assignToCard } from "@/modules/card/card.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
 import RemovableUserAvatar from "../user/removable.user.avatar";
@@ -12,10 +11,12 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
     const [users, setUsers] = useState<UserResponse[]>(taskboardUsers.filter(u => !currentAssignedUsers.some(a => a._id === u._id)))
     const [id, setId] = useState(users[0]?._id ?? "")
     const [error, setError] = useState("")
+    const [disabled, setDisabled] = useState(false)
 
-    async function handleSubmit(e: React.FormEvent) {
+
+    async function handleSubmit(e: React.SubmitEvent) {
         e.preventDefault()
-
+        setDisabled(true)
         const body = {
             _id: cardId,
             assignedTo: assignedUsers.map(member => member._id)
@@ -31,6 +32,7 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
         } catch (err) {
             setError(extractApiErrorMessage(err))
         }
+        setDisabled(false)
 
     }
 
@@ -64,7 +66,7 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
         <span className="text-red-700">{error}</span>
 
         <div className="flex overflow-x-auto gap-1 p-1">
-            {assignedUsers.map(member => <RemovableUserAvatar user={member} remove={ () => remove(member._id)} isOwner={true}/>)}
+            {assignedUsers.map(member => <RemovableUserAvatar key={member._id} user={member} remove={ () => remove(member._id)} isOwner={true}/>)}
         </div>
 
         <select value={id} onChange={(e) => setId(e.target.value)} className="border border-gray-400 rounded-lg text-center py-0.5">
@@ -76,7 +78,7 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
         </div>
         <div className="grid grid-cols-2">
             <button type="button" onClick={onCancel} className="text-gray-500 hover:text-gray-800">Cancel</button>
-            <button type="submit" className="text-green-500 hover:text-green-800">Save</button>
+            <button type="submit" className="text-green-500 hover:text-green-800" disabled={disabled}>Save</button>
         </div>
 
     </form>

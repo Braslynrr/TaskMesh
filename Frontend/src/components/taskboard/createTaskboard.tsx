@@ -7,7 +7,7 @@ import { useState } from "react"
 export function CreateTaskboard({ onCreated, onCancel }: CreateTaskboardProps) {
   const [error, setError] = useState("")
   const [name, setName] = useState("")
-  const [diseabled, setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -50,7 +50,7 @@ export function CreateTaskboard({ onCreated, onCancel }: CreateTaskboardProps) {
             <button
               type="submit"
               className="rounded-md text-green-800 py-2 hover:text-green-500"
-              disabled={diseabled}
+              disabled={disabled}
             >
               Create
             </button>

@@ -7,11 +7,13 @@ import { useState } from "react"
 export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps) {
   const [title, setTitle] = useState("")
   const [error, setError] = useState("")
+  const [disabled, setDisabled] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
-
     try {
+      setDisabled(true)
       setError("")
       const parsed = createListSchema.parse({ title, taskboardId })
       const list = await createList(parsed)
@@ -21,6 +23,7 @@ export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps)
     } catch (err) {
       setError(extractApiErrorMessage(err))
     }
+    setDisabled(false)
   }
 
   return (
@@ -35,7 +38,7 @@ export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps)
       />
       <div className="grid grid-cols-2">
         <button type="button" className="text-red-800 hover:text-red-500" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="text-green-800 hover:text-green-500">Create</button>
+        <button type="submit" className="text-green-800 hover:text-green-500" disabled={disabled}>Create</button>
       </div>
     </form>
   )

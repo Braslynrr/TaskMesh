@@ -12,7 +12,6 @@ This repository is a monorepo containing two independent applications:
 
 Each application has:
 - Its own dependencies
-- Its own Docker image
 - Its own CI pipeline
 
 ## Tech Stack

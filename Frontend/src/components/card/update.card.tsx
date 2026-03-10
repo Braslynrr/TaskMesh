@@ -4,13 +4,16 @@ import { updateCardSchema } from "@/modules/card/card.schema";
 import { cardEditProps } from "@/modules/card/card.types";
 import { useState } from "react";
 
+
 export function EditCard({ card, cancel, onUpdate }: cardEditProps) {
     const [error, setError] = useState("")
+    const [disabled, setDisabled] = useState(false)
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+
+    async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
         try {
-
+            setDisabled(true)
             const formData = new FormData(e.currentTarget)
 
             const values = {
@@ -30,6 +33,7 @@ export function EditCard({ card, cancel, onUpdate }: cardEditProps) {
         } catch (err) {
             setError(extractApiErrorMessage(err))
         }
+        setDisabled(false)
 
     }
 
@@ -42,7 +46,7 @@ export function EditCard({ card, cancel, onUpdate }: cardEditProps) {
             <textarea name="description" defaultValue={card.description} className="border border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-lg p-3" required />
             <div className="grid grid-cols-2">
                 <button type="button" onClick={cancel} className="text-red-500 hover:text-red-800">Cancel</button>
-                <button type="submit" className="text-green-500 hover:text-green-800">Save</button>
+                <button type="submit" className="text-green-500 hover:text-green-800" disabled={disabled}>Save</button>
             </div>
 
         </form>
