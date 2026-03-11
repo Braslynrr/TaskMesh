@@ -109,7 +109,7 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
 
 
         <div className="relative cursor-grab">
-            <h4 className="font-semibold text-sm text-gray-900 text-center break-all"  {...listeners} >
+            <h4 className="font-semibold text-sm text-gray-900 text-center wrap-break-word"  {...listeners} >
                 {card.title}
             </h4>
 
@@ -150,7 +150,7 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
         </div>
 
         {card.description && (
-            <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 break-all">
+            <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 wrap-break-word">
                 {card.description}
             </p>
         )}

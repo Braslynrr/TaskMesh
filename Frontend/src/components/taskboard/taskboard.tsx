@@ -43,7 +43,7 @@ export function Taskboard({ tb, onDelete }: TaskboardProps) {
 
         {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
-        <h3 className="text-lg font-semibold text-black">
+        <h3 className="text-lg font-semibold text-black wrap-break-word">
           {tb.name}
         </h3>
 

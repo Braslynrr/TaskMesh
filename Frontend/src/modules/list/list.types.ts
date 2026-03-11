@@ -30,7 +30,6 @@ export type listProps = {
     isDragging?:boolean
     list: listResponse
     taskBoardOwner: UserResponse
-    taskboardMembers: UserResponse[]
     user:UserResponse
     list_cards:cardResponse[]
     onDelete: (list:listResponse) => void

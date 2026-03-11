@@ -51,7 +51,7 @@ export default function Comment({ comment, user, taskboardOwner, onDelete, onMod
         </div>
         <div className="flex flex-col">
             {!isEditing ?
-                <p className="text-gray-700 break-all">{text}</p>
+                <p className="text-gray-700 wrap-break-word">{text}</p>
                 :
                 <textarea className="bg-gray-50 border border-gray-100 rounded-md" value={text} onChange={(e) => setText(e.target.value)} />}
             {canModify && !isEditing && <button onClick={() => setIsEditing(true)} className="self-end text-blue-800 opacity-0 group-hover/comment:opacity-100 transition hover:text-blue-500">✎</button>}

@@ -188,7 +188,7 @@ export default function TaskboardPage({
 
             {taskboard && cards && user && lists.map((list) => (
               <ActivityHighlight key={`h-${list._id}`} id={list._id}>
-                <List key={list._id} list={list} list_cards={cards.filter(card => card.listId === list._id)} taskBoardOwner={taskboard.owner} user={user} taskboardMembers={[taskboard.owner, ...taskboard.members]}
+                <List key={list._id} list={list} list_cards={cards.filter(card => card.listId === list._id)} taskBoardOwner={taskboard.owner} user={user}
                   onDelete={(list) => setLists((prev) => prev.filter(l => l._id !== list._id))} isDragging={activeCard !== null} setCards={setCards} />
 
               </ActivityHighlight>
