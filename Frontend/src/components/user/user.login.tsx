@@ -28,7 +28,7 @@ export function UserLoggedIn({ mobile }: { mobile?: boolean }) {
         </button>
 
         {open && (
-          <div className="absolute right-0 mt-2 w-24 bg-gray-800 border rounded shadow-md">
+          <div className="absolute right-0 mt-2 w-24 bg-gray-800 border rounded shadow-md z-50">
             <button
               onClick={handleLogout}
               className="block w-full text-left px-3 py-2 hover:bg-gray-500"

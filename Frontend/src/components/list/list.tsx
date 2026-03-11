@@ -11,14 +11,16 @@ import { extractApiErrorMessage } from "@/lib/api-error";
 import { SortableContext } from "@dnd-kit/sortable"
 import { ActivityHighlight } from "../highLight/highlightWrapper";
 import { Message } from "../message/message";
+import { useTaskboardStore } from "@/stores/taskboardStore";
 
 
-export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards, onDelete, setCards, isDragging }: listProps) {
+export function List({ list, taskBoardOwner, user, list_cards, onDelete, setCards, isDragging }: listProps) {
   const originalTitle = list.title
   const [isCreating, setIsCreating] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(list.title)
   const [error, setError] = useState("")
+  const taskboardMembers = useTaskboardStore(s=>s.taskboard?.members) ?? []
 
   useEffect(() => {
     setTitle(list.title)
@@ -93,7 +95,7 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
       <div
         className="relative font-semibold cursor-grab select-none">
         {!isEditing ?
-          <h3 {...listeners} className="text-center break-all">{title}</h3>
+          <h3 {...listeners} className="text-center wrap-break-word">{title}</h3>
           :
           <form onSubmit={newListTitle} className="flex gap-1">
             <input className="border border-gray-400 rounded-2xl text-center" value={title} onChange={(e) => setTitle(e.target.value)} required></input>

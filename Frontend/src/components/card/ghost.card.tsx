@@ -10,7 +10,7 @@ export function GhostCard({ card }: ghostCardProps) {
 
 
         <div className="relative cursor-grab">
-            <h4 className="font-semibold text-sm text-gray-900 text-center break-all" >
+            <h4 className="font-semibold text-sm text-gray-900 text-center wrap-break-word" >
                 {card.title}
             </h4>
         </div>
@@ -28,7 +28,7 @@ export function GhostCard({ card }: ghostCardProps) {
 
 
         {card.description && (
-            <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 break-all">
+            <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 wrap-break-word">
                 {card.description}
             </p>
         )}
