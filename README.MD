@@ -23,6 +23,20 @@ https://task-mesh-frontend.vercel.app
 * Open the application in **two browser windows** and interact with the same board to see **real-time updates**.
 * Try creating cards, moving them between lists, or leaving comments.
 
+### Demo Accounts
+
+To make it easier to explore the application, you can use the following demo accounts:
+
+| Username | Password |
+| -------- | -------- |
+| Guest    | guest123 |
+| Guest 2  | guest212 |
+| Guest 3  | guest312 |
+
+These accounts allow you to quickly log in and test the main features of the application, including taskboard collaboration and real-time updates.
+
+💡 Tip: Open the same taskboard in multiple browser windows using different accounts to see the real-time synchronization in action.
+
 ---
 
 ## Project Goals

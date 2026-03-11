@@ -8,6 +8,7 @@ import { extractApiErrorMessage } from "@/lib/api-error"
 import Link from "next/link"
 import { SpinnerCircular } from "spinners-react"
 import { Message } from "../message/message"
+import { DemoNotice } from "../Demo/DemoNotice"
 
 export default function LoginClient({ state }: { state?: string }) {
   const router = useRouter()
@@ -45,6 +46,8 @@ export default function LoginClient({ state }: { state?: string }) {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-4">
+        <DemoNotice />
+
         {usingState && state === "1" && <Message type="message" message="Your user has been registered successfully." onClose={() => setUsingState(false)} />}
         {usingState && state === "2" && <Message type="error" message="Your session has expired. Please log in again." onClose={() => setUsingState(false)} />}
         {usingState && state === "3" && <Message type="message" message="Your user password has been reset." onClose={() => setUsingState(false)} />}
