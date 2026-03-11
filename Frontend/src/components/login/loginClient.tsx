@@ -7,11 +7,13 @@ import { loginSchema } from "@/modules/auth/auth.schemas"
 import { extractApiErrorMessage } from "@/lib/api-error"
 import Link from "next/link"
 import { SpinnerCircular } from "spinners-react"
+import { Message } from "../message/message"
 
 export default function LoginClient({ state }: { state?: string }) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [usingState, setUsingState] = useState(true)
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -43,14 +45,14 @@ export default function LoginClient({ state }: { state?: string }) {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-4">
-        {state === "1" && <span className="text-sm text-green-500">Your user has been registered successfully.</span>}
-        {state === "2" && <span className="text-sm text-red-500">Your session has expired. Please log in again.</span>}
-        {state === "3" && <span className="text-sm text-green-500">Your user password has been reset.</span>}
-        {state === "4" && <span className="text-sm text-green-500">Your session has been logged out.</span>}
+        {usingState && state === "1" && <Message type="message" message="Your user has been registered successfully." onClose={() => setUsingState(false)} />}
+        {usingState && state === "2" && <Message type="error" message="Your session has expired. Please log in again." onClose={() => setUsingState(false)} />}
+        {usingState && state === "3" && <Message type="message" message="Your user password has been reset." onClose={() => setUsingState(false)} />}
+        {usingState && state === "4" && <Message type="message" message="Your session has been logged out." onClose={() => setUsingState(false)} />}
 
         <form onSubmit={handleSubmit} className="space-y-4 rounded border p-6">
           <h1 className="text-xl font-semibold">Login</h1>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <Message type="error" message={error} onClose={() => setError("")} />}
           <input name="username" type="text" placeholder="Username" className="w-full rounded border px-3 py-2" required />
           <input name="password" type="password" placeholder="Password" className="w-full rounded border px-3 py-2" required />
           <button

@@ -7,6 +7,7 @@ import { passwordResetSchema } from "@/modules/auth/auth.schemas"
 import { extractApiErrorMessage } from "@/lib/api-error"
 import Link from "next/link"
 import { SpinnerCircular } from "spinners-react"
+import { Message } from "../message/message"
 
 export default function ForgetPasswordClient() {
     const router = useRouter()
@@ -53,7 +54,7 @@ export default function ForgetPasswordClient() {
                 >
                     <h1 className="text-xl font-semibold">Password Reset</h1>
 
-                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
                     <input
                         name="username"

@@ -10,6 +10,7 @@ import AssigCardManager from "./assign.card";
 import CreateComment from "../comment/CreateComment";
 import { deleteCard } from "@/modules/card/card.api";
 import Comment from "../comment/comment";
+import { Message } from "../message/message";
 
 
 export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwner, taskboardMembers, setEditCard, onDelete, onAssign, setCards }: cardViewProps) {
@@ -103,16 +104,16 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
     }
 
 
-    return <div className="group/card flex flex-col bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition" ref={setNodeRef} style={style} {...attributes}>
-        <span className="text-red-700">{error}</span>
+    return <div className="group/card flex flex-col w-full min-w-0 bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition" ref={setNodeRef} style={style} {...attributes}>
+        {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
 
         <div className="relative cursor-grab">
-            <h4 className="font-semibold text-sm text-gray-900 text-center" {...listeners} >
+            <h4 className="font-semibold text-sm text-gray-900 text-center break-all"  {...listeners} >
                 {card.title}
             </h4>
 
-            {isTaskboardOwner && <button onClick={setEditCard} className="absolute text-white right-4 top-0 group-hover/card:text-blue-800 hover:text-blue-500">
+            {isTaskboardOwner && <button onClick={setEditCard} className="absolute text-transparent right-4 top-0 group-hover/card:text-blue-800 hover:text-blue-500">
                 ✎
             </button>}
             {isTaskboardOwner && <button onClick={onDeleteCard} className="absolute opacity-0 -right-2 top-0 group-hover/card:opacity-100 hover:opacity-85">
@@ -149,7 +150,7 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
         </div>
 
         {card.description && (
-            <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+            <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 break-all">
                 {card.description}
             </p>
         )}
@@ -172,7 +173,7 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
                 <div className="text-xs text-gray-400 italic text-center">
                     {isCreating ?
                         <CreateComment onCancel={() => setIsCreating(false)} onCreate={handleCreateComment} cardId={card._id} /> :
-                        <button onClick={() => setIsCreating(true)} className="border border-gray-200  rounded-full px-1 hover:border-gray-500"> + </button>
+                        <button onClick={() => setIsCreating(true)} className="border border-gray-200 w-6 h-6 rounded-full px-1 hover:border-gray-500"> + </button>
                     }
                 </div>
             }

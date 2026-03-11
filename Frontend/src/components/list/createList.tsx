@@ -3,6 +3,7 @@ import { createList } from "@/modules/list/list.api"
 import { createListSchema } from "@/modules/list/list.schemas"
 import { CreateListProps } from "@/modules/list/list.types"
 import { useState } from "react"
+import { Message } from "../message/message"
 
 export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps) {
   const [title, setTitle] = useState("")
@@ -28,7 +29,7 @@ export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps)
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 bg-gray-100 p-3 rounded-2xl">
-      <span className="text-red-700">{error}</span>
+      {error && <Message type="error" message={error} onClose={() => setError("")} />}
       <h3 className="text-black items-center text-center font-semibold">Create List</h3>
       <input
         value={title}

@@ -3,6 +3,7 @@ import { createCard } from "@/modules/card/card.api"
 import { createCardSchema } from "@/modules/card/card.schema"
 import { createCardProps } from "@/modules/card/card.types"
 import { useState } from "react"
+import { Message } from "../message/message"
 
 
 export function CreateCardForm({ onCancel, onCreate, listId }: createCardProps) {
@@ -39,7 +40,7 @@ export function CreateCardForm({ onCancel, onCreate, listId }: createCardProps) 
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition">
-            <span className="text-red-700">{error}</span>
+            {error && <Message type="error" message={error} onClose={() => setError("")} />}
             <input className="border border-gray-200 font-semibold text-sm text-gray-900 text-center rounded-2xl" name="title" type="text" placeholder="Title" required />
             <textarea className="border border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-lg p-3" name="description" placeholder="Description" required />
             <div className="grid grid-cols-2">

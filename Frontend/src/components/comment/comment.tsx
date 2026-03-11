@@ -3,6 +3,7 @@ import UserAvatar from "../user/user.avatar";
 import { deleteComment, updateComment } from "@/modules/comment/comment.api";
 import { useState } from "react";
 import { extractApiErrorMessage } from "@/lib/api-error";
+import { Message } from "../message/message";
 
 
 export default function Comment({ comment, user, taskboardOwner, onDelete, onModify }: CommentProps) {
@@ -40,7 +41,7 @@ export default function Comment({ comment, user, taskboardOwner, onDelete, onMod
     const formattedDate = new Date(comment.updatedAt).toLocaleString("es-CR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", })
 
     return <div className="group/comment text-sm bg-white border border-gray-200 rounded-xl p-3 space-y-1 shadow-sm">
-        <span className="text-red-700">{error}</span>
+        {error && <Message type="error" message={error} onClose={() => setError("")} />}
         <div className="flex flex-row items-center gap-2">
             <UserAvatar user={comment.author} />
             <span className="text-gray-400 text-xs opacity-0 group-hover/comment:opacity-100 transition">
@@ -49,7 +50,10 @@ export default function Comment({ comment, user, taskboardOwner, onDelete, onMod
             {canDelete && <button onClick={deleteOne} className="ml-auto opacity-0 group-hover/comment:opacity-100 transition hover:opacity-85">🗑️</button>}
         </div>
         <div className="flex flex-col">
-            {!isEditing ? <p className="text-gray-700">{text}</p> : <textarea className="bg-gray-50 border border-gray-100 rounded-md" value={text} onChange={(e) => setText(e.target.value)} />}
+            {!isEditing ?
+                <p className="text-gray-700 break-all">{text}</p>
+                :
+                <textarea className="bg-gray-50 border border-gray-100 rounded-md" value={text} onChange={(e) => setText(e.target.value)} />}
             {canModify && !isEditing && <button onClick={() => setIsEditing(true)} className="self-end text-blue-800 opacity-0 group-hover/comment:opacity-100 transition hover:text-blue-500">✎</button>}
             {canModify && isEditing &&
                 <div className="self-end gap-0.5 p-0.5 text-white">

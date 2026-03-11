@@ -4,6 +4,7 @@ import { useState } from "react";
 import { assignToCard } from "@/modules/card/card.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
 import RemovableUserAvatar from "../user/removable.user.avatar";
+import { Message } from "../message/message";
 
 export default function AssigCardManager({ onCancel, onAssign, currentAssignedUsers, taskboardUsers, cardId }: assignCardProps) {
 
@@ -62,10 +63,10 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
 
 
     return <form onSubmit={handleSubmit} className="flex flex-col p-1 gap-1">
-        <span className="text-red-700">{error}</span>
+        {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
         <div className="flex overflow-x-auto gap-1 p-1">
-            {assignedUsers.map(member => <RemovableUserAvatar key={member._id} user={member} remove={ () => remove(member._id)} isOwner={true}/>)}
+            {assignedUsers.map(member => <RemovableUserAvatar key={member._id} user={member} remove={() => remove(member._id)} isOwner={true} />)}
         </div>
 
         <select value={id} onChange={(e) => setId(e.target.value)} className="border border-gray-400 rounded-lg text-center py-0.5">

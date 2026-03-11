@@ -10,7 +10,7 @@ export function ActivityHighlight({ children, id }: { children: any, id: string 
     const author = taskboard?.members.find(member => member._id === highlight?.authorId)
 
     return (
-        <div className="relative group">
+       <div className="relative group flex-none">
 
             {highlight && (
                 <>

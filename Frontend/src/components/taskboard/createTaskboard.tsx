@@ -3,6 +3,7 @@ import { createTaskboard } from "@/modules/taskboard/taskboard.api"
 import { createTaskboardSchema } from "@/modules/taskboard/taskboard.schemas"
 import { CreateTaskboardProps } from "@/modules/taskboard/taskboard.types"
 import { useState } from "react"
+import { Message } from "../message/message"
 
 export function CreateTaskboard({ onCreated, onCancel }: CreateTaskboardProps) {
   const [error, setError] = useState("")
@@ -36,7 +37,7 @@ export function CreateTaskboard({ onCreated, onCancel }: CreateTaskboardProps) {
           Create Taskboard
         </h2>
 
-        {error && <span className="text-sm text-red-600">{error}</span>}
+        {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
 

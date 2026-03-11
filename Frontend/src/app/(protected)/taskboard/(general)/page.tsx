@@ -1,6 +1,7 @@
 "use client"
 
 
+import { Message } from "@/components/message/message"
 import { CreateTaskboard } from "@/components/taskboard/createTaskboard"
 import { Taskboard } from "@/components/taskboard/taskboard"
 import { extractApiErrorMessage } from "@/lib/api-error"
@@ -42,7 +43,7 @@ export default function TaskBoardPage() {
   if (error)
     return (
       <div className="flex items-center justify-center py-6">
-        <p className="text-red-500">{error}</p>
+        <Message type="error" message={error} onClose={() => setError("")} />
       </div>
     )
 

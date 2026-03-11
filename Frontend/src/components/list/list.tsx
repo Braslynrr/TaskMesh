@@ -10,6 +10,7 @@ import { deleteList, updateList } from "@/modules/list/list.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
 import { SortableContext } from "@dnd-kit/sortable"
 import { ActivityHighlight } from "../highLight/highlightWrapper";
+import { Message } from "../message/message";
 
 
 export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards, onDelete, setCards, isDragging }: listProps) {
@@ -87,12 +88,12 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
   const canDeleteLists = taskBoardOwner._id === user._id
 
   return (
-    <div className={`flex flex-col bg-gray-100 rounded-md p-3 gap-2 text-black min-w-64 max-w-96 flex-1 overflow-y-auto ${isDragging ? "border-2 border-blue-800 hover:border-blue-500 transition" : ""}`} ref={setRefs} style={style} {...attributes} >
-      <span className="text-red-700">{error}</span>
+    <div className={`group/list flex flex-col bg-gray-100 rounded-md p-3 gap-2 w-96 shrink-0 overflow-y-auto ${isDragging ? "border-2 border-blue-800 hover:border-blue-500 transition" : ""}`} ref={setRefs} style={style} {...attributes} >
+      {error && <Message type="error" message={error} onClose={() => setError("")} />}
       <div
         className="relative font-semibold cursor-grab select-none">
         {!isEditing ?
-          <h3 {...listeners} className="text-center">{title}</h3>
+          <h3 {...listeners} className="text-center break-all">{title}</h3>
           :
           <form onSubmit={newListTitle} className="flex gap-1">
             <input className="border border-gray-400 rounded-2xl text-center" value={title} onChange={(e) => setTitle(e.target.value)} required></input>
@@ -101,8 +102,8 @@ export function List({ list, taskBoardOwner, user, taskboardMembers, list_cards,
           </form>
         }
 
-        {!isEditing && <button onClick={() => setIsEditing(true)} className="absolute right-4 top-0 border-gray-100 text-blue-800 hover:text-blue-500">✎</button>}
-        {canDeleteLists && <button onClick={deleteOne} className="absolute -right-2 top-0 hover:opacity-85">🗑️</button>}
+        {!isEditing && <button onClick={() => setIsEditing(true)} className="absolute right-4 top-0 border-gray-100 text-transparent group-hover/list:text-blue-800 hover:text-blue-500">✎</button>}
+        {canDeleteLists && <button onClick={deleteOne} className="absolute -right-2 top-0 opacity-0 group-hover/list:opacity-100 hover:opacity-85">🗑️</button>}
 
         <hr />
       </div>

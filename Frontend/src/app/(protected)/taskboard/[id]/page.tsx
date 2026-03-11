@@ -17,6 +17,7 @@ import { GhostCard } from "@/components/card/ghost.card"
 import { useBoardSocket } from "@/socket-lib/useBoardSocket"
 import { SpinnerCircular } from "spinners-react"
 import { ActivityHighlight } from "@/components/highLight/highlightWrapper"
+import { Message } from "@/components/message/message"
 
 export default function TaskboardPage({
   params,
@@ -166,9 +167,9 @@ export default function TaskboardPage({
     )
 
   return (
-    <div className="flex flex-col">
-      <span className=" text-red-700 items-center text-center text-3xl">{error}</span>
-      <div className="flex-1 flex gap-1 items-start">
+    <div className="flex flex-col text-black h-full">
+      {error && <Message type="error" message={error} onClose={() => setError("")} />}
+      <div className="flex gap-1 overflow-x-auto h-full items-start">
 
         <DndContext
           collisionDetection={rectIntersection}

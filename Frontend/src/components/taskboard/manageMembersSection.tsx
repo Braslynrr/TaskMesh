@@ -7,6 +7,7 @@ import RemovableUserAvatar from "../user/removable.user.avatar"
 import OwnerUserAvatar from "../user/owner.avatar"
 import { UserResponse } from "@/modules/auth/auth.types"
 import { useTaskboardStore } from "@/stores/taskboardStore"
+import { Message } from "../message/message"
 
 export function ManageMembersSection({
   taskboardId,
@@ -75,7 +76,7 @@ export function ManageMembersSection({
   return (
     <div className="flex flex-col gap-3">
 
-      {error && <span className="text-red-700">{error}</span>}
+      {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
       <div className={`flex ${mobile ? "flex-col" : "flex-row"}`}>
 

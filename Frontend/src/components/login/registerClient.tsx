@@ -7,6 +7,7 @@ import { registerSchema } from "@/modules/auth/auth.schemas"
 import { extractApiErrorMessage } from "@/lib/api-error"
 import { register } from "@/modules/auth/auth.api"
 import { SpinnerCircular } from "spinners-react"
+import { Message } from "../message/message"
 
 
 export default function RegisterClient() {
@@ -53,7 +54,7 @@ export default function RegisterClient() {
             >
                 <h1 className="text-xl font-semibold">Sign up</h1>
 
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
                 <input
                     name="username"

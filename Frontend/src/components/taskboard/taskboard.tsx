@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import UserAvatar from "../user/user.avatar";
 import { useState } from "react";
 import { extractApiErrorMessage } from "@/lib/api-error";
+import { Message } from "../message/message";
 
 
 
@@ -40,7 +41,7 @@ export function Taskboard({ tb, onDelete }: TaskboardProps) {
     >
       <div className="relative px-4 py-3">
 
-        {error && <span className="text-sm text-red-600">{error}</span>}
+        {error && <Message type="error" message={error} onClose={() => setError("")} />}
 
         <h3 className="text-lg font-semibold text-black">
           {tb.name}
