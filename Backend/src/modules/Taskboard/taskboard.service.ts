@@ -5,10 +5,10 @@ import { createTaskboardDTO, addMemberDTO, removeMemberDTO } from "./taskboard.s
 import { mongoIdDTO } from "../../utils/zodObjectId";
 import { serializeTaskboard, serializeTaskboardSnapshot } from "./taskboard.serializer";
 import { userRepository } from "../Users/user.repository";
-import { TaskboardDoc } from "./taskboard.types";
+import { Taskboard, TaskboardDoc } from "./taskboard.types";
 import { listService } from "../List/list.service";
 import { cardService } from "../Card/card.service";
-import { boardEmitter } from "../Socket/socket.server";
+import { boardEmitter, getIO } from "../Socket/socket.server";
 import { SocketEvents } from "../Socket/socket.events";
 
 export const taskboardService = {
@@ -52,10 +52,14 @@ export const taskboardService = {
 
         const serializedTaskboard = await serializeTaskboard(populatedTaskboard)
 
-        const emitter = boardEmitter(data._id, userId)
-        emitter.emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard: serializedTaskboard, authorId: userId })
+        const serializedAndConnectedTaskboards = await taskboardService.getConnectedUsers([serializedTaskboard])
 
-        return serializedTaskboard
+        const finalTaskboard = serializedAndConnectedTaskboards[0]
+
+        const emitter = boardEmitter(data._id, userId)
+        emitter.emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard: finalTaskboard, authorId: userId })
+
+        return finalTaskboard
     },
 
     async removeMember(data: removeMemberDTO, userId: string) {
@@ -73,10 +77,14 @@ export const taskboardService = {
 
         const serializedTaskboard = await serializeTaskboard(populatedTaskboard)
 
-        const emitter = boardEmitter(data._id, userId)
-        emitter.emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard: serializedTaskboard, authorId: userId })
+        const serializedAndConnectedTaskboards = await taskboardService.getConnectedUsers([serializedTaskboard])
 
-        return serializedTaskboard
+        const finalTaskboard = serializedAndConnectedTaskboards[0]
+
+        const emitter = boardEmitter(data._id, userId)
+        emitter.emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard: finalTaskboard, authorId: userId })
+
+        return finalTaskboard
     },
 
     async delete(data: mongoIdDTO, userId: string) {
@@ -96,16 +104,26 @@ export const taskboardService = {
     async getTaskboards(id: string) {
         const taskboards = await taskboardRepository.getTaskboards(id)
         const populatedtaskboards = await Promise.all(taskboards.map(taskboard => taskboardService.populateDocument(taskboard)))
-        return populatedtaskboards.map(taskboard => serializeTaskboard(taskboard))
+        const serializedTaskboard = populatedtaskboards.map(taskboard => serializeTaskboard(taskboard))
+        const serializedAndConnectedTaskboards = await taskboardService.getConnectedUsers(serializedTaskboard)
+
+        return serializedAndConnectedTaskboards
     },
 
     async getTaskboard(id: string, userId: string) {
         const taskboard = await taskboardRepository.findbyId(id)
 
+        if (!taskboard) {
+            throw new NotFoundError("taskboard was not found")
+        }
+
         assertUserIsMember({ taskboard, userId })
 
         const populatedTaskboard = await taskboardService.populateDocument(taskboard)
-        return serializeTaskboard(populatedTaskboard)
+        const serializedTaskboard = serializeTaskboard(populatedTaskboard)
+        const serializedAndConnectedTaskboards = await taskboardService.getConnectedUsers([serializedTaskboard])
+
+        return serializedAndConnectedTaskboards[0]
     },
 
     async getTaskboardSnapshot(id: string, userId: string) {
@@ -126,6 +144,28 @@ export const taskboardService = {
 
     async populateDocument(doc: TaskboardDoc) {
         return await doc.populate([{ path: "members", select: "_id username" }, { path: "ownerId", select: "_id username" }])
+    },
+
+    async getConnectedUsers(taskboards: Taskboard[]) {
+
+        let newTaskboards = [...taskboards]
+        const io = getIO()
+        if (io) {
+
+            for (let taskboard of newTaskboards) {
+                const room = `${SocketEvents.TASKBOARD}:${taskboard._id}`
+                const sockets = await io.in(room).fetchSockets()
+
+                if (sockets.some(s => s.data.user._id === taskboard.owner._id)) {
+                    taskboard.owner = { ...taskboard.owner, connected: true }
+                }
+
+                taskboard.members = taskboard.members.map(member => sockets.some(s => s.data.user._id === member._id) ? { ...member, connected: true } : member)
+
+            }
+
+        }
+        return newTaskboards
     },
 
 }   

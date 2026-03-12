@@ -5,6 +5,8 @@ import { getConfig } from "../../core/config/config";
 import jwt from "jsonwebtoken"
 import { ClientToServerEvents, ServerToClientEvents } from "./socket.types";
 import { SocketEvents } from "./socket.events";
+import { Taskboard } from "../Taskboard/taskboard.types";
+import { taskboardService } from "../Taskboard/taskboard.service";
 
 let io: Server<ClientToServerEvents, ServerToClientEvents> | null = null
 
@@ -16,7 +18,9 @@ export function initSocket(httpServer: any = null, cors: string = "*") {
                 cors: {
                     origin: cors,
                     credentials: true
-                }
+                },
+                pingInterval: 10000,
+                pingTimeout: 5000
             }
         )
 
@@ -53,20 +57,55 @@ function handlingEvents() {
     io.on(SocketEvents.CONNECTION, (socket) => {
 
         const userId = socket.data.user._id
-        socket.join(`user:${userId}`)
+        const userRoom = `${SocketEvents.USER}:${userId}`
+        socket.join(userRoom)
 
         logger.info(`Socket connection detected: ${socket.id} from ${userId}`)
 
-        socket.on(SocketEvents.JOIN_TASKBOARD, (taskboardId: string) => {
-            socket.join(`${SocketEvents.TASKBOARD}:${taskboardId}`)
+        socket.on(SocketEvents.JOIN_TASKBOARD, async (taskboardId: string) => {
+            const taskboardRoom = `${SocketEvents.TASKBOARD}:${taskboardId}`
+            socket.join(taskboardRoom)
             socket.emit(SocketEvents.JOINED_TASKBOARD, { taskboardId: taskboardId })
             logger.info(`Joining taskboard: ${taskboardId}`)
+
+            const taskboard = await getConnectedMembers(taskboardId, userId)
+            io.to(taskboardRoom).emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard, authorId: userId })
         })
 
-        socket.on(SocketEvents.LEAVE_TASKBOARD, (taskboardId: string) => {
-            socket.leave(`${SocketEvents.TASKBOARD}:${taskboardId}`)
-            socket.leave(`user:${userId}`)
-            logger.info(`Leaving taskboard: ${taskboardId}`)
+        socket.on(SocketEvents.LEAVE_TASKBOARD, async (taskboardId: string) => {
+            const taskboardRoom = `${SocketEvents.TASKBOARD}:${taskboardId}`
+            socket.leave(taskboardRoom)
+            socket.leave(userRoom)
+            logger.info(`${userId} is leaving taskboard: ${taskboardId}`)
+
+            const taskboard = await getConnectedMembers(taskboardId, userId)
+            io.to(taskboardRoom).emit(SocketEvents.TASKBOARD_MEMBERS, { taskboard, authorId: userId })
+        })
+
+        socket.on(SocketEvents.DISCONECTION, async () => {
+
+            for (const room of socket.rooms) {
+
+                const splitName = room.split(":")
+
+                if (splitName[0] === SocketEvents.TASKBOARD) {
+
+                    const taskboardId = splitName[1]
+                    const taskboardRoom = room
+
+                    logger.info(`${userId} disconnecting from taskboard: ${taskboardId}`)
+
+                    const taskboard = await getConnectedMembers(taskboardId, userId)
+
+                    if (taskboard) {
+                        io.to(taskboardRoom).emit(
+                            SocketEvents.TASKBOARD_MEMBERS,
+                            { taskboard, authorId: userId }
+                        )
+                    }
+                }
+            }
+
         })
 
     })
@@ -88,5 +127,19 @@ export function boardEmitter(
     const io = getIO()
     if (io)
         return io.to(`${SocketEvents.TASKBOARD}:${taskboardId}`).except(`user:${userId}`)
+    return null
+}
+
+async function getConnectedMembers(taskboardId: string, userID: string): Promise<Taskboard> {
+
+    const taskboard = await taskboardService.getTaskboard(taskboardId, userID)
+
+    if (taskboard) {
+        const connectedTaskboard = await taskboardService.getConnectedUsers([taskboard])
+
+        return connectedTaskboard[0]
+
+    }
+
     return null
 }

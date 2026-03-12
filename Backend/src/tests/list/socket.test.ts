@@ -1,4 +1,4 @@
-import { AddMemberToTaskboard, createTaskboard } from "../factories/taskboard.factory"
+import { AddMemberToTaskboard, createTaskboardWithMembers } from "../factories/taskboard.factory"
 import { io as Client } from "socket.io-client"
 import request from "supertest"
 import { getServer } from "../factories/server.factory"
@@ -26,8 +26,8 @@ describe("WebSocket for List", () => {
     })
 
     beforeEach(async () => {
-        const result = await createTaskboard()
         const user = await createAuthUser("test1")
+        const result = await createTaskboardWithMembers([user.user._id])
         await AddMemberToTaskboard(result.taskboard._id.toString(), [user.user._id])
         socketToken = user.token
         APIToken = result.token

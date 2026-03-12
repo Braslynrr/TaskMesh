@@ -85,13 +85,14 @@ export function ManageMembersSection({
           <div className="flex flex-wrap gap-2">
             {taskboard && taskboard.members.map(member => (
               member._id === taskboard.owner._id ?
-                <OwnerUserAvatar key={member._id} user={member} />
+                <OwnerUserAvatar key={member._id} user={member}  displayConnected={true}/>
                 :
-                < RemovableUserAvatar
+                <RemovableUserAvatar
                   key={member._id}
                   user={member}
                   isOwner={isOwner}
                   remove={() => removeMember(taskboardId, member._id)}
+                  displayConnected={true}
                 />
             ))}
 

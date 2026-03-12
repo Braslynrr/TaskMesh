@@ -34,9 +34,11 @@ export function Taskboard({ tb, onDelete }: TaskboardProps) {
     }
   }
 
+  const currentActiveusers = [tb.owner, ...tb.members].reduce((all, m) => all + (m.connected ? 1 : 0), 0)
+
   return (
     <div
-      className="group/taskboard  min-w-xs min-h-40 rounded-lg border border-slate-200 bg-white shadow-lg shadow-slate-950/5 transition hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+      className="group/taskboard flex flex-col min-w-xs min-h-40 rounded-lg border border-slate-200 bg-white shadow-lg shadow-slate-950/5 transition hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
       onClick={goToTaskboard}
     >
       <div className="relative px-4 py-3">
@@ -64,6 +66,12 @@ export function Taskboard({ tb, onDelete }: TaskboardProps) {
         </button>
 
       </div>
+
+      {currentActiveusers > 0 && (
+        <div className="mt-auto px-4 pb-3 text-sm text-slate-600">
+          👥 {currentActiveusers}  {currentActiveusers === 1 ? "user" : "users"} viewing this board
+        </div>
+      )}
     </div>
   )
 }

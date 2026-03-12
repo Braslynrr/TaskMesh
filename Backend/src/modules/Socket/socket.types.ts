@@ -30,6 +30,8 @@ export interface ServerToClientEvents {
 
     COMMENT_CREATED: (payload: commentDupsertPayload) => void
 
+    LEAVE_TASKBOARD: (taskboardId: string) => void
+
 }
 
 export interface ClientToServerEvents {

@@ -25,4 +25,5 @@ export type UserResponse = {
     _id:string
     username:string
     role:string
+    connected?:boolean
 }

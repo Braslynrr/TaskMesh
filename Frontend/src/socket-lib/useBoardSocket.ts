@@ -139,7 +139,7 @@ export function useBoardSocket({
     }
 
     const handleTaskboardMembers = (payload: taskboardMembersPayload) => {
-      const newTaskboard: TaskboardResponse = { ...payload.taskboard, members: [payload.taskboard.owner, ...payload.taskboard.members] }
+      const newTaskboard: TaskboardResponse = { ...payload.taskboard, members: [payload.taskboard.owner, ...payload.taskboard.members]}
       setTaskboard(newTaskboard)
     }
 

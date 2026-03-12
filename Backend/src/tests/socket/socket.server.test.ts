@@ -3,11 +3,13 @@ import { getIO } from "../../modules/Socket/socket.server"
 import { getServer } from "../factories/server.factory"
 import { createAuthUser } from "../factories/user.factory"
 import { SocketEvents } from "../../modules/Socket/socket.events"
+import { createTaskboard } from "../factories/taskboard.factory"
 
 describe("Socket.io connection", () => {
   let server: any
   let port: number
   let authToken: string
+  let taskboardId:string
 
   beforeAll(async () => {
     server = getServer()
@@ -21,8 +23,9 @@ describe("Socket.io connection", () => {
   })
 
   beforeEach(async () => {
-    const { token } = await createAuthUser()
+    const { token, taskboard } = await createTaskboard()
     authToken = token
+    taskboardId = taskboard._id.toString()
   })
 
   afterAll((done) => {
@@ -62,13 +65,13 @@ describe("Socket.io connection", () => {
 
     expect(client.connected).toBe(true)
 
-    client.emit(SocketEvents.JOIN_TASKBOARD, "1")
+    client.emit(SocketEvents.JOIN_TASKBOARD, taskboardId)
 
     // Esperar a que el servidor procese
     await new Promise((resolve) => setTimeout(resolve, 50))
 
     const ioServer = await getIO()
-    const sockets = await ioServer.in(`${SocketEvents.TASKBOARD}:1`).fetchSockets()
+    const sockets = await ioServer.in(`${SocketEvents.TASKBOARD}:${taskboardId}`).fetchSockets()
 
     expect(sockets.length).toBe(1)
 

@@ -3,8 +3,10 @@ export enum SocketEvents {
     CONNECT = "connect",
     CONNECT_ERROR = "connect_error",
     CONNECTION = "connection",
+    DISCONECTION = "disconnecting",
 
     TASKBOARD = "taskboard",
+    USER= "user",
 
     // Custom Events
 

@@ -42,9 +42,7 @@ describe("Websocket for taskboard", () => {
     it("should receive TASKBOARD_MEMBER when a user is added", async () => {
 
         const client = Client(`http://localhost:${port}`, {
-            auth: {
-                token: socketToken,
-            }
+            auth: { token: socketToken }
         })
 
         await new Promise<void>((resolve) => {
@@ -55,11 +53,14 @@ describe("Websocket for taskboard", () => {
 
         client.emit(SocketEvents.JOIN_TASKBOARD, taskboard._id)
 
-        const taskboardMembersPromise = new Promise<any>((resolve) => {
-            client.on(SocketEvents.TASKBOARD_MEMBERS, (payload) => {
-                resolve(payload)
-            })
-        })
+        // Consumes the TASKBOARD_MEMBERS sent by JOIN_TASKBOARD
+        await new Promise(resolve =>
+            client.once(SocketEvents.TASKBOARD_MEMBERS, resolve)
+        )
+
+        const taskboardMembersPromise = new Promise<any>(resolve =>
+            client.once(SocketEvents.TASKBOARD_MEMBERS, resolve)
+        )
 
         const userToAdd = await createUser("new User")
 
@@ -75,26 +76,15 @@ describe("Websocket for taskboard", () => {
 
         const payload = await taskboardMembersPromise
 
-        const memeberIds = taskboard.members.map(m => ({ _id: m._id }))
-
-        const expectedTaskboard = {
-            ...taskboard, owner: {
-                _id: taskboard.owner._id,
-            }, members: [...memeberIds, { _id: userToAdd._id }]
-        }
-
-        expect(payload.taskboard).toMatchObject(expectedTaskboard)
+        expect(payload.taskboard).toMatchObject(res.body)
 
     })
 
 
-
     it("should receive TASKBOARD_MEMBER when a user is removed", async () => {
 
-        const client = Client(`http://localhost:${port}`, {
-            auth: {
-                token: socketToken,
-            }
+         const client = Client(`http://localhost:${port}`, {
+            auth: { token: socketToken }
         })
 
         await new Promise<void>((resolve) => {
@@ -105,11 +95,14 @@ describe("Websocket for taskboard", () => {
 
         client.emit(SocketEvents.JOIN_TASKBOARD, taskboard._id)
 
-        const taskboardMembersPromise = new Promise<any>((resolve) => {
-            client.on(SocketEvents.TASKBOARD_MEMBERS, (payload) => {
-                resolve(payload)
-            })
-        })
+        // Consumes the TASKBOARD_MEMBERS sent by JOIN_TASKBOARD
+        await new Promise(resolve =>
+            client.once(SocketEvents.TASKBOARD_MEMBERS, resolve)
+        )
+
+        const taskboardMembersPromise = new Promise<any>(resolve =>
+            client.once(SocketEvents.TASKBOARD_MEMBERS, resolve)
+        )
 
         const res = await request(server)
             .delete(`/api/taskboard/${taskboard._id}/member/${user.user._id}`)

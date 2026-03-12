@@ -1,7 +1,7 @@
 import { UserResponse } from "@/modules/auth/auth.types";
 
 
-export default function UserAvatar({ user }: { user: UserResponse }) {
+export default function UserAvatar({ user, displayConnected }: { user: UserResponse, displayConnected?:boolean }) {
 
     function stringToColor(str: string) {
         let hash = 0
@@ -21,5 +21,8 @@ export default function UserAvatar({ user }: { user: UserResponse }) {
                   opacity-0 group-hover/avatar:opacity-100 transition pointer-events-none whitespace-nowrap z-50">
             {user.username}
         </div>
+
+        {displayConnected && user.connected && <div className="absolute w-3 h-3 top-4 -right-1 rounded-full bg-green-700 animate-pulse"/>}
+
     </div>
 }
