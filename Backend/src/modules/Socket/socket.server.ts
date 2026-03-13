@@ -124,9 +124,11 @@ export function boardEmitter(
     taskboardId: string,
     userId: string
 ) {
+    const room = `${SocketEvents.TASKBOARD}:${taskboardId}`
+    const user = `${SocketEvents.USER}:${userId}`
     const io = getIO()
     if (io)
-        return io.to(`${SocketEvents.TASKBOARD}:${taskboardId}`).except(`user:${userId}`)
+        return io.to(room).except(user)
     return null
 }
 

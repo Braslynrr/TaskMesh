@@ -18,43 +18,50 @@ export function BoardHeader({ title, taskboardId }: {
 
   return (
     <>
-      <header className="grid grid-cols-4 items-center border-b px-4 py-2">
+      <header className="flex items-center border-b px-4 py-2">
 
-        <div>
+        <div className="flex items-center gap-2">
           <Link href="/taskboard" className="font-medium underline">
             {title}
           </Link>
-          {taskboard && <span> 📑{taskboard.name}</span>}
-        </div>
 
-        <div className="hidden md:flex items-center gap-4">
-          {taskboardId && (
-            <ManageMembersSection taskboardId={taskboardId} />
+          {taskboard && (
+            <span className="text-gray-300">📑 {taskboard.name}</span>
           )}
         </div>
 
-        {!showActivity ?
+
+        <div className="hidden md:flex items-center gap-10 mx-auto">
+          {taskboardId && (
+            <ManageMembersSection taskboardId={taskboardId} />
+          )}
+
+          {taskboardId && !showActivity && (
+            <button
+              onClick={() => setShowActivity(true)}
+              className="text-sm text-slate-300 hover:text-gray-100"
+            >
+              📜 Activity History
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4 ml-auto">
+
+          {showActivity && (
+            <ActivityHistory close={() => setShowActivity(false)} />
+          )}
+
           <button
-            onClick={() => setShowActivity(true)}
-            className="hidden md:block text-sm text-slate-300 hover:text-gray-100"
+            className="md:hidden text-xl"
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            📜 Activity History
+            ☰ Menu
           </button>
-          :
-          <ActivityHistory close={() => setShowActivity(false)} />
 
-        }
-
-        <button
-          className="md:hidden col-start-4 justify-self-end text-xl"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          ☰ Menu
-        </button>
-
-        <div className="hidden md:flex justify-self-end gap-4">
-
-          <UserLoggedIn />
+          <div className="hidden md:flex">
+            <UserLoggedIn />
+          </div>
 
         </div>
 
@@ -66,7 +73,7 @@ export function BoardHeader({ title, taskboardId }: {
             <ManageMembersSection mobile taskboardId={taskboardId} />
           )}
 
-          <button
+          {taskboardId && (<button
             onClick={() => {
               setShowActivity(true)
               setMenuOpen(false)
@@ -75,6 +82,7 @@ export function BoardHeader({ title, taskboardId }: {
           >
             📜 Activity History
           </button>
+          )}
 
           <div className="justify-self-end">
             <UserLoggedIn mobile />

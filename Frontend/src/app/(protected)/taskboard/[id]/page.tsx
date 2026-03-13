@@ -19,6 +19,8 @@ import { SpinnerCircular } from "spinners-react"
 import { ActivityHighlight } from "@/components/highLight/highlightWrapper"
 import { Message } from "@/components/message/message"
 
+const MAX_LIST_NUMBER = 7
+
 export default function TaskboardPage({
   params,
 }: {
@@ -34,7 +36,7 @@ export default function TaskboardPage({
   const [creating, setCreating] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  
+
   useEffect(() => {
     async function loadListAndUser() {
       try {
@@ -198,17 +200,23 @@ export default function TaskboardPage({
 
         </DndContext>
 
-        {!creating ?
-          <div
-            onClick={() => setCreating(true)}
-            className="flex items-center justify-center w-12 h-12 ml-20 mt-32 rounded-full border border-slate-300 text-slate-500 hover:text-slate-100 cursor-pointer justify-self-center"
-          >
-            +
-          </div>
-          :
-          <CreateList key="createlist" onCreate={(list) => setLists([...lists, list])} taskboardId={id} onCancel={() => setCreating(false)} ></CreateList>
+        {lists.length < MAX_LIST_NUMBER && (
+          !creating ?
 
-        }
+            <div
+              className="flex w-80 gap-2 bg-transparent p-3 rounded-2xl items-center justify-center text-center h-70"
+            >
+              <button
+                className="text-gray-100 flex items-center justify-center w-14 h-14 text-2xl border border-slate-500 hover:border-slate-300 rounded-full transition"
+                onClick={() => setCreating(true)}
+              >
+                +
+              </button>
+            </div>
+            :
+            <CreateList key="createlist" onCreate={(list) => setLists([...lists, list])} taskboardId={id} onCancel={() => setCreating(false)} ></CreateList>
+
+        )}
 
       </div>
     </div>

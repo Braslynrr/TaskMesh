@@ -31,7 +31,7 @@ export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 bg-gray-100 p-3 rounded-2xl">
+    <form onSubmit={handleSubmit} className="flex flex-col w-80 gap-2 bg-gray-100 p-3 rounded-2xl">
       {error && <Message type="error" message={error} onClose={() => setError("")} />}
       <h3 className="text-black items-center text-center font-semibold">Create List</h3>
       <input
