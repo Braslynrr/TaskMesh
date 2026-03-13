@@ -7,3 +7,8 @@ export type MongoIdRequest = {
 export type DeleteResponse = {
     deletedCount: number
 }
+
+export type Activity = {
+    author:string
+    action: string
+}

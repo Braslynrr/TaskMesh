@@ -4,11 +4,16 @@ import { createCardSchema } from "@/modules/card/card.schema"
 import { createCardProps } from "@/modules/card/card.types"
 import { useState } from "react"
 import { Message } from "../message/message"
+import { useActivityStore } from "@/stores/activityStore"
+
 
 
 export function CreateCardForm({ onCancel, onCreate, listId }: createCardProps) {
     const [error, setError] = useState("")
     const [disabled, setDisabled] = useState(false)
+    const addActivity = useActivityStore(s => s.AddActivity)
+
+
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
@@ -28,6 +33,7 @@ export function CreateCardForm({ onCancel, onCreate, listId }: createCardProps) 
             const parsed = createCardSchema.parse(values)
             const list = await createCard(parsed)
             onCreate(list)
+            addActivity({ author: "You", action: ` have created '${values.title}' card` })
             onCancel()
         }
         catch (err) {

@@ -11,6 +11,7 @@ import CreateComment from "../comment/CreateComment";
 import { deleteCard } from "@/modules/card/card.api";
 import Comment from "../comment/comment";
 import { Message } from "../message/message";
+import { useActivityStore } from "@/stores/activityStore";
 
 
 export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwner, taskboardMembers, setEditCard, onDelete, onAssign, setCards }: cardViewProps) {
@@ -19,6 +20,8 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
     const [isCreating, setIsCreating] = useState(false)
     const [comments, setComments] = useState<commentResponse[]>([])
     const [isToggled, setIsToggled] = useState(false)
+    const addActivity = useActivityStore(s => s.AddActivity)
+
 
     useEffect(() => {
         if (!isToggled) return
@@ -26,38 +29,6 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
         loadComments()
     }, [card])
 
-
-    function onDeleteComment(comment: commentResponse) {
-        setComments((prev) => prev.filter(com => com._id !== comment._id))
-
-        setCards((prev) => {
-            const card = prev.find(c => c._id === comment.cardId)
-            if (card) {
-                const newCard: cardResponse = { ...card, comments: card.comments - 1 }
-                return prev.map(c => c._id === card._id ? newCard : c)
-            }
-            return prev
-        })
-    }
-
-    function onUpdateComment(comment: commentResponse) {
-        setComments((prev) => prev.map(com => com._id === comment._id ? comment : com))
-
-        if (isToggled && comments.length <= 0) {
-            loadComments()
-        }
-    }
-
-    function handleToggle(e: React.SyntheticEvent<HTMLDetailsElement>) {
-        const el = e.currentTarget
-        const open = el.open
-
-        setIsToggled(open)
-
-        if (open && comments.length <= 0) {
-            loadComments()
-        }
-    }
 
     function handleCreateComment(comment: commentResponse) {
         setComments((prev) => [...prev, comment])
@@ -70,6 +41,44 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
             }
             return prev
         })
+
+        addActivity({ author: "You", action: ` have commented in '${card.title}' card` })
+    }
+
+    function onUpdateComment(comment: commentResponse) {
+        setComments((prev) => prev.map(com => com._id === comment._id ? comment : com))
+
+        if (isToggled && comments.length <= 0) {
+            loadComments()
+        }
+
+        addActivity({ author: "You", action: ` have updated a comment in '${card.title}' card` })
+    }
+
+    function onDeleteComment(comment: commentResponse) {
+        setComments((prev) => prev.filter(com => com._id !== comment._id))
+
+        setCards((prev) => {
+            const card = prev.find(c => c._id === comment.cardId)
+            if (card) {
+                const newCard: cardResponse = { ...card, comments: card.comments - 1 }
+                return prev.map(c => c._id === card._id ? newCard : c)
+            }
+            return prev
+        })
+
+        addActivity({ author: "You", action: ` have deleted a comment in '${card.title}' card` })
+    }
+
+    function handleToggle(e: React.SyntheticEvent<HTMLDetailsElement>) {
+        const el = e.currentTarget
+        const open = el.open
+
+        setIsToggled(open)
+
+        if (open && comments.length <= 0) {
+            loadComments()
+        }
     }
 
     async function loadComments() {
@@ -84,6 +93,7 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
     async function onDeleteCard() {
         try {
             const res = await deleteCard(card._id)
+            addActivity({ author: "You", action: ` have deleted '${card.title}' card` })
             onDelete(card)
         } catch (err) {
             setError(extractApiErrorMessage(err))

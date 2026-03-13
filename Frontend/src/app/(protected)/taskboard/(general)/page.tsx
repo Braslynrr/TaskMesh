@@ -7,6 +7,8 @@ import { Taskboard } from "@/components/taskboard/taskboard"
 import { extractApiErrorMessage } from "@/lib/api-error"
 import { getTaskboards } from "@/modules/taskboard/taskboard.api"
 import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
+import { useActivityStore } from "@/stores/activityStore"
+import { useTaskboardStore } from "@/stores/taskboardStore"
 import { useEffect, useState } from "react"
 import { SpinnerCircular } from "spinners-react"
 
@@ -15,6 +17,8 @@ export default function TaskBoardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
+  const setTaskboard = useTaskboardStore(s => s.setTaskboard)
+  const ClearActivities = useActivityStore(s => s.ClearActivities)
 
   useEffect(() => {
     async function loadTaskboards() {
@@ -28,7 +32,8 @@ export default function TaskBoardPage() {
         setLoading(false)
       }
     }
-
+    setTaskboard(undefined)
+    ClearActivities()
     loadTaskboards()
   }, [])
 

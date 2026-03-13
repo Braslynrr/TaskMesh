@@ -4,11 +4,13 @@ import { createListSchema } from "@/modules/list/list.schemas"
 import { CreateListProps } from "@/modules/list/list.types"
 import { useState } from "react"
 import { Message } from "../message/message"
+import { useActivityStore } from "@/stores/activityStore"
 
 export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps) {
   const [title, setTitle] = useState("")
   const [error, setError] = useState("")
   const [disabled, setDisabled] = useState(false)
+  const addActivity = useActivityStore(s => s.AddActivity)
 
 
   async function handleSubmit(e: React.SubmitEvent) {
@@ -19,6 +21,7 @@ export function CreateList({ taskboardId, onCreate, onCancel }: CreateListProps)
       const parsed = createListSchema.parse({ title, taskboardId })
       const list = await createList(parsed)
       onCreate(list)
+      addActivity({ author: "You", action: ` have created '${list.title}' list` })
       setTitle("")
       onCancel()
     } catch (err) {

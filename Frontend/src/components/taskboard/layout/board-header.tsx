@@ -5,6 +5,7 @@ import { ManageMembersSection } from "../manageMembersSection"
 import Link from "next/link"
 import { useState } from "react"
 import { useTaskboardStore } from "@/stores/taskboardStore"
+import { ActivityHistory } from "@/components/activity/ActivityHistory"
 
 export function BoardHeader({ title, taskboardId }: {
   title: string
@@ -12,11 +13,12 @@ export function BoardHeader({ title, taskboardId }: {
 }) {
 
   const [menuOpen, setMenuOpen] = useState(false)
-  const taskboard = useTaskboardStore(s=> s.taskboard)
+  const taskboard = useTaskboardStore(s => s.taskboard)
+  const [showActivity, setShowActivity] = useState<boolean>(false)
 
   return (
     <>
-      <header className="grid grid-cols-3 items-center border-b px-4 py-2">
+      <header className="grid grid-cols-4 items-center border-b px-4 py-2">
 
         <div>
           <Link href="/taskboard" className="font-medium underline">
@@ -25,18 +27,31 @@ export function BoardHeader({ title, taskboardId }: {
           {taskboard && <span> 📑{taskboard.name}</span>}
         </div>
 
-        <button
-          className="md:hidden col-start-3 justify-self-end text-xl"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          ☰
-        </button>
-
         <div className="hidden md:flex items-center gap-4">
           {taskboardId && (
             <ManageMembersSection taskboardId={taskboardId} />
           )}
         </div>
+
+        {!showActivity ?
+          <button
+            onClick={() => setShowActivity(true)}
+            className="hidden md:block text-sm text-slate-300 hover:text-gray-100"
+          >
+            📜 Activity History
+          </button>
+          :
+          <ActivityHistory close={() => setShowActivity(false)} />
+
+        }
+
+        <button
+          className="md:hidden col-start-4 justify-self-end text-xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          ☰ Menu
+        </button>
+
         <div className="hidden md:flex justify-self-end gap-4">
 
           <UserLoggedIn />
@@ -51,8 +66,18 @@ export function BoardHeader({ title, taskboardId }: {
             <ManageMembersSection mobile taskboardId={taskboardId} />
           )}
 
+          <button
+            onClick={() => {
+              setShowActivity(true)
+              setMenuOpen(false)
+            }}
+            className="text-left text-slate-200 hover:text-slate-50"
+          >
+            📜 Activity History
+          </button>
+
           <div className="justify-self-end">
-            <UserLoggedIn mobile/>
+            <UserLoggedIn mobile />
           </div>
         </div>
       )}

@@ -5,6 +5,7 @@ import { assignToCard } from "@/modules/card/card.api";
 import { extractApiErrorMessage } from "@/lib/api-error";
 import RemovableUserAvatar from "../user/removable.user.avatar";
 import { Message } from "../message/message";
+import { useActivityStore } from "@/stores/activityStore";
 
 export default function AssigCardManager({ onCancel, onAssign, currentAssignedUsers, taskboardUsers, cardId }: assignCardProps) {
 
@@ -13,6 +14,8 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
     const [id, setId] = useState(users[0]?._id ?? "")
     const [error, setError] = useState("")
     const [disabled, setDisabled] = useState(false)
+    const addActivity = useActivityStore(s => s.AddActivity)
+
 
 
     async function handleSubmit(e: React.SubmitEvent) {
@@ -27,6 +30,7 @@ export default function AssigCardManager({ onCancel, onAssign, currentAssignedUs
             setError("")
             const res = await assignToCard(body)
             onAssign(res)
+            addActivity({ author: "You", action: ` have updated '${res.title}' card` })
             onCancel()
 
         } catch (err) {

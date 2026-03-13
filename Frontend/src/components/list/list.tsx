@@ -12,6 +12,7 @@ import { SortableContext } from "@dnd-kit/sortable"
 import { ActivityHighlight } from "../highLight/highlightWrapper";
 import { Message } from "../message/message";
 import { useTaskboardStore } from "@/stores/taskboardStore";
+import { useActivityStore } from "@/stores/activityStore";
 
 
 export function List({ list, taskBoardOwner, user, list_cards, onDelete, setCards, isDragging }: listProps) {
@@ -20,7 +21,8 @@ export function List({ list, taskBoardOwner, user, list_cards, onDelete, setCard
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(list.title)
   const [error, setError] = useState("")
-  const taskboardMembers = useTaskboardStore(s=>s.taskboard?.members) ?? []
+  const taskboardMembers = useTaskboardStore(s => s.taskboard?.members) ?? []
+  const addActivity = useActivityStore(s => s.AddActivity)
 
   useEffect(() => {
     setTitle(list.title)
@@ -29,12 +31,15 @@ export function List({ list, taskBoardOwner, user, list_cards, onDelete, setCard
   function newAssignation(card: cardResponse) {
     const oldCard = list_cards.find(c => c._id === card._id)
 
-    if (oldCard)
+    if (oldCard) {
       setCards(prev => prev.map(c => c._id === card._id ? card : c))
+
+      addActivity({ author: "You", action: ` have updated '${card.title}' card` })
+    }
 
   }
 
-  async function newListTitle(e: React.FormEvent) {
+  async function newListTitle(e: React.SubmitEvent) {
     e.preventDefault()
 
     try {
@@ -43,6 +48,8 @@ export function List({ list, taskBoardOwner, user, list_cards, onDelete, setCard
         title: title
       }
       const res = await updateList(data)
+
+      addActivity({ author: "You", action: ` have updated '${data.title}' list` })
       setIsEditing(false)
       setError("")
 
@@ -56,6 +63,8 @@ export function List({ list, taskBoardOwner, user, list_cards, onDelete, setCard
   async function deleteOne() {
     try {
       const res = await deleteList(list._id)
+      addActivity({ author: "You", action: ` have deleted '${list.title}' list` })
+
       onDelete(list)
     } catch (err) {
       setError(extractApiErrorMessage(err))

@@ -4,12 +4,13 @@ import { updateCardSchema } from "@/modules/card/card.schema";
 import { cardEditProps } from "@/modules/card/card.types";
 import { useState } from "react";
 import { Message } from "../message/message";
+import { useActivityStore } from "@/stores/activityStore";
 
 
 export function EditCard({ card, cancel, onUpdate }: cardEditProps) {
     const [error, setError] = useState("")
     const [disabled, setDisabled] = useState(false)
-
+    const addActivity = useActivityStore(s => s.AddActivity)
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
@@ -28,7 +29,7 @@ export function EditCard({ card, cancel, onUpdate }: cardEditProps) {
             const res = await updateCard(data)
 
             onUpdate(res)
-
+            addActivity({ author: "You", action: ` have updated '${values.title}' card` })
             cancel()
 
         } catch (err) {
