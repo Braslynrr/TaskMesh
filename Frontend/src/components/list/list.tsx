@@ -33,8 +33,6 @@ export function List({ list, taskBoardOwner, user, list_cards, onDelete, setCard
 
     if (oldCard) {
       setCards(prev => prev.map(c => c._id === card._id ? card : c))
-
-      addActivity({ author: "You", action: ` have updated '${card.title}' card` })
     }
 
   }

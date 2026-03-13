@@ -25,7 +25,6 @@ export function useBoardSocket({
 
   const setTaskboard = useTaskboardStore(s => s.setTaskboard)
   const triggerHighlight = useHighlightStore(s => s.triggerHighlight)
-  const members = useTaskboardStore(s => s.taskboard?.members)
   const addActivity = useActivityStore(s => s.AddActivity)
 
   useEffect(() => {
