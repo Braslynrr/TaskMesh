@@ -18,6 +18,7 @@ import { useBoardSocket } from "@/socket-lib/useBoardSocket"
 import { SpinnerCircular } from "spinners-react"
 import { ActivityHighlight } from "@/components/highLight/highlightWrapper"
 import { Message } from "@/components/message/message"
+import { useActivityStore } from "@/stores/activityStore"
 
 const MAX_LIST_NUMBER = 7
 
@@ -35,6 +36,8 @@ export default function TaskboardPage({
   const [activeCard, setActiveCard] = useState<cardResponse | null>(null)
   const [creating, setCreating] = useState(false)
   const [loading, setLoading] = useState(true)
+  const addActivity = useActivityStore(s => s.AddActivity)
+
 
 
   useEffect(() => {
@@ -114,6 +117,8 @@ export default function TaskboardPage({
           }
 
           await moveList(data)
+
+          addActivity({ author: "You", action: ` moved '${lists[oldIndex].title}' list` })
         }
         catch (err) {
           setError(extractApiErrorMessage(err))
@@ -135,6 +140,8 @@ export default function TaskboardPage({
             listId: listiId
           }
 
+          let currentCard = cards.find(c => c._id === data._id)
+
           setCards(prev =>
             prev.map(card =>
               card._id === data._id
@@ -144,6 +151,7 @@ export default function TaskboardPage({
           )
 
           await moveCard(data)
+          addActivity({ author: "You", action: ` moved '${currentCard?.title}' card` })
 
         } catch (err) {
 

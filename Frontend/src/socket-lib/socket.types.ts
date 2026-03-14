@@ -6,7 +6,7 @@ import { TaskboardResponse } from "@/modules/taskboard/taskboard.types"
 export interface ServerToClientEvents {
 
     JOINED_TASKBOARD: (payload: taskboardPayload) => void
-    
+
     TASKBOARD_MEMBERS: (payload: taskboardMembersPayload) => void,
 
     LIST_CREATED: (payload: listUpsertPayload) => void
@@ -31,6 +31,8 @@ export interface ServerToClientEvents {
 
     COMMENT_CREATED: (payload: commentDupsertPayload) => void
 
+    LEAVE_TASKBOARD: (taskboardId: string) => void
+
 }
 
 export interface ClientToServerEvents {
@@ -38,16 +40,21 @@ export interface ClientToServerEvents {
     LEAVE_TASKBOARD: (taskboardId: string) => void
 }
 
-
 type basePayload = {
-    authorId:string 
+    authorId: string
 }
+
+
+type basetitledPayload = basePayload & {
+    title: string
+}
+
 
 export type taskboardPayload = {
     taskboardId: string
 }
 
-export type taskboardMembersPayload = basePayload &  {
+export type taskboardMembersPayload = basePayload & {
     taskboard: TaskboardResponse
 }
 
@@ -55,11 +62,11 @@ export type listUpsertPayload = basePayload & {
     list: listResponse
 }
 
-export type listDeletedPayload = basePayload & {
+export type listDeletedPayload = basetitledPayload & {
     listId: string
 }
 
-export type listMovedPayload = basePayload & {
+export type listMovedPayload = basetitledPayload & {
     listId: string
     from: number
     to: number
@@ -69,17 +76,15 @@ export type cardUpsertPayload = basePayload & {
     card: cardResponse
 }
 
-export type cardMovedPayload = basePayload & {
+export type cardMovedPayload = basetitledPayload & {
     cardId: string
     to: string
 }
 
-export type cardDeletedPayload = basePayload & {
+export type cardDeletedPayload = basetitledPayload & {
     cardId: string
 }
 
-export type commentDupsertPayload = basePayload & {
+export type commentDupsertPayload = basetitledPayload & {
     cardId: string
 }
-
-

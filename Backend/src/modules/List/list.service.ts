@@ -23,7 +23,7 @@ export const listService = {
 
         const updatedBoard = await taskboardRepository.AddToListCounter(data.taskboardId)
         data.position = updatedBoard.listCounter
-        
+
         const list = await ListRepository.create(data)
         const serializedList = serializeList(list)
 
@@ -55,6 +55,8 @@ export const listService = {
             throw new NotFoundError("list does not exist")
         }
 
+        const title = list.title
+
         const taskboardId = list.taskboardId.toString()
 
         const taskboard = await taskboardRepository.findbyId(taskboardId)
@@ -70,7 +72,7 @@ export const listService = {
         listService.orderList(taskboard._id.toString(), userId)
 
         const emitter = boardEmitter(taskboardId, userId)
-        emitter.emit(SocketEvents.LIST_DELETED, { listId: data._id, authorId: userId })
+        emitter.emit(SocketEvents.LIST_DELETED, { listId: data._id, title: title, authorId: userId })
 
         return result
     },
@@ -91,7 +93,7 @@ export const listService = {
 
         const originalLists = await ListRepository.getLists(list.taskboardId.toString());
 
-        const originalPosition = originalLists.findIndex(l=> l._id.toString() === list._id.toString())
+        const originalPosition = originalLists.findIndex(l => l._id.toString() === list._id.toString())
 
         // Remove moved list
         const filtered = originalLists.filter(l => !l._id.equals(list._id));
@@ -111,8 +113,8 @@ export const listService = {
             throw new ConflictError(lists.getWriteErrors().toString())
         }
 
-        const emitter = boardEmitter(taskboard._id.toString(),userId)
-        emitter.emit(SocketEvents.LIST_MOVED, { listId: list._id.toString(), from: originalPosition + 1, to: data.position, authorId: userId })
+        const emitter = boardEmitter(taskboard._id.toString(), userId)
+        emitter.emit(SocketEvents.LIST_MOVED, { listId: list._id.toString(), title: list.title, from: originalPosition + 1, to: data.position, authorId: userId })
 
         return ListRepository.getLists(data.taskboardId)
 

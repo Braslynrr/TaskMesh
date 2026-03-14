@@ -113,6 +113,9 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
         transition,
     }
 
+    const canDeleteCard = isTaskboardOwner || card.createdBy._id===user._id
+    const canEditCard = canDeleteCard || card.assignedTo.some( a=>a._id===user._id)
+
 
     return <div className="group/card flex flex-col w-full min-w-0 bg-white rounded-xl p-4 shadow-sm gap-4 hover:shadow-md transition" ref={setNodeRef} style={style} {...attributes}>
         {error && <Message type="error" message={error} onClose={() => setError("")} />}
@@ -123,10 +126,10 @@ export function CardView({ card, canModify, isTaskboardOwner, user, taskBoardOwn
                 {card.title}
             </h4>
 
-            {isTaskboardOwner && <button onClick={setEditCard} className="absolute text-transparent right-4 top-0 group-hover/card:text-blue-800 hover:text-blue-500">
+            {canEditCard && <button onClick={setEditCard} className="absolute text-transparent right-4 top-0 group-hover/card:text-blue-800 hover:text-blue-500">
                 ✎
             </button>}
-            {isTaskboardOwner && <button onClick={onDeleteCard} className="absolute opacity-0 -right-2 top-0 group-hover/card:opacity-100 hover:opacity-85">
+            {canDeleteCard && <button onClick={onDeleteCard} className="absolute opacity-0 -right-2 top-0 group-hover/card:opacity-100 hover:opacity-85">
                 🗑️
             </button>}
         </div>

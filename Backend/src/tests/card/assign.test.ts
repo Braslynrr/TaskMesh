@@ -9,89 +9,90 @@ import { createAuthUser, createUser } from "../factories/user.factory"
 describe("POST /api/card/assign", () => {
 
     it("fails when users are assigned and they are not member of taskboard", async () => {
-        const {token, user, taskboard} = await createTaskboard()
-        
+        const { token, user, taskboard } = await createTaskboard()
+
         const userList = await Promise.all(
-            Array.from({ length: 4 }, (_, i) => 
+            Array.from({ length: 4 }, (_, i) =>
                 createUser(`${i}`)))
 
         const list = await createListForTaskboard(taskboard._id.toString(), "test")
-        const listId= list._id.toString()
+        const listId = list._id.toString()
 
         const cardList = await Promise.all(
-            Array.from({ length: 4 }, (_, i) => 
-                createCard(listId,  user._id.toString(), `test${i}`, `test${i}`)))
+            Array.from({ length: 4 }, (_, i) =>
+                createCard(listId, user._id.toString(), `test${i}`, `test${i}`)))
 
-        
-        for(let i in cardList){
+
+        for (let i in cardList) {
             const res = await request(app)
-            .post("/api/card/assign")
-            .set("Cookie", `auth_token=${token}`)
-            .send(
-            {
-                _id: cardList[i]._id.toString(),
-                assignedTo: [userList[i]._id.toString()]
-            })
+                .post("/api/card/assign")
+                .set("Cookie", `auth_token=${token}`)
+                .send(
+                    {
+                        _id: cardList[i]._id.toString(),
+                        assignedTo: [userList[i]._id.toString()]
+                    })
 
             expect(res.status).toBe(403)
             expect(res.body.issues[0].message).toBe(`the following users are not members of this taskboard: ${userList[i]._id}`)
         }
-        
+
     })
 
-    it("fails when non taskboard owner try to assign", async () => {
+    it("fails when non card owner try to assign", async () => {
 
-        const {token, user} = await createAuthUser("test1")
+        const { user } = await createAuthUser("test1")
+        const user2 = await createAuthUser("test2")
         const userId = user._id.toString()
-        const {taskboard} = await createTaskboardWithMembers([userId])
+        const { taskboard } = await createTaskboardWithMembers([userId, user2.user._id])
 
         const list = await createListForTaskboard(taskboard._id.toString(), "test")
-        const listId= list._id.toString()
+        const listId = list._id.toString()
 
         const card = await createCard(listId, userId)
- 
-        const res = await request(app)
-        .post("/api/card/assign")
-        .set("Cookie", `auth_token=${token}`)
-        .send(
-        {
-            _id: card._id.toString(),
-            assignedTo: [userId]
-        })
 
-        expect(res.status).toBe(403)    
-        expect(res.body.issues[0].message).toBe("only owner can perform this action")
+        const res = await request(app)
+            .post("/api/card/assign")
+            .set("Cookie", `auth_token=${user2.token}`)
+            .send(
+                {
+                    _id: card._id.toString(),
+                    assignedTo: [userId]
+                })
+
+        expect(res.status).toBe(403)
+        expect(res.body.issues[0].message).toBe("user cannot perform this action")
     })
 
     it("should assign users to a card", async () => {
         const userList = await Promise.all(
-        Array.from({ length: 4 }, (_, i) => 
+            Array.from({ length: 4 }, (_, i) =>
                 createUser(`${i}`)))
 
-        const {token, user, taskboard} = await createTaskboardWithMembers(userList.map(user=> user._id.toString()))
-        
+        const { token, user, taskboard } = await createTaskboardWithMembers(userList.map(user => user._id.toString()))
+
 
         const list = await createListForTaskboard(taskboard._id.toString(), "test")
-        const listId= list._id.toString()
+        const listId = list._id.toString()
 
         const cardList = await Promise.all(
-            Array.from({ length: 4 }, (_, i) => 
-                createCard(listId,  user._id.toString(), `test${i}`, `test${i}`)))
+            Array.from({ length: 4 }, (_, i) =>
+                createCard(listId, user._id.toString(), `test${i}`, `test${i}`)))
 
-        
-        for(let i in cardList){
+
+        for (let i in cardList) {
             const user = userList[i]
             const res = await request(app)
-            .post("/api/card/assign")
-            .set("Cookie", `auth_token=${token}`)
-            .send(
-            {
-                _id: cardList[i]._id.toString(),
-                assignedTo: [user._id.toString()]
-            })
+                .post("/api/card/assign")
+                .set("Cookie", `auth_token=${token}`)
+                .send(
+                    {
+                        _id: cardList[i]._id.toString(),
+                        assignedTo: [user._id.toString()]
+                    })
 
             expect(res.status).toBe(200)
-            expect(res.body.assignedTo).toMatchObject([{username: user.username, _id:user._id.toString() }])
+            expect(res.body.assignedTo).toMatchObject([{ username: user.username, _id: user._id.toString() }])
         }
     })
 

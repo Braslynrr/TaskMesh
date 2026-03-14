@@ -4,9 +4,9 @@ import { commentRepository } from "../Comment/comment.repository";
 import { ListRepository } from "../List/list.repository";
 import { SocketEvents } from "../Socket/socket.events";
 import { boardEmitter } from "../Socket/socket.server";
-import { assertUserIsMember, assertUserIsOwner } from "../Taskboard/taskboard.policy";
+import { assertUserIsMember } from "../Taskboard/taskboard.policy";
 import { taskboardRepository } from "../Taskboard/taskboard.repository";
-import { assertUserCanHandleCards } from "./card.policy";
+import { assertUserCanDeleteCards, assertUserCanHandleCards } from "./card.policy";
 import { cardRepository } from "./card.repository";
 import { assignUsersToCardDTO, createCardDTO, moveFromListDTO, updateCardDTO } from "./card.schema";
 import { serializeCard } from "./card.serializer";
@@ -83,7 +83,7 @@ export const cardService = {
 
         const serializedCard = serializeCard(populatedCard)
 
-        const emitter = boardEmitter(taskboard._id.toString(),userId)
+        const emitter = boardEmitter(taskboard._id.toString(), userId)
         emitter.emit(SocketEvents.CARD_CREATED, { card: serializedCard, authorId: userId })
 
         return serializedCard
@@ -91,19 +91,26 @@ export const cardService = {
 
     async deleteCard(cardId: mongoIdDTO, userId: string) {
 
-        const { taskboard } = await completePolicyCheck(userId, cardId._id, assertUserCanHandleCards)
+        const { taskboard } = await completePolicyCheck(userId, cardId._id, assertUserCanDeleteCards)
+        const card = await cardRepository.getCardByID(cardId._id)
 
-        const result = cardRepository.delete(cardId._id)
+        if (!card) {
+            throw new NotFoundError("card does not exist")
+        }
+
+        const title = card.title
+
+        const result = await cardRepository.delete(cardId._id)
 
         const emitter = boardEmitter(taskboard._id.toString(), userId)
-        emitter.emit(SocketEvents.CARD_DELETED, { cardId: cardId._id, authorId: userId })
+        emitter.emit(SocketEvents.CARD_DELETED, { cardId: cardId._id, title: title, authorId: userId })
 
         return result
     },
 
     async assingUsersToCard(data: assignUsersToCardDTO, userId: string) {
 
-        const { taskboard } = await completePolicyCheck(userId, data._id, assertUserIsOwner)
+        const { taskboard } = await completePolicyCheck(userId, data._id, assertUserCanHandleCards)
 
         const idList = taskboard.members.map(id => id.toString())
 
@@ -136,7 +143,7 @@ export const cardService = {
         const serializedCard = serializeCard(populatedCard)
 
         const emitter = boardEmitter(taskboard._id.toString(), userId)
-        emitter.emit(SocketEvents.CARD_UPDATED, { card: serializedCard,authorId: userId })
+        emitter.emit(SocketEvents.CARD_UPDATED, { card: serializedCard, authorId: userId })
 
         return serializedCard
 
@@ -163,7 +170,7 @@ export const cardService = {
         const serializedCard = serializeCard(populatedCard)
 
         const emitter = boardEmitter(taskboard._id.toString(), userId)
-        emitter.emit(SocketEvents.CARD_MOVED, { cardId: data._id, to: data.listId, authorId: userId })
+        emitter.emit(SocketEvents.CARD_MOVED, { cardId: data._id, title: serializedCard.title, to: data.listId, authorId: userId })
 
         return serializedCard
     },

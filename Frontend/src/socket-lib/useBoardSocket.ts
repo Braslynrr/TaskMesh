@@ -53,38 +53,23 @@ export function useBoardSocket({
     }
 
     const handleListDeleted = (payload: listDeletedPayload) => {
-      let title = ""
-      setLists(prev => {
-        const extractedtitle = getTitleFromPrevList(prev, payload.listId)
-        if (extractedtitle) {
-          title = extractedtitle
-        }
-        return prev.filter(l => l._id !== payload.listId)
-      })
+
+      setLists(prev => prev.filter(l => l._id !== payload.listId))
 
       addActivity({
         author: payload.authorId,
-        action: ` deleted '"${title}"' list`
+        action: ` deleted '"${payload.title}"' list`
       })
     }
 
     const handleListMoved = (payload: listMovedPayload) => {
-      let title = ""
-      setLists((prev) => {
-        const extractedtitle = getTitleFromPrevList(prev, payload.listId)
-
-        if (extractedtitle) {
-          title = extractedtitle
-        }
-
-        return arrayMove(prev, payload.from - 1, payload.to - 1)
-      })
+      setLists((prev) => arrayMove(prev, payload.from - 1, payload.to - 1))
 
       triggerHighlight(payload.listId, `moved this list`, payload.authorId)
 
       addActivity({
         author: payload.authorId,
-        action: ` moved '${title}' list`
+        action: ` moved '${payload.title}' list`
       })
     }
 
@@ -107,83 +92,66 @@ export function useBoardSocket({
     }
 
     const handleCardDeleted = (payload: cardDeletedPayload) => {
-      let title = ""
-      setCards(prev => {
-        const extractedtitle = getTitleFromPrevList(prev, payload.cardId)
-        if (extractedtitle) {
-          title = extractedtitle
-        }
-
-        return prev.filter(c => c._id !== payload.cardId)
-      })
-
-      addActivity({ author: payload.authorId, action: ` updated '${title}' card` })
+      setCards(prev => prev.filter(c => c._id !== payload.cardId))
+      addActivity({ author: payload.authorId, action: ` updated '${payload.title}' card` })
     }
 
     const handleCardMoved = (payload: cardMovedPayload) => {
-      let title = ""
       setCards((prev) => {
         const card = prev.find(c => c._id === payload.cardId)
         if (card) {
           const newCard: cardResponse = { ...card, listId: payload.to }
-          title = card.title
           return prev.map(c => c._id === card._id ? newCard : c)
         }
         return prev
       })
 
       triggerHighlight(payload.cardId, `moved this card`, payload.authorId)
-      addActivity({ author: payload.authorId, action: ` moved '${title}' card` })
+      addActivity({ author: payload.authorId, action: ` moved '${payload.title}' card` })
     }
 
     // comments
 
     const handleCommentCreated = (payload: commentDupsertPayload) => {
-      let title = ""
       setCards((prev) => {
         const card = prev.find(c => c._id === payload.cardId)
         if (card) {
           const newCard: cardResponse = { ...card, comments: card.comments + 1 }
-          title = card.title
           return prev.map(c => c._id === card._id ? newCard : c)
         }
         return prev
       })
 
       triggerHighlight(payload.cardId, `commented this task`, payload.authorId)
-      addActivity({ author: payload.authorId, action: ` commented in '${title}' card` })
+      addActivity({ author: payload.authorId, action: ` commented in '${payload.title}' card` })
     }
 
     const handleCommentUpdated = (payload: commentDupsertPayload) => {
-      let title = ""
       setCards((prev) => {
         const card = prev.find(c => c._id === payload.cardId)
         if (card) {
           const newCard: cardResponse = { ...card, comments: card.comments }
-          title = card.title
           return prev.map(c => c._id === card._id ? newCard : c)
         }
         return prev
       })
 
       triggerHighlight(payload.cardId, `updated a comment`, payload.authorId)
-      addActivity({ author: payload.authorId, action: ` updated a comment in '${title}' card` })
+      addActivity({ author: payload.authorId, action: ` updated a comment in '${payload.title}' card` })
     }
 
     const handleCommentDeleted = (payload: commentDupsertPayload) => {
-      let title = ""
       setCards((prev) => {
         const card = prev.find(c => c._id === payload.cardId)
         if (card) {
           const newCard: cardResponse = { ...card, comments: card.comments - 1 }
-          title = card.title
           return prev.map(c => c._id === card._id ? newCard : c)
         }
         return prev
       })
 
       triggerHighlight(payload.cardId, `deleted a comment`, payload.authorId)
-      addActivity({ author: payload.authorId, action: ` deleted a comment in '${title}' card` })
+      addActivity({ author: payload.authorId, action: ` deleted a comment in '${payload.title}' card` })
     }
 
     const handleTaskboardMembers = (payload: taskboardMembersPayload) => {
@@ -232,8 +200,4 @@ export function useBoardSocket({
     }
 
   }, [taskboardId])
-}
-
-function getTitleFromPrevList(prev: cardResponse[] | listResponse[], _id: string) {
-  return prev.find(element => element._id === _id)?.title
 }
